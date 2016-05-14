@@ -8,7 +8,7 @@
 	<packaging>jar</packaging>
 
 	<name>red5sip</name>
-	<url>http://maven.apache.org</url>
+	<url>https://github.com/openmeetings/red5sip</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -47,6 +47,26 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -55,13 +75,11 @@
 			<artifactId>red5-client</artifactId>
 			<version>${red5.version}</version>
 		</dependency>
-		<!-- http://mvnrepository.com/artifact/javax.media/jmf -->
 		<dependency>
 			<groupId>javax.media</groupId>
 			<artifactId>jmf</artifactId>
 			<version>2.1.1e</version>
 		</dependency>
-		<!-- http://mvnrepository.com/artifact/commons-daemon/commons-daemon -->
 		<dependency>
 			<groupId>commons-daemon</groupId>
 			<artifactId>commons-daemon</artifactId>
