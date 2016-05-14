@@ -31,7 +31,7 @@ public class PlayNetStream extends AbstractClientStream implements IEventDispatc
 	
 	private RTMPRoomClient client;
 	
-	private int currentStreamID = -1;
+	private Number currentStreamID = null;
 	
 	private boolean keyframeReceived = false;
 
@@ -89,17 +89,17 @@ public class PlayNetStream extends AbstractClientStream implements IEventDispatc
 		}
 
 		if (rtmpEvent instanceof VideoData) {
-			int newStreamId = client.getActiveVideoStreamID();
-			if (newStreamId == -1) {
+			Number newStreamId = client.getActiveVideoStreamID();
+			if (newStreamId == null) {
 				newStreamId = rtmpEvent.getHeader().getStreamId();
 				client.setActiveVideoStreamID(newStreamId);
 			}
-			if (rtmpEvent.getHeader().getStreamId() != newStreamId) {
+			if (!rtmpEvent.getHeader().getStreamId().equals(newStreamId)) {
 				log.trace("ignoring stream id=" + rtmpEvent.getHeader().getStreamId() + " current stream is " + newStreamId);
 				return;
 			}
 			
-			if (currentStreamID != newStreamId) {
+			if (!currentStreamID.equals(newStreamId)) {
 				log.debug("switching video to a new stream: " + newStreamId);
 				currentStreamID = newStreamId;
 				if (videoStream != null) {

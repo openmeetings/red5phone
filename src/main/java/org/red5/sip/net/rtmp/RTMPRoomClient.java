@@ -90,7 +90,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	final private int roomId;
 	final private String context;
 	final private String host;
-	private int activeVideoStreamID = -1;
+	private Number activeVideoStreamID = null;
 	private String destination;
 	private int sipUsersCount;
 
@@ -168,11 +168,11 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 		invoke("listRoomBroadcast", this);
 	}
 
-	public int getActiveVideoStreamID() {
+	public Number getActiveVideoStreamID() {
 		return activeVideoStreamID;
 	}
 	
-	public void setActiveVideoStreamID(int activeVideoStreamID) {
+	public void setActiveVideoStreamID(Number activeVideoStreamID) {
 		this.activeVideoStreamID = activeVideoStreamID;
 	}
 

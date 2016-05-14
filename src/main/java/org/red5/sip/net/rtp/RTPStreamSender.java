@@ -136,11 +136,13 @@ public class RTPStreamSender implements IMediaSender {
 		}
 	}
 
-	public IMediaStream createStream(int streamId) {
+	@Override
+	public IMediaStream createStream(Number streamId) {
 		return new RTPStream(streamId, syncSourceBase.getAndIncrement(), this);
 	}
 
-	public void deleteStream(int streamId) {
+	@Override
+	public void deleteStream(Number streamId) {
 		// nothing to do
 	}
 

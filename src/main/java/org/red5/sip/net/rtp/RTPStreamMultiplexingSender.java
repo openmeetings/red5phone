@@ -188,13 +188,15 @@ public class RTPStreamMultiplexingSender implements IMediaSender, Runnable {
 		sendThread.start();
 	}
 
-	public IMediaStream createStream(int streamId) {
+	@Override
+	public IMediaStream createStream(Number streamId) {
 		RTPStreamForMultiplex stream = new RTPStreamForMultiplex(streamId);
 		streamSet.add(new WeakReference<RTPStreamForMultiplex>(stream));
 		return stream;
 	}
 
-	public void deleteStream(int streamId) {
+	@Override
+	public void deleteStream(Number streamId) {
 		for (Iterator<WeakReference<RTPStreamForMultiplex>> iterator = streamSet.iterator(); iterator.hasNext();) {
 			WeakReference<RTPStreamForMultiplex> ref = iterator.next();
 			RTPStreamForMultiplex stream = ref.get();
@@ -244,7 +246,7 @@ public class RTPStreamMultiplexingSender implements IMediaSender, Runnable {
 		float[] decodedBuffer = new float[NELLYMOSER_DECODED_PACKET_SIZE];
 		byte[] asaoBuffer = new byte[NELLYMOSER_ENCODED_PACKET_SIZE];
 
-		int disableStream = 0;
+		Number disableStream = 0;
 
 		while (rtpSocket != null) {
 			float bufferUsage = 0;
@@ -255,7 +257,7 @@ public class RTPStreamMultiplexingSender implements IMediaSender, Runnable {
 					WeakReference<RTPStreamForMultiplex> ref = i.next();
 					RTPStreamForMultiplex stream = ref.get();
 					if (stream != null) {
-						if (stream.ready() && disableStream != stream.getStreamId()) {
+						if (stream.ready() && !stream.getStreamId().equals(disableStream)) {
 							len = stream.read(asaoBuffer, 0);
 							bufferUsage = Math.max(bufferUsage, stream.bufferUsage());
 							log.trace("Stream id {}, buffer {}", stream.getStreamId(), stream.bufferUsage());

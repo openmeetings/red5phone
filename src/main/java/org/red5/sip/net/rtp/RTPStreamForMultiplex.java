@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 public class RTPStreamForMultiplex implements IMediaStream {
 	protected static Logger log = LoggerFactory.getLogger(RTPStreamForMultiplex.class);
-	private int streamId;
+	private Number streamId;
 	private boolean ready = false;
 	protected DecoderMap decoderMap = null;
 	private BytesBuffer buffer = new BytesBuffer(NELLYMOSER_ENCODED_PACKET_SIZE, 200) {
@@ -30,11 +30,11 @@ public class RTPStreamForMultiplex implements IMediaStream {
 		}
 	};
 
-	protected RTPStreamForMultiplex(int streamId) {
+	protected RTPStreamForMultiplex(Number streamId) {
 		this.streamId = streamId;
 	}
 
-	public int getStreamId() {
+	public Number getStreamId() {
 		return streamId;
 	}
 

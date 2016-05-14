@@ -31,7 +31,7 @@ public class RTPStream implements IMediaStream {
 	// Indicates whether the current asao buffer was processed.
 	boolean asao_buffer_processed = false;
 
-	public RTPStream(int streamId, long syncSource, RTPStreamSender sender) {
+	public RTPStream(Number streamId, long syncSource, RTPStreamSender sender) {
 		this.syncSource = syncSource;
 		this.sender = sender;
 		this.packetBuffer = new byte[sender.sipCodec.getOutgoingEncodedFrameSize() + RTPStreamSender.RTP_HEADER_SIZE];

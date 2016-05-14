@@ -37,12 +37,12 @@ public class RTPStreamVideoSender implements IMediaSender {
 	}
 	
 	@Override
-	public IMediaStream createStream(int streamId) {
+	public IMediaStream createStream(Number streamId) {
 		return new RTPVideoStream(sipTransport, mediaReceiver, this, codec);
 	}
 
 	@Override
-	public void deleteStream(int streamId) {}
+	public void deleteStream(Number streamId) {}
 
 	@Override
 	public void start() {
