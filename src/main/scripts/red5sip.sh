@@ -10,5 +10,4 @@ LOGS_DIR=$RED5SIP_HOME/log
 SETTINGS_FILE=$RED5SIP_HOME/settings.properties
 
 echo "Starting Red5SIP"
-exec $JAVA_HOME/bin/java -Dlogs=$LOGS_DIR -cp ".:$RED5SIP_HOME/lib/*:$RED5SIP_HOME/out/lib/*" org.red5.sip.app.Main $SETTINGS_FILE
-
+exec $JAVA_HOME/bin/java -Dlogs=$LOGS_DIR -cp ".:./*:$RED5SIP_HOME/lib/*" org.red5.sip.app.Main $SETTINGS_FILE
