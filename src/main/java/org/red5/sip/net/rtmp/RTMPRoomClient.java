@@ -55,7 +55,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	private IMediaSender videoSender;
 	private IoBuffer audioBuffer;
 	private IoBuffer videoBuffer;
-	private Integer publishStreamId = null;
+	private Double publishStreamId = null;
 	private boolean reconnect = true;
 	private int retryNumber = 0;
 	private boolean micMuted = false;
@@ -458,7 +458,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 			break;
 		case createStream:
 			log.info("createStream");
-			publishStreamId = (Integer) call.getResult();
+			publishStreamId = (Double) call.getResult();
 			publish(publishStreamId, "" + broadCastId, "live", this);
 			this.setSipTransport();
 			break;
