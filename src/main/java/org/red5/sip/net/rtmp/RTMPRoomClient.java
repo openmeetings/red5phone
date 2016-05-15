@@ -46,7 +46,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	private static final int MAX_RETRY_NUMBER = 100;
 	private static final int UPDATE_MS = 3000;
 
-	private Set<Integer> broadcastIds = new HashSet<Integer>();
+	private Set<Long> broadcastIds = new HashSet<>();
 	private Map<Long, Integer> clientStreamMap = new HashMap<Long, Integer>();
 	private String publicSID = null;
 	private long broadCastId = -1;
@@ -179,7 +179,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	private void createPlayStream(long broadCastId) {
 
 		log.debug("create play stream");
-		broadcastIds.add((int) broadCastId);
+		broadcastIds.add(broadCastId);
 		IPendingServiceCallback wrapper = new CreatePlayStreamCallBack(broadCastId);
 		invoke("createStream", null, wrapper);
 	}
@@ -426,11 +426,15 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 			final IPendingServiceCall fcall = call;
 			Runnable startStreamingTask = new Runnable() {
 				
+				@SuppressWarnings("unchecked")
 				@Override
 				public void run() {
 					log.debug("startStreamingTask.run()");
-					if (fcall.getResult() instanceof Collection)
-						RTMPRoomClient.this.broadcastIds.addAll((Collection<Integer>) fcall.getResult());
+					if (fcall.getResult() instanceof Collection) {
+						for (Double bId : (Collection<Double>) fcall.getResult()) {
+							RTMPRoomClient.this.broadcastIds.add(bId.longValue());
+						}
+					}
 					RTMPRoomClient.this.startStreaming();
 				}
 				
