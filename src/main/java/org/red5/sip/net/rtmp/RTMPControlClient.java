@@ -5,12 +5,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.mina.core.RuntimeIoException;
-import org.red5.server.api.service.IPendingServiceCall;
-import org.red5.server.api.service.IPendingServiceCallback;
 import org.red5.client.net.rtmp.ClientExceptionHandler;
 import org.red5.client.net.rtmp.RTMPClient;
+import org.red5.server.api.service.IPendingServiceCall;
+import org.red5.server.api.service.IPendingServiceCallback;
 import org.red5.server.net.rtmp.RTMPConnection;
-import org.red5.server.net.rtmp.codec.RTMP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +22,7 @@ public abstract class RTMPControlClient extends RTMPClient implements ClientExce
 	private final String host;
 	private final String context;
 	private boolean reconnect;
-	private Set<Integer> activeRooms = new HashSet<Integer>();
+	private Set<Double> activeRooms = new HashSet<Double>();
 
 	protected enum ServiceMethod {
 		connect, getActiveRoomIds
@@ -125,33 +124,34 @@ public abstract class RTMPControlClient extends RTMPClient implements ClientExce
 		case getActiveRoomIds:
 			log.debug("getActiveRoomIds");
 			if (call.getResult() instanceof Collection) {
-				Collection<Integer> newActiveRooms = ((Collection<Integer>) call.getResult());
-				for (Integer id : newActiveRooms) {
+				@SuppressWarnings("unchecked")
+				Collection<Double> newActiveRooms = (Collection<Double>)call.getResult();
+				for (Double id : newActiveRooms) {
 					if (!this.activeRooms.contains(id)) {
 						this.activeRooms.add(id);
 						log.debug("Start room client, id: " + id);
-						startRoomClient(id);
+						startRoomClient(id.longValue());
 					}
 				}
-				for (Integer id : this.activeRooms) {
+				for (Double id : this.activeRooms) {
 					if (!newActiveRooms.contains(id)) {
 						log.info("Stop room client, id: " + id);
 						this.activeRooms.remove(id);
-						stopRoomClient(id);
+						stopRoomClient(id.longValue());
 					}
 				}
 			} else {
-				for (Integer id : this.activeRooms) {
+				for (Double id : this.activeRooms) {
 					log.info("Stop room client, id: " + id);
 					this.activeRooms.remove(id);
-					stopRoomClient(id);
+					stopRoomClient(id.longValue());
 				}
 			}
 			break;
 		}
 	}
 
-	protected abstract void startRoomClient(int id);
+	protected abstract void startRoomClient(long roomId);
 
-	protected abstract void stopRoomClient(int id);
+	protected abstract void stopRoomClient(long roomId);
 }

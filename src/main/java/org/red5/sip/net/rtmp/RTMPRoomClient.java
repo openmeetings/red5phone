@@ -11,19 +11,19 @@ import java.util.Set;
 import org.apache.mina.core.RuntimeIoException;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.openmeetings.db.entity.room.Client;
+import org.red5.client.net.rtmp.BaseRTMPClientHandler;
+import org.red5.client.net.rtmp.ClientExceptionHandler;
+import org.red5.client.net.rtmp.INetStreamEventHandler;
+import org.red5.client.net.rtmp.RTMPClient;
 import org.red5.io.utils.ObjectMap;
-import org.red5.server.api.scope.IScope;
 import org.red5.server.api.event.IEvent;
+import org.red5.server.api.scope.IScope;
 import org.red5.server.api.service.IPendingServiceCall;
 import org.red5.server.api.service.IPendingServiceCallback;
 import org.red5.server.api.service.IServiceCall;
 import org.red5.server.api.service.IServiceInvoker;
-import org.red5.client.net.rtmp.BaseRTMPClientHandler;
 import org.red5.server.net.ICommand;
 import org.red5.server.net.rtmp.Channel;
-import org.red5.client.net.rtmp.ClientExceptionHandler;
-import org.red5.client.net.rtmp.INetStreamEventHandler;
-import org.red5.client.net.rtmp.RTMPClient;
 import org.red5.server.net.rtmp.RTMPConnection;
 import org.red5.server.net.rtmp.codec.RTMP;
 import org.red5.server.net.rtmp.event.AudioData;
@@ -87,14 +87,14 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 		, setSipTransport, updateSipTransport, sendMessage, getSipNumber
 	}
 
-	final private int roomId;
+	final private long roomId;
 	final private String context;
 	final private String host;
 	private Number activeVideoStreamID = null;
 	private String destination;
 	private int sipUsersCount;
 
-	public RTMPRoomClient(String host, String context, int roomId) {
+	public RTMPRoomClient(String host, String context, long roomId) {
 		super();
 		this.roomId = roomId;
 		this.context = context;
@@ -221,7 +221,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	}
 
 	protected void getSipNumber() {
-		conn.invoke("getSipNumber", new Object[] { Integer.valueOf(roomId).longValue() }, this);
+		conn.invoke("getSipNumber", new Object[] { roomId }, this);
 	}
 
 	public int getSipUsersCount() {

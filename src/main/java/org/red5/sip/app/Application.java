@@ -25,10 +25,10 @@ public class Application implements Daemon {
 	private static int soundPort = SOUND_START_PORT;
 	private static int videoPort = VIDEO_START_PORT;
 	private Properties props = null;
-	private Map<Integer, SIPTransport> transportMap = new HashMap<Integer, SIPTransport>();
+	private Map<Long, SIPTransport> transportMap = new HashMap<>();
 	private RTMPControlClient rtmpControlClient;
 
-	private SIPTransport createSIPTransport(Properties prop, int room_id) {
+	private SIPTransport createSIPTransport(Properties prop, long room_id) {
 		log.info("Creating SIP trasport for room: " + room_id);
 		RTPStreamSender.useASAO = prop.getProperty("red5.codec", "asao").equals("asao");
 		RTMPRoomClient roomClient = new RTMPRoomClient(prop.getProperty("red5.host"), prop.getProperty("om.context",
@@ -87,7 +87,7 @@ public class Application implements Daemon {
 			String[] rooms = roomsStr.split(",");
 			for (String room : rooms) {
 				try {
-					int id = Integer.parseInt(room);
+					long id = Long.parseLong(room);
 					transportMap.put(id, createSIPTransport(props, id));
 				} catch (NumberFormatException e) {
 					log.error("Room id parsing error: id=\"" + room + "\"");
@@ -97,13 +97,13 @@ public class Application implements Daemon {
 			this.rtmpControlClient = new RTMPControlClient(props.getProperty("red5.host"), props.getProperty(
 					"om.context", "openmeetings")) {
 				@Override
-				protected void startRoomClient(int id) {
-					transportMap.put(id, createSIPTransport(props, id));
+				protected void startRoomClient(long roomId) {
+					transportMap.put(roomId, createSIPTransport(props, roomId));
 				}
 
 				@Override
-				protected void stopRoomClient(int id) {
-					SIPTransport t = transportMap.remove(id);
+				protected void stopRoomClient(long roomId) {
+					SIPTransport t = transportMap.remove(roomId);
 					if (t != null) {
 						t.close();
 					}
