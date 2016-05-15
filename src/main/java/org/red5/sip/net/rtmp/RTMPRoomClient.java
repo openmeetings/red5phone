@@ -347,8 +347,10 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	public void sendVarsToMessageWithClient(Object message) {
 		if (message instanceof Map) {
 			try {
-				Map map = Map.class.cast(message);
-				Map msgValue = Map.class.cast(map.get("message"));
+				@SuppressWarnings("unchecked")
+				Map<String, Object> map = (Map<String, Object>)message;
+				@SuppressWarnings("unchecked")
+				Map<String, Object> msgValue = (Map<String, Object>)map.get("message");
 				if ("kick".equals(map.get(0)) || "kick".equals(msgValue.get(0))) {
 					log.info("Kicked by moderator. Reconnect");
 					this.conn.close();
