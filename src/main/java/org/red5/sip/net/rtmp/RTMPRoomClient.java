@@ -47,7 +47,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	private static final int UPDATE_MS = 3000;
 
 	private Set<Long> broadcastIds = new HashSet<>();
-	private Map<Long, Integer> clientStreamMap = new HashMap<Long, Integer>();
+	private Map<Long, Double> clientStreamMap = new HashMap<>();
 	private String publicSID = null;
 	private long broadCastId = -1;
 	private RTMPConnection conn;
@@ -193,16 +193,16 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 
 		public void resultReceived(IPendingServiceCall call) {
 
-			Integer streamIdInt = (Integer) call.getResult();
+			Double streamId = (Double) call.getResult();
 
-			if (conn != null && streamIdInt != null
-					&& (publishStreamId == null || streamIdInt.intValue() != publishStreamId)) {
-				clientStreamMap.put(broadCastId, streamIdInt);
+			if (conn != null && streamId != null
+					&& (publishStreamId == null || !streamId.equals(publishStreamId))) {
+				clientStreamMap.put(broadCastId, streamId);
 				PlayNetStream stream = new PlayNetStream(audioSender, videoSender, RTMPRoomClient.this);
 				stream.setConnection(conn);
-				stream.setStreamId(streamIdInt.intValue());
+				stream.setStreamId(streamId.intValue());
 				conn.addClientStream(stream);
-				play(streamIdInt, "" + broadCastId, -2000, -1000);
+				play(streamId, "" + broadCastId, -2000, -1000);
 				stream.start();
 			}
 		}
@@ -369,13 +369,13 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 
 	public void closeStream(Client client) {
 		log.debug("closeStream:" + client.getBroadCastID());
-		Integer streamId = clientStreamMap.get(client.getBroadCastID());
+		Double streamId = clientStreamMap.get(client.getBroadCastID());
 		if (streamId != null) {
 			clientStreamMap.remove(client.getBroadCastID());
 			conn.getStreamById(streamId).stop();
 			conn.removeClientStream(streamId);
 			conn.deleteStreamById(streamId);
-			if (streamId == getActiveVideoStreamID()) {
+			if (streamId.equals(getActiveVideoStreamID())) {
 				setActiveVideoStreamID(-1);
 			}
 		}
