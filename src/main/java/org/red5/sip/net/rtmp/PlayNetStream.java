@@ -99,7 +99,7 @@ public class PlayNetStream extends AbstractClientStream implements IEventDispatc
 				return;
 			}
 			
-			if (!currentStreamID.equals(newStreamId)) {
+			if (!newStreamId.equals(currentStreamID)) {
 				log.debug("switching video to a new stream: " + newStreamId);
 				currentStreamID = newStreamId;
 				if (videoStream != null) {
