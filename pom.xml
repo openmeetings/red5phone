@@ -16,12 +16,6 @@
 		<red5.version>1.0.7-RELEASE</red5.version>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>openmeetings-bintray</id>
-			<url>https://dl.bintray.com/openmeetings/maven</url>
-		</repository>
-	</repositories>
 	<build>
 		<pluginManagement>
 			<plugins>
