@@ -44,7 +44,7 @@ public class Decoder {
 		voicing = 60;
 	}
 
-	// Recebe um array de byte de 20 ou 30 posi��es
+	// Recebe um array de byte de 20 ou 30 pos
 	// processa de 10 em 10 Bytes e retorna um array de float de 160 ou 240
 	// Bytes
 	public void decode(byte[] bufferIn, float[] bufferOut) {
