@@ -1,22 +1,22 @@
 /*
  * Copyright (C) 2005 Luca Veltri - University of Parma - Italy
- * 
+ *
  * This file is part of MjSip (http://www.mjsip.org)
- * 
+ *
  * MjSip is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * MjSip is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with MjSip; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Author(s):
  * Luca Veltri (luca.veltri@unipr.it)
  */
@@ -44,7 +44,7 @@ public class SdpTools
      * @param m_descs Vector of MediaDescriptor with the selecting media types and attributes
      * @return this SessionDescriptor */
    public static SessionDescriptor sdpMediaProduct(SessionDescriptor sdp, Vector<MediaDescriptor> m_descs)
-   {  Vector<MediaDescriptor> new_media=new Vector<MediaDescriptor>();
+   {  Vector<MediaDescriptor> new_media=new Vector<>();
       if (m_descs!=null)
       {  for (Enumeration<MediaDescriptor> e=m_descs.elements(); e.hasMoreElements(); )
          {  MediaDescriptor spec_md=e.nextElement();
@@ -58,7 +58,7 @@ public class SdpTools
                {  new_media.addElement(prev_md);
                }
                else
-               {  Vector<AttributeField> new_attributes=new Vector<AttributeField>();
+               {  Vector<AttributeField> new_attributes=new Vector<>();
                   for (Enumeration<AttributeField> i=spec_attributes.elements(); i.hasMoreElements(); )
                   {  AttributeField spec_attr=i.nextElement();
                      String spec_name=spec_attr.getAttributeName();
@@ -83,7 +83,7 @@ public class SdpTools
       new_sdp.addMediaDescriptors(new_media);
       return new_sdp;
    }
-   
+
    /** Costructs a new SessionDescriptor from a given SessionDescriptor
      * with olny the first specified media attribute.
    /** Keeps only the fisrt attribute of the specified type for each media.
@@ -92,7 +92,7 @@ public class SdpTools
      * @param a_name the attribute name
      * @return this SessionDescriptor */
    public static SessionDescriptor sdpAttirbuteSelection(SessionDescriptor sdp, String a_name)
-   {  Vector<MediaDescriptor> new_media=new Vector<MediaDescriptor>();
+   {  Vector<MediaDescriptor> new_media=new Vector<>();
       for (Enumeration<MediaDescriptor> e=sdp.getMediaDescriptors().elements(); e.hasMoreElements(); )
       {  MediaDescriptor md=e.nextElement();
          AttributeField attr=md.getAttribute(a_name);

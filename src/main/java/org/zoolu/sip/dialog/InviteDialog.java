@@ -35,7 +35,6 @@ import org.zoolu.sip.message.SipMethods;
 import org.zoolu.sip.message.SipResponses;
 import org.zoolu.sip.provider.ConnectionIdentifier;
 import org.zoolu.sip.provider.SipProvider;
-import org.zoolu.sip.provider.SipProviderListener;
 import org.zoolu.sip.transaction.AckTransactionClient;
 import org.zoolu.sip.transaction.AckTransactionServer;
 import org.zoolu.sip.transaction.AckTransactionServerListener;
@@ -57,7 +56,7 @@ import org.zoolu.sip.transaction.TransactionServer;
  * - INVITE-offer/2xx-answer mode for outgoing calls.
  */
 public class InviteDialog extends Dialog implements TransactionClientListener, InviteTransactionServerListener,
-		AckTransactionServerListener, SipProviderListener {
+		AckTransactionServerListener {
 	private static Logger log = LoggerFactory.getLogger(InviteDialog.class);
 	/** The last invite message */
 	Message invite_req;
@@ -96,6 +95,7 @@ public class InviteDialog extends Dialog implements TransactionClientListener, I
 	protected static final int D_CLOSE = 9;
 
 	/** Gets the dialog state */
+	@Override
 	protected String getStatus() {
 		switch (status) {
 			case D_INIT:
@@ -136,16 +136,19 @@ public class InviteDialog extends Dialog implements TransactionClientListener, I
 	// ************************** Public methods **************************
 
 	/** Whether the dialog is in "early" state. */
+	@Override
 	public boolean isEarly() {
 		return status < D_ACCEPTED;
 	}
 
 	/** Whether the dialog is in "confirmed" state. */
+	@Override
 	public boolean isConfirmed() {
 		return status >= D_ACCEPTED && status < D_CLOSE;
 	}
 
 	/** Whether the dialog is in "terminated" state. */
+	@Override
 	public boolean isTerminated() {
 		return status == D_CLOSE;
 	}
@@ -204,7 +207,7 @@ public class InviteDialog extends Dialog implements TransactionClientListener, I
 
 	/**
 	 * Starts a new InviteTransactionClient and initializes the dialog state information.
-	 * 
+	 *
 	 * @param callee
 	 *            the callee url (and display name)
 	 * @param caller
@@ -240,7 +243,7 @@ public class InviteDialog extends Dialog implements TransactionClientListener, I
 
 	/**
 	 * Starts a new InviteTransactionClient and initializes the dialog state information
-	 * 
+	 *
 	 * @param invite
 	 *            the INVITE message
 	 */
@@ -551,6 +554,7 @@ public class InviteDialog extends Dialog implements TransactionClientListener, I
 	 * If the message is BYE, it moves to D_BYED state, removes the listener from SipProvider, fires onDlgBye(this,msg)
 	 * then it responds with 200 OK, moves to D_CLOSE state and fires onDlgClose(this)
 	 */
+	@Override
 	public void onReceivedMessage(SipProvider sip_provider, Message msg) {
 		log.debug("inside onReceivedMessage(sip_provider,message)");
 		if (msg.isRequest() && !(msg.isAck() || msg.isCancel())
@@ -639,6 +643,7 @@ public class InviteDialog extends Dialog implements TransactionClientListener, I
 	 * <p>
 	 * For INVITE transaction it fires <i>onFailureResponse(this,code,reason,body,msg)</i>.
 	 */
+	@Override
 	public void onTransProvisionalResponse(TransactionClient tc, Message msg) {
 		log.trace("inside onTransProvisionalResponse(tc,mdg)");
 		if (tc.getTransactionMethod().equals(SipMethods.INVITE)) {
@@ -657,6 +662,7 @@ public class InviteDialog extends Dialog implements TransactionClientListener, I
 	 * If called for a BYE transaction, it moves to D_CLOSE state, removes the listener from SipProvider, and fires
 	 * <i>onClose(this,msg)</i>.
 	 */
+	@Override
 	public void onTransFailureResponse(TransactionClient tc, Message msg) {
 		log.trace("inside onTransFailureResponse(" + tc.getTransactionId() + ",msg)");
 		if (tc.getTransactionMethod().equals(SipMethods.INVITE)) {
@@ -711,6 +717,7 @@ public class InviteDialog extends Dialog implements TransactionClientListener, I
 	 * If called for a BYE transaction, it moves to D_CLOSE state, removes the listener from SipProvider, and fires
 	 * <i>onClose(this,msg)</i>.
 	 */
+	@Override
 	public void onTransSuccessResponse(TransactionClient tc, Message msg) {
 		log.trace("inside onTransSuccessResponse(tc,msg)");
 		if (tc.getTransactionMethod().equals(SipMethods.INVITE)) {
@@ -751,6 +758,7 @@ public class InviteDialog extends Dialog implements TransactionClientListener, I
 	 * Inherited from TransactionClientListener. When the TransactionClient goes into the "Terminated" state, caused by
 	 * transaction timeout
 	 */
+	@Override
 	public void onTransTimeout(TransactionClient tc) {
 		log.trace("inside onTransTimeout(tc,msg)");
 		if (tc.getTransactionMethod().equals(SipMethods.INVITE)) {
@@ -777,6 +785,7 @@ public class InviteDialog extends Dialog implements TransactionClientListener, I
 	 * moves to D_INVITED state, and add a listener to the SipProvider, <br>
 	 * and fires <i>onInvite(caller,body,msg)</i>.
 	 */
+	@Override
 	public void onTransRequest(TransactionServer ts, Message req) {
 		log.trace("inside onTransRequest(ts,msg)");
 		if (ts.getTransactionMethod().equals(SipMethods.INVITE)) {
@@ -796,6 +805,7 @@ public class InviteDialog extends Dialog implements TransactionClientListener, I
 	 * <p>
 	 * It moves to D_CLOSE state and removes the listener from SipProvider.
 	 */
+	@Override
 	public void onTransFailureAck(InviteTransactionServer ts, Message msg) {
 		log.trace("inside onTransFailureAck(ts,msg)");
 		if (!verifyStatus(statusIs(D_REFUSED) || statusIs(D_ReREFUSED)))
@@ -811,6 +821,7 @@ public class InviteDialog extends Dialog implements TransactionClientListener, I
 	// ************ Inherited from AckTransactionServerListener ************
 
 	/** When the AckTransactionServer goes into the "Terminated" state, caused by transaction timeout */
+	@Override
 	public void onTransAckTimeout(AckTransactionServer ts) {
 		log.trace("inside onAckSrvTimeout(ts)");
 		if (!verifyStatus(statusIs(D_ACCEPTED) || statusIs(D_ReACCEPTED) || statusIs(D_REFUSED)

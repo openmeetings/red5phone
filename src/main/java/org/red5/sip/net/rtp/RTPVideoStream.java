@@ -3,8 +3,6 @@ package org.red5.sip.net.rtp;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import local.net.RtpPacket;
-
 import org.red5.codecs.SIPCodec;
 import org.red5.sip.app.IMediaReceiver;
 import org.red5.sip.app.IMediaStream;
@@ -12,6 +10,8 @@ import org.red5.sip.app.SIPTransport;
 import org.red5.sip.app.SIPVideoConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import local.net.RtpPacket;
 
 public class RTPVideoStream implements IMediaStream {
 
@@ -23,7 +23,7 @@ public class RTPVideoStream implements IMediaStream {
 	private boolean running;
 	private ConverterThread converterThread;
 	private IMediaReceiver mediaReceiver;
-	
+
 	public RTPVideoStream(SIPTransport sipTransport, IMediaReceiver mediaReceiver, RTPStreamVideoSender sender, SIPCodec codec) {
 		this.sender = sender;
 		this.codec = codec;
@@ -34,7 +34,7 @@ public class RTPVideoStream implements IMediaStream {
 		converterThread.start();
 		running = true;
 	}
-	
+
 	@Override
 	public void send(long timestamp, byte[] data, int offset, int num) {
 		if (!running) {
@@ -47,7 +47,7 @@ public class RTPVideoStream implements IMediaStream {
 	public void stop() {
 		running = false;
 	}
-	
+
 	public SIPVideoConverter getConverter() {
 		return converter;
 	}
@@ -55,15 +55,15 @@ public class RTPVideoStream implements IMediaStream {
 	private class ConverterThread extends Thread {
 
 		private Queue<QueueItem> queue;
-		
+
 		public ConverterThread() {
-			queue = new ConcurrentLinkedQueue<QueueItem>();
+			queue = new ConcurrentLinkedQueue<>();
 		}
-		
+
 		public void addData(byte[] data, long ts) {
 			queue.add(new QueueItem(ts, data));
 		}
-		
+
 		@Override
 		public void run() {
 			while (running) {
@@ -81,7 +81,7 @@ public class RTPVideoStream implements IMediaStream {
 					} else {
 						queue.clear();
 					}
-					
+
 					if (queue.size() == 0) {
 						Thread.sleep(50);
 					}
@@ -90,20 +90,20 @@ public class RTPVideoStream implements IMediaStream {
 				}
 			}
 		}
-		
+
 		private class QueueItem {
-			
+
 			public final long ts;
 			public final byte[] data;
-			
+
 			public QueueItem(long ts, byte[] data) {
 				super();
 				this.ts = ts;
 				this.data = data;
 			}
-			
+
 		}
-		
+
 	}
-	
+
 }

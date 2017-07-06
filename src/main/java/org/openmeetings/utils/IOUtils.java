@@ -1,5 +1,7 @@
 package org.openmeetings.utils;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +25,7 @@ public class IOUtils {
 	public static String readFileToString(File file) {
 		String result;
 		try {
-			result = FileUtils.readFileToString(file);
+			result = FileUtils.readFileToString(file, UTF_8);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -32,7 +34,7 @@ public class IOUtils {
 
 	public static void writeStringToFile(File file, String text) {
 		try {
-			FileUtils.writeStringToFile(file, text);
+			FileUtils.writeStringToFile(file, text, UTF_8);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

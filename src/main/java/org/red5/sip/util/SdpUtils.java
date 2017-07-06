@@ -36,7 +36,7 @@ public class SdpUtils {
 		}
 		return sipCodec;
 	}
-	
+
 	/**
 	 * @return Returns the audio codec to be used on current session.
 	 */
@@ -76,10 +76,10 @@ public class SdpUtils {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param userName
 	 * @param viaAddress
-	 * 
+	 *
 	 * @return Return the initial local SDP.
 	 */
 	public static SessionDescriptor createInitialSdp(String userName, String viaAddress, int audioPort, int videoPort,
@@ -111,7 +111,7 @@ public class SdpUtils {
 			if (audioCodecsNumber > 0) {
 
 				SIPCodec[] audioCodecs;
-				Vector<AttributeField> audioAttributes = new Vector<AttributeField>();
+				Vector<AttributeField> audioAttributes = new Vector<>();
 
 				if (audioCodecsPrecedence.isEmpty()) {
 
@@ -210,7 +210,7 @@ public class SdpUtils {
 			if (videoCodecsNumber > 0) {
 
 				SIPCodec[] videoCodecs = SIPCodecFactory.getInstance().getAvailableVideoCodecs();
-				Vector<AttributeField> videoAttributes = new Vector<AttributeField>();
+				Vector<AttributeField> videoAttributes = new Vector<>();
 
 				for (int videoIndex = 0; videoIndex < videoCodecsNumber; videoIndex++) {
 
@@ -312,7 +312,7 @@ public class SdpUtils {
 
 		for (Enumeration<AttributeField> attributeEnum = mediaAttributes.elements(); attributeEnum.hasMoreElements();) {
 
-			mediaAttribute = (AttributeField) attributeEnum.nextElement();
+			mediaAttribute = attributeEnum.nextElement();
 
 			if (mediaAttribute.getAttributeName().equalsIgnoreCase(SIPCodec.ATTRIBUTE_RTPMAP)) {
 
@@ -357,10 +357,10 @@ public class SdpUtils {
 	/**
 	 * We must validate the existence of all remote "rtpmap" attributes on local SDP. If some exist, we add it to newSdp
 	 * negotiated SDP result.
-	 * 
+	 *
 	 * @param localSdp
 	 * @param remoteSdp
-	 * 
+	 *
 	 * @return Returns the new local descriptor as a result of media payloads negotiation.
 	 */
 	public static SessionDescriptor makeMediaPayloadsNegotiation(SessionDescriptor localSdp, SessionDescriptor remoteSdp) {
@@ -379,13 +379,13 @@ public class SdpUtils {
 			for (Enumeration<MediaDescriptor> descriptorsEnum = remoteDescriptors.elements(); descriptorsEnum
 					.hasMoreElements();) {
 
-				MediaDescriptor remoteDescriptor = (MediaDescriptor) descriptorsEnum.nextElement();
+				MediaDescriptor remoteDescriptor = descriptorsEnum.nextElement();
 				MediaDescriptor localDescriptor = localSdp.getMediaDescriptor(remoteDescriptor.getMedia().getMedia());
 
 				if (localDescriptor != null) {
 
 					Vector<AttributeField> remoteAttributes = remoteDescriptor.getAttributes(SIPCodec.ATTRIBUTE_RTPMAP);
-					Vector<AttributeField> newSdpAttributes = new Vector<AttributeField>();
+					Vector<AttributeField> newSdpAttributes = new Vector<>();
 
 					for (Enumeration<AttributeField> attributesEnum = remoteAttributes.elements(); attributesEnum
 							.hasMoreElements();) {
@@ -439,11 +439,11 @@ public class SdpUtils {
 	/**
 	 * Parameter "newSdp" must be the returning value from method's "makeMediaPayloadsNegotiation" execution. Here the
 	 * pending attributes will be negotiated as well.
-	 * 
+	 *
 	 * @param newSdp
 	 * @param localSdp
 	 * @param remoteSdp
-	 * 
+	 *
 	 */
 	public static void completeSdpNegotiation(SessionDescriptor newSdp, SessionDescriptor localSdp,
 			SessionDescriptor remoteSdp) {
@@ -495,7 +495,7 @@ public class SdpUtils {
 					for (Enumeration<AttributeField> atributesEnum = localAttributes.elements(); atributesEnum
 							.hasMoreElements();) {
 
-						AttributeField localAttribute = (AttributeField) atributesEnum.nextElement();
+						AttributeField localAttribute = atributesEnum.nextElement();
 						MediaDescriptor newLocalDescriptor = newSdp.getMediaDescriptor(localDescriptor.getMedia()
 								.getMedia());
 
@@ -527,7 +527,7 @@ public class SdpUtils {
 	/**
 	 * Here we make the negotiation of all attributes besides "rtpmap" ( these are negotiated on
 	 * "makeMediaPayloadsNegotiation" method).
-	 * 
+	 *
 	 * @param newSdp
 	 * @param localMedia
 	 * @param remoteAttribute
@@ -624,7 +624,7 @@ public class SdpUtils {
 
 		for (Enumeration<AttributeField> attributesEnum = mediaAttributes.elements(); attributesEnum.hasMoreElements();) {
 
-			AttributeField mediaAttribute = (AttributeField) attributesEnum.nextElement();
+			AttributeField mediaAttribute = attributesEnum.nextElement();
 
 			printLog("findAttributeByPayloadId",
 					"Validating attribute with name = [" + mediaAttribute.getAttributeName() + "] and value = ["

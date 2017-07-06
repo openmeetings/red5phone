@@ -1,22 +1,22 @@
 /*
  * Copyright (C) 2005 Luca Veltri - University of Parma - Italy
- * 
+ *
  * This file is part of MjSip (http://www.mjsip.org)
- * 
+ *
  * MjSip is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * MjSip is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with MjSip; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Author(s):
  * Luca Veltri (luca.veltri@unipr.it)
  */
@@ -32,17 +32,17 @@ import org.zoolu.tools.Parser;
 /** Class SdpParser extends class Parser for parsing of SDP strings.
  */
 class SdpParser extends Parser
-{  
-   /** Creates a SdpParser based on String <i>s</i> */ 
+{
+   /** Creates a SdpParser based on String <i>s</i> */
    public SdpParser(String s)
    {  super(s);
    }
 
-   /** Creates a SdpParser based on String <i>s</i> and starting from position <i>i</i> */ 
+   /** Creates a SdpParser based on String <i>s</i> and starting from position <i>i</i> */
    public SdpParser(String s, int i)
    {  super(s,i);
    }
-   
+
    /** Returns the SdpField at the current position.
     *  The SDP value terminates with the end of the String or with the first CR or LF char.
     *  <p> Returns null if no SdpField is recognized. */
@@ -58,13 +58,13 @@ class SdpParser extends Parser
       // for DEBUG
       return new SdpField(type,value);
    }*/
-   
+
    /** Returns the first SdpField.
     *  The SDP value terminates with the end of the String or with the first CR or LF char.
     *  @return the first SdpField, or null if no SdpField is recognized. */
    public SdpField parseSdpField()
    {  int begin=index;
-      while (begin>=0 && begin<str.length()-1 && str.charAt(begin+1)!='=') begin=str.indexOf("\n",begin);  
+      while (begin>=0 && begin<str.length()-1 && str.charAt(begin+1)!='=') begin=str.indexOf("\n",begin);
       if (begin<0) return null;
       char type=str.charAt(begin);
       begin+=2;
@@ -80,8 +80,8 @@ class SdpParser extends Parser
       // for DEBUG
       return new SdpField(type,value);
    }
-   
-   
+
+
    /** Returns the first SdpField of type <i>type</i>.
     *  The SDP value terminates with the end of the String or with the first CR or LF char.
     *  @return the first SdpField, or null if no <i>type</i> SdpField is found. */
@@ -96,16 +96,16 @@ class SdpParser extends Parser
          }
          index=begin+1;
       }
-      return parseSdpField(); 
-   }  
-   
+      return parseSdpField();
+   }
+
    /** Returns the first OriginField.
     *  @return the first OriginField, or null if no OriginField is found. */
    public OriginField parseOriginField()
    {  SdpField sf=parseSdpField('o');
       if (sf!=null) return new OriginField(sf); else return null;
    }
-    
+
    /** Returns the first MediaField.
     *  @return the first MediaField, or null if no MediaField is found. */
    public MediaField parseMediaField()
@@ -152,7 +152,7 @@ class SdpParser extends Parser
       index=end;
       SdpParser par=new SdpParser(str.substring(begin,end));
       ConnectionField c=par.parseConnectionField();
-      Vector<AttributeField> av=new Vector<AttributeField>();
+      Vector<AttributeField> av=new Vector<>();
       AttributeField a=par.parseAttributeField();
       while (a!=null)
       {  av.addElement(a);

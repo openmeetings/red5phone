@@ -1,24 +1,24 @@
 package org.red5.codecs;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * A class to store codecs attributes, used to configure them
  */
 public class SIPCodecAttributes {
-	private Hashtable<String, String> codecEncodeAttributes;
-	private Hashtable<String, String> codecDecodeAttributes;
+	private Map<String, String> codecEncodeAttributes;
+	private Map<String, String> codecDecodeAttributes;
 
 	public SIPCodecAttributes(String[] encodeAttributes, String[] decodeAttributes) {
 
-		codecEncodeAttributes = new Hashtable<String, String>();
+		codecEncodeAttributes = new Hashtable<>();
 
 		for (int i = 0; i < encodeAttributes.length; i++) {
 			codecEncodeAttributes.put(encodeAttributes[i], "");
 		}
 
-		codecDecodeAttributes = new Hashtable<String, String>();
+		codecDecodeAttributes = new Hashtable<>();
 
 		for (int i = 0; i < decodeAttributes.length; i++) {
 			codecDecodeAttributes.put(decodeAttributes[i], "");
@@ -99,10 +99,8 @@ public class SIPCodecAttributes {
 			toStringRet += "Encode attributes:\n";
 		}
 
-		for (Enumeration<String> keysEnum = codecEncodeAttributes.keys(); keysEnum.hasMoreElements();) {
-
-			String attributeName = (String) keysEnum.nextElement();
-			toStringRet += "\t" + attributeName + "=" + codecEncodeAttributes.get(attributeName);
+		for (Map.Entry<String, String> entry : codecEncodeAttributes.entrySet()) {
+			toStringRet += "\t" + entry.getKey() + "=" + entry.getValue();
 		}
 
 		if (codecDecodeAttributes.size() > 0) {
@@ -115,10 +113,8 @@ public class SIPCodecAttributes {
 			toStringRet += "Decode attributes:\n";
 		}
 
-		for (Enumeration<String> keysEnum = codecDecodeAttributes.keys(); keysEnum.hasMoreElements();) {
-
-			String attributeName = (String) keysEnum.nextElement();
-			toStringRet += "\t" + attributeName + "=" + codecDecodeAttributes.get(attributeName);
+		for (Map.Entry<String, String> entry : codecDecodeAttributes.entrySet()) {
+			toStringRet += "\t" + entry.getKey() + "=" + entry.getValue();
 		}
 
 		return toStringRet;

@@ -24,6 +24,7 @@
 package org.zoolu.sip.dialog;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +63,7 @@ public class ExtendedInviteDialog extends org.zoolu.sip.dialog.InviteDialog {
 	ExtendedInviteDialogListener dialog_listener;
 
 	/** Acive transactions. */
-	Hashtable<TransactionIdentifier, Transaction> transactions;
+	Map<TransactionIdentifier, Transaction> transactions;
 
 	/** User name. */
 	String username;
@@ -101,7 +102,7 @@ public class ExtendedInviteDialog extends org.zoolu.sip.dialog.InviteDialog {
 	/** Inits the ExtendedInviteDialog. */
 	private void init(ExtendedInviteDialogListener listener) {
 		this.dialog_listener = listener;
-		this.transactions = new Hashtable<TransactionIdentifier, Transaction>();
+		this.transactions = new Hashtable<>();
 		this.username = null;
 		this.realm = null;
 		this.passwd = null;
@@ -140,6 +141,7 @@ public class ExtendedInviteDialog extends org.zoolu.sip.dialog.InviteDialog {
 	}
 
 	/** Responds with <i>resp</i> */
+	@Override
 	public void respond(Message resp) {
 		log.debug("inside respond(resp)");
 		String method = resp.getCSeqHeader().getMethod();
@@ -172,6 +174,7 @@ public class ExtendedInviteDialog extends org.zoolu.sip.dialog.InviteDialog {
 	}
 
 	/** Inherited from class SipProviderListener. */
+	@Override
 	public void onReceivedMessage(SipProvider provider, Message msg) {
 		log.trace("Message received: " + msg.getFirstLine().substring(0, msg.toString().indexOf('\r')));
 		if (msg.isResponse()) {
@@ -207,6 +210,7 @@ public class ExtendedInviteDialog extends org.zoolu.sip.dialog.InviteDialog {
 	 * Inherited from TransactionClientListener. When the TransactionClientListener goes into the "Completed" state,
 	 * receiving a failure response
 	 */
+	@Override
 	public void onTransFailureResponse(TransactionClient tc, Message msg) {
 		log.warn("onTransFailureResponse 1");
 		log.trace("inside onTransFailureResponse(" + tc.getTransactionId() + ",msg)");
@@ -278,6 +282,7 @@ public class ExtendedInviteDialog extends org.zoolu.sip.dialog.InviteDialog {
 	 * Inherited from TransactionClientListener. When an TransactionClientListener goes into the "Terminated" state,
 	 * receiving a 2xx response
 	 */
+	@Override
 	public void onTransSuccessResponse(TransactionClient t, Message msg) {
 		log.trace("inside onTransSuccessResponse(" + t.getTransactionId() + ",msg)");
 		attempts = 0;
@@ -302,6 +307,7 @@ public class ExtendedInviteDialog extends org.zoolu.sip.dialog.InviteDialog {
 	 * Inherited from TransactionClientListener. When the TransactionClient goes into the "Terminated" state, caused by
 	 * transaction timeout
 	 */
+	@Override
 	public void onTransTimeout(TransactionClient t) {
 		log.trace("inside onTransTimeout(" + t.getTransactionId() + ",msg)");
 		String method = t.getTransactionMethod();

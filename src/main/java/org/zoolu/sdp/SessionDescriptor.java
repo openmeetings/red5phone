@@ -1,22 +1,22 @@
 /*
  * Copyright (C) 2005 Luca Veltri - University of Parma - Italy
- * 
+ *
  * This file is part of MjSip (http://www.mjsip.org)
- * 
+ *
  * MjSip is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * MjSip is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with MjSip; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Author(s):
  * Luca Veltri (luca.veltri@unipr.it)
  */
@@ -57,13 +57,13 @@ public class SessionDescriptor
    ConnectionField c;
    /** Time filed. */
    TimeField t;
-   
+
    /** Vector of session attributes (as Vector of SdpFields). */
    Vector<AttributeField> av;
 
    /** Vector of MediaDescriptors. */
    Vector<MediaDescriptor> media;
-      
+
    /*private void init(String owner, String session, String connection, String time)
    {  v=new SdpField('v',"0");
       o=new SdpField('o',owner);
@@ -80,15 +80,15 @@ public class SessionDescriptor
       s=session;
       c=connection;
       t=time;
-      av=new Vector<AttributeField>();
-      media=new Vector<MediaDescriptor>();
+      av=new Vector<>();
+      media=new Vector<>();
    }
 
    /** Creates a new SessionDescriptor.
      * @param sd the SessionDescriptor clone */
    public SessionDescriptor(SessionDescriptor sd)
    {  init(new OriginField(sd.o),new SessionNameField(sd.s),new ConnectionField(sd.c),new TimeField(sd.t));
-      for (int i=0; i<sd.media.size(); i++) media.addElement(new MediaDescriptor((MediaDescriptor)sd.media.elementAt(i)));
+      for (int i=0; i<sd.media.size(); i++) media.addElement(new MediaDescriptor(sd.media.elementAt(i)));
    }
 
    /** Creates a new SessionDescriptor specifing o, s, c, and t fields.
@@ -124,7 +124,7 @@ public class SessionDescriptor
       if (owner==null) owner="user@"+address;
       init(new OriginField(owner,"0","0",address),new SessionNameField("Session SIP/SDP"),new ConnectionField("IP4",address),new TimeField());
    }
-   
+
    /** Creates a default SessionDescriptor.
      * <p> o=user@127.0.0.1
      *     s=Session SIP/SDP
@@ -154,21 +154,21 @@ public class SessionDescriptor
       while (par.hasMore() && (!par.startsWith("a=") && !par.startsWith("m=")))
       {  // skip unknown lines..
          par.goToNextLine();
-      } 
+      }
       // parse session attributes
-      av=new Vector<AttributeField>();   
+      av=new Vector<>();
       while (par.hasMore() && par.startsWith("a="))
       {  AttributeField attribute=par.parseAttributeField();
          av.addElement(attribute);
-      }    
+      }
       // parse media descriptors
-      media=new Vector<MediaDescriptor>();
+      media=new Vector<>();
       MediaDescriptor md;
       while ((md=par.parseMediaDescriptor())!=null)
       {  addMediaDescriptor(md);
       }
-   } 
-   
+   }
+
    /** Sets the origin 'o' field.
      * @param origin the OriginField
      * @return this SessionDescriptor */
@@ -182,8 +182,8 @@ public class SessionDescriptor
    {
       return o;
    }
- 
-   /** Sets the session-name 's' field. 
+
+   /** Sets the session-name 's' field.
      * @param session the SessionNameField
      * @return this SessionDescriptor */
    public SessionDescriptor setSessionName(SessionNameField session)
@@ -221,10 +221,10 @@ public class SessionDescriptor
    public TimeField getTime()
    {  return t;
    }
-  
+
    /** Adds a new attribute for a particular media
      * @param media the MediaField
-     * @param attribute an AttributeField 
+     * @param attribute an AttributeField
      * @return this SessionDescriptor */
    public SessionDescriptor addMedia(MediaField media, AttributeField attribute)
    {  //printlog("DEBUG: media: "+media,5);
@@ -232,7 +232,7 @@ public class SessionDescriptor
       addMediaDescriptor(new MediaDescriptor(media,null,attribute));
       return this;
    }
-   
+
    /** Adds a new media.
      * @param media the MediaField
      * @param attributes Vector of AttributeField
@@ -254,7 +254,7 @@ public class SessionDescriptor
    }
 
    /** Adds a Vector of MediaDescriptors
-     * @param media_descs Vector if MediaDescriptor 
+     * @param media_descs Vector if MediaDescriptor
      * @return this SessionDescriptor */
    public SessionDescriptor addMediaDescriptors(Vector<MediaDescriptor> media_descs)
    {  //media.addAll(media_descs); // not supported by J2ME..
@@ -270,7 +270,7 @@ public class SessionDescriptor
    /** Removes all MediaDescriptors */
    public SessionDescriptor removeMediaDescriptor(String media_type)
    {  for (int i=media.size()-1; i>=0; i--)
-         if (((MediaDescriptor)media.elementAt(i)).getMedia().getMedia().equals(media_type)) media.removeElementAt(i);
+         if (media.elementAt(i).getMedia().getMedia().equals(media_type)) media.removeElementAt(i);
       return this;
    }
 
@@ -280,14 +280,14 @@ public class SessionDescriptor
       media.setSize(0);
       return this;
    }
-   
+
    /** Gets the first MediaDescriptor of a particular media.
      * @param media_type the media type
      * @return the MediaDescriptor */
    public MediaDescriptor getMediaDescriptor(String media_type)
    {  for (int i=0; i<media.size(); i++)
-      {  MediaDescriptor md=(MediaDescriptor)media.elementAt(i);
-         if (md.getMedia().getMedia().equals(media_type)) return md; 
+      {  MediaDescriptor md=media.elementAt(i);
+         if (md.getMedia().getMedia().equals(media_type)) return md;
       }
       return null;
    }
@@ -307,7 +307,7 @@ public class SessionDescriptor
    public SessionDescriptor addAttribute(AttributeField attribute)
    {  av.addElement(new AttributeField(attribute));
       return this;
-   } 
+   }
 
    /** Removes all session attributes. */
    public SessionDescriptor removeAttributes()
@@ -318,29 +318,29 @@ public class SessionDescriptor
    /** Gets a Vector of attribute values.
      * @return a Vector of AttributeField */
    public Vector<AttributeField> getAttributes()
-   {  Vector<AttributeField> v=new Vector<AttributeField>(av.size());
+   {  Vector<AttributeField> v=new Vector<>(av.size());
       for (int i=0; i<av.size(); i++)
          v.add(av.get(i));
       return v;
-   } 
+   }
 
    /** Whether it has a particular attribute
      * @param a_name the attribute name
      * @return true if found, otherwise returns null */
    public boolean hasAttribute(String attribute_name)
    {  for (int i=0; i<av.size(); i++)
-      {  if (((AttributeField)av.elementAt(i)).getAttributeName().equals(attribute_name)) return true;
+      {  if (av.elementAt(i).getAttributeName().equals(attribute_name)) return true;
       }
       return false;
-   } 
-   
+   }
+
    /** Gets the first AttributeField of a particular attribute name.
      * @param attribute_name the attribute name
      * @return the AttributeField, or null if not found */
    public AttributeField getAttribute(String attribute_name)
    {  for (int i=0; i<media.size(); i++)
-      {  AttributeField af=(AttributeField)av.elementAt(i);
-         if (af.getAttributeName().equals(attribute_name)) return af; 
+      {  AttributeField af=av.elementAt(i);
+         if (af.getAttributeName().equals(attribute_name)) return af;
       }
       return null;
    }
@@ -349,17 +349,18 @@ public class SessionDescriptor
      * @param a_name the attribute name
      * @return a Vector of AttributeField */
    public Vector<AttributeField> getAttributes(String attribute_name)
-   {  Vector<AttributeField> v=new Vector<AttributeField>(av.size());
+   {  Vector<AttributeField> v=new Vector<>(av.size());
       for (int i=0; i<av.size(); i++)
       {  AttributeField a=av.get(i);
          if (a.getAttributeName().equals(attribute_name)) v.add(a);
       }
       return v;
-   } 
+   }
 
 
    /** Gets a String rapresentation */
-   public String toString()
+   @Override
+public String toString()
    {  //String str=v.toString()+o.toString()+s.toString();
       StringBuffer sb=new StringBuffer();
       if (v!=null) sb.append(v.toString());
@@ -367,9 +368,9 @@ public class SessionDescriptor
       if (s!=null) sb.append(s.toString());
       if (c!=null) sb.append(c.toString());
       if (t!=null) sb.append(t.toString());
-      for (int i=0; i<av.size(); i++) sb.append(((AttributeField)av.elementAt(i)).toString());
-      for (int i=0; i<media.size(); i++) sb.append(((MediaDescriptor)media.elementAt(i)).toString());
+      for (int i=0; i<av.size(); i++) sb.append(av.elementAt(i).toString());
+      for (int i=0; i<media.size(); i++) sb.append(media.elementAt(i).toString());
       return sb.toString();
    }
-   
+
 }

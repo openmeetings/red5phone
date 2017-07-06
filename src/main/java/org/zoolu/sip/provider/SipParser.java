@@ -1,22 +1,22 @@
 /*
  * Copyright (C) 2005 Luca Veltri - University of Parma - Italy
- * 
+ *
  * This file is part of MjSip (http://www.mjsip.org)
- * 
+ *
  * MjSip is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * MjSip is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with MjSip; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Author(s):
  * Luca Veltri (luca.veltri@unipr.it)
  */
@@ -42,35 +42,35 @@ import org.zoolu.tools.Parser;
 /** Class SipParser extends class Parser for parsing of SIP messages.
  */
 public class SipParser extends Parser
-{  
-   /** Creates a new SipParser based on String <i>s</i> */ 
+{
+   /** Creates a new SipParser based on String <i>s</i> */
    public SipParser(String s)
    {  super(s);
    }
 
-   /** Creates a new SipParser based on String <i>s</i> and starting from position <i>i</i> */ 
+   /** Creates a new SipParser based on String <i>s</i> and starting from position <i>i</i> */
    public SipParser(String s, int i)
    {  super(s,i);
    }
-   
-   /** Creates a new SipParser based on StringBuffer <i>sb</i> */ 
+
+   /** Creates a new SipParser based on StringBuffer <i>sb</i> */
    public SipParser(StringBuffer sb)
    {  super(sb);
    }
 
-   /** Creates a new SipParser based on StringBuffer <i>sb</i> and starting from position <i>i</i> */ 
+   /** Creates a new SipParser based on StringBuffer <i>sb</i> and starting from position <i>i</i> */
    public SipParser(StringBuffer sb, int i)
    {  super(sb,i);
    }
 
-   /** Creates a new SipParser starting from the current position. */ 
+   /** Creates a new SipParser starting from the current position. */
    public SipParser(Parser p)
    {  super(p.getWholeString(),p.getPos());
    }
 
    /** MARK char[], composed by: '-' , '_' , '.' , '!' , '~' , '*' , '\'' , '|' */
    public static char[] MARK={'-','_','.','!','~','*','\'','|'};
-   
+
    /** SEPARATOR char[], composed by: ' ','\t','\r','\n','(',')','<','>',',',';','\\','"','/','[',']','?','=','{','}' */
    public static char[] SEPARATOR={' ','\t','\r','\n','(',')','<','>',',',';','\\','"','/','[',']','?','=','{','}'};
 
@@ -79,25 +79,25 @@ public class SipParser extends Parser
    {  //return (c=='-' || c=='_' || c=='.' || c=='!' || c=='~' || c=='*' || c=='\'' || c=='|');
       return isAnyOf(MARK,c);
    }
-   
+
    /** Unreserved char; that is an alphanum or a mark*/
    public static boolean isUnreserved(char c)
    {  return (isAlphanum(c) || isMark(c));
    }
-   
+
    /** Separator; differently form RFC2543, do not include '@' and ':', while include '\r' and '\n'*/
    public static boolean isSeparator(char c)
    {  //return (isSpace(c) || isCRLF(c) || c=='(' || c==')' || c=='<' || c=='>' || c==',' || c==';' || c=='\\' || c=='"' || c=='/' || c=='[' || c==']' || c=='?' || c=='=' || c=='{' || c=='}');
       return isAnyOf(SEPARATOR,c);
    }
-   
+
    /** Returns the first occurence of a separator or the end of the string*/
    public int indexOfSeparator()
    {  int begin=index;
       while(begin<str.length() && !isSeparator(str.charAt(begin))) begin++;
       return begin;
-   }  
-   
+   }
+
    /** Index of the end of the header (EOH) */
    public int indexOfEOH()
    {  SipParser par=new SipParser(str,index);
@@ -116,12 +116,12 @@ public class SipParser extends Parser
       par.goToNextHeader();
       return par.getPos();
    }
-   
+
    /** Returns the index of the begin of the first occurence of the Header <i>hname</i> */
    public int indexOfHeader(String hname)
    {  if (str.startsWith(hname,index)) return index;
       String[] target={'\n'+hname, '\r'+hname};
-      SipParser par=new SipParser(str,index);   
+      SipParser par=new SipParser(str,index);
       //par.goTo(target);
       par.goToIgnoreCase(target);
       if (par.hasMore()) par.skipChar();
@@ -134,7 +134,7 @@ public class SipParser extends Parser
       goToNextLine();
       return this;
    }
-   
+
    /** Go to the end of the last header.
      * The final empty line delimiter is not considered as header */
    public SipParser goToEndOfLastHeader()
@@ -147,7 +147,7 @@ public class SipParser extends Parser
       }
       return this;
    }
-   
+
    /** Go to the begin (first char of) Message Body */
    public SipParser goToBody()
    {  goToEndOfLastHeader();
@@ -155,9 +155,9 @@ public class SipParser extends Parser
       goTo('\n').skipChar();
       return this;
    }
-   
+
    /** Returns the first header and goes to the next line. */
-   public Header getHeader()    
+   public Header getHeader()
    {  if (!hasMore()) return null;
       int begin=getPos();
       int end=indexOfEOH();
@@ -167,11 +167,11 @@ public class SipParser extends Parser
       if (colon<0) return null;
       String hname=header_str.substring(0,colon).trim();
       String hvalue=header_str.substring(++colon).trim();
-      return new Header(hname,hvalue);       
+      return new Header(hname,hvalue);
    }
 
    /** Returns the first occurence of Header <i>hname</i>. */
-   public Header getHeader(String hname)    
+   public Header getHeader(String hname)
    {  SipParser par=new SipParser(str,indexOfHeader(hname));
       if (!par.hasMore()) return null;
       par.skipN(hname.length());
@@ -182,12 +182,12 @@ public class SipParser extends Parser
       index=end;
       return new Header(hname,hvalue);
    }
-   
+
 
    //************************ first-line ************************
 
    /** Returns the request-line. */
-   public RequestLine getRequestLine()    
+   public RequestLine getRequestLine()
    {  String method=getString();
       skipWSP();
       int begin=getPos();
@@ -199,8 +199,8 @@ public class SipParser extends Parser
 
    /** Returns the status-line or null (if it doesn't start with "SIP/"). */
    public StatusLine getStatusLine()
-   {  String version=getString(4);     
-      if (!version.equalsIgnoreCase("SIP/")) {  index=str.length(); return null;  } 
+   {  String version=getString(4);
+      if (!version.equalsIgnoreCase("SIP/")) {  index=str.length(); return null;  }
       skipString().skipWSP(); // "SIP/2.0 "
       int code=getInt();
       int begin=getPos();
@@ -213,7 +213,7 @@ public class SipParser extends Parser
 
    //*************************** URIs ***************************
 
-   public static char[] uri_separators={' ','>','\n','\r'};   
+   public static char[] uri_separators={' ','>','\n','\r'};
 
    /** Returns the first URL.
      * If no URL is found, it returns <b>null</b> */
@@ -227,14 +227,14 @@ public class SipParser extends Parser
       if (hasMore()) skipChar();
       return new SipURL(url);
    }
-/* 
+/*
    public static SipURL parseSipURL(String s)
    {  SipParser par=new SipParser(s);
       return par.parseSipURL();
    }
 */
    /** Returns the first NameAddress in the string <i>str</i>.
-     * If no NameAddress is found, it returns <b>null</b>.  
+     * If no NameAddress is found, it returns <b>null</b>.
      * A NameAddress is a string of the form of:
      * <BR><BLOCKQUOTE><PRE>&nbsp&nbsp "user's name" &lt;sip url&gt; </PRE></BLOCKQUOTE> */
    public NameAddress getNameAddress()
@@ -242,7 +242,7 @@ public class SipParser extends Parser
       SipURL url=null;
       int begin=getPos();
       int begin_url=indexOf("<sip:");
-      if (begin_url<0) 
+      if (begin_url<0)
       {  url=getSipURL();
          //if (url==null) return null;
          if (url==null)
@@ -255,11 +255,11 @@ public class SipParser extends Parser
       {  text=getString(begin_url-begin).trim();
          url=getSipURL();
          if (text.length()>0 && text.charAt(0)=='\"' && text.charAt(text.length()-1)=='\"')
-         {  text=text.substring(1,text.length()-1); 
+         {  text=text.substring(1,text.length()-1);
             // now you should eliminate escape chars ('\')..
          }
          if (text.length()==0) return new NameAddress(url);
-         else return new NameAddress(text,url); 
+         else return new NameAddress(text,url);
       }
    }
 
@@ -308,21 +308,21 @@ public class SipParser extends Parser
     	  index=str.length();
     	  return null;
       }
-   }   
-   
+   }
+
 
    //*************************** PARAMETERS ***************************
 
-   public static char[] param_separators={ ' ', '=', ';', ',', '\n', '\r' };   
+   public static char[] param_separators={ ' ', '=', ';', ',', '\n', '\r' };
 
    /** Gets the value of specified parameter.
      * @returns the parameter value or null if parameter does not exist or doesn't have a value (i.e. in case of flag parameter). */
-   public String getParameter(String name) 
+   public String getParameter(String name)
    {  while (hasMore())
       {  if (getWord(param_separators).equals(name))
          {  skipWSP();
             if (nextChar()=='=')
-            {  skipChar(); 
+            {  skipChar();
                return getWordSkippingQuoted(param_separators);
             }
             else return null;
@@ -332,21 +332,21 @@ public class SipParser extends Parser
       }
       return null;
    }
-      
+
    /** Gets a String Vector of parameter names.
      * <BR> Returns null if no parameter is present */
-   public Vector<String> getParameters() 
+   public Vector<String> getParameters()
    {  String name;
-      Vector<String> params=new Vector<String>();
+      Vector<String> params=new Vector<>();
       while (hasMore())
       {  name=getWord(param_separators);
          if (name.length()>0) params.addElement(new String(name));
          goToSkippingQuoted(';');
          if (hasMore()) skipChar(); // skip ';'
       }
-      return params;       
+      return params;
    }
-   
+
    /** Whether there is the specified parameter */
    public boolean hasParameter(String name)
    {  while (hasMore())
@@ -356,20 +356,20 @@ public class SipParser extends Parser
       }
       return false;
    }
-   
+
 
    //************************ MULTIPLE HEADERS ************************
-   
+
    /** Finds the first comma-separator. Return -1 if no comma is found. */
    public int indexOfCommaHeaderSeparator()
    {  boolean inside_quoted_string=false;
       for (int i=index; i<str.length(); i++)
-      {  char c=str.charAt(i); 
+      {  char c=str.charAt(i);
          if (c=='"') inside_quoted_string=!inside_quoted_string;
          if (!inside_quoted_string && c==',') return i;
       }
       return -1;
-   }   
+   }
 
    /** Goes to the first comma-separator. Goes to the end of string if no comma is found. */
    public SipParser goToCommaHeaderSeparator()
@@ -377,11 +377,11 @@ public class SipParser extends Parser
       if (comma<0) index=str.length();
       else index=comma;
       return this;
-   }   
+   }
 
 
    //************************** SIP MESSAGE ***************************
-   
+
    /** Gets the first SIP message (all bytes until the first end of SIP message),
      * if a SIP message delimiter is found.
      * <p>The message begins from the first non-CRLF char. */
@@ -404,12 +404,12 @@ public class SipParser extends Parser
       skipChar().goTo('\n'); // skip the LF of last header and go the the new line
       if (!hasMore()) return null;
       int body_pos=skipChar().getPos(); // skip the LF of the empty line and go the the body
-      
+
       int end=body_pos+body_len;
       if (end<=str.length())
       {  index=end;
          return new Message(str.substring(begin,end));
       }
       else return null;
-   }  
+   }
 }

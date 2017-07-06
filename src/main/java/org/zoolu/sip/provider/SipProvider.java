@@ -310,9 +310,9 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 		rport = SipStack.use_rport;
 		force_rport = SipStack.force_rport;
 
-		exception_listeners = new HashSet<SipProviderExceptionListener>();
-		listeners = new ConcurrentHashMap<Identifier, Set<SipProviderListener>>();
-		connections = new Hashtable<ConnectionIdentifier, ConnectedTransport>();
+		exception_listeners = new HashSet<>();
+		listeners = new ConcurrentHashMap<>();
+		connections = new Hashtable<>();
 	}
 
 	/** Starts the transport services. */
@@ -371,11 +371,12 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	public void halt() {
 		log.debug("halt: SipProvider is going down");
 		stopTrasport();
-		listeners = new ConcurrentHashMap<Identifier, Set<SipProviderListener>>();
-		exception_listeners = new HashSet<SipProviderExceptionListener>();
+		listeners = new ConcurrentHashMap<>();
+		exception_listeners = new HashSet<>();
 	}
 
 	/** Parses a single line (loaded from the config file) */
+	@Override
 	public void parseLine(String line) {
 		String attribute;
 		Parser par;
@@ -575,7 +576,7 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	 * to the specific listener (if present). <br/>
 	 * Note that more that one SipProviderListener can be active in promisque mode at the same time;in that case the
 	 * same message is passed to all PROMISQUE SipProviderListeners.
-	 * 
+	 *
 	 * @param listener
 	 *            is the SipProviderListener.
 	 * @return It returns <i>true</i> if the SipProviderListener is added, <i>false</i> if the listener_ID is already in
@@ -588,7 +589,7 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	/**
 	 * Adds a new listener to the SipProvider for caputering ANY message. It is the same as using method
 	 * addSipProviderListener(SipProvider.ANY,listener).
-	 * 
+	 *
 	 * @param listener
 	 *            is the SipProviderListener.
 	 * @return It returns <i>true</i> if the SipProviderListener is added, <i>false</i> if the listener_ID is already in
@@ -600,7 +601,7 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 
 	/**
 	 * Adds a new listener to the SipProvider.
-	 * 
+	 *
 	 * @param id
 	 *            is the unique identifier for the messages which the listener as to be associated to. It is used as
 	 *            key. It can identify a method, a transaction, or a dialog. Use SipProvider.ANY to capture all
@@ -621,7 +622,7 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 		} else {
 			Set<SipProviderListener> s = listeners.get(key);
 			if (s == null) {
-				listeners.put(key, s = new ConcurrentHashSet<SipProviderListener>());
+				listeners.put(key, s = new ConcurrentHashSet<>());
 			}
 			ret = s.add(listener);
 		}
@@ -638,7 +639,7 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 
 	/**
 	 * Removes a SipProviderListener.
-	 * 
+	 *
 	 * @param id
 	 *            is the unique identifier used to select the listened messages.
 	 * @return It returns <i>true</i> if the SipProviderListener is removed, <i>false</i> if the identifier is missed.
@@ -702,7 +703,7 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	/**
 	 * Sets the SipProviderExceptionListener. The SipProviderExceptionListener is the listener for all exceptions thrown
 	 * by the SipProviders.
-	 * 
+	 *
 	 * @param e_listener
 	 *            is the SipProviderExceptionListener.
 	 * @return It returns <i>true</i> if the SipProviderListener has been correctly set, <i>false</i> if the
@@ -721,7 +722,7 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 
 	/**
 	 * Removes a SipProviderExceptionListener.
-	 * 
+	 *
 	 * @param e_listener
 	 *            is the SipProviderExceptionListener.
 	 * @return It returns <i>true</i> if the SipProviderExceptionListener has been correctly removed, <i>false</i> if
@@ -748,7 +749,7 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	 * - if an existing connection is found matching the destination end point (socket), such connection is used,
 	 * otherwise <br>
 	 * - a new connection is established
-	 * 
+	 *
 	 * @return It returns a Connection in case of connection-oriented delivery (e.g. TCP) or null in case of
 	 *         connection-less delivery (e.g. UDP)
 	 */
@@ -794,7 +795,7 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 			} else {
 				log.debug("active connection found matching " + conn_id);
 			}
-			ConnectedTransport conn = (ConnectedTransport) connections.get(conn_id);
+			ConnectedTransport conn = connections.get(conn_id);
 			if (conn != null) {
 				log.debug("sending data through conn " + conn);
 				try {
@@ -836,7 +837,7 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	 * - if an already established connection is found matching the destination end point (socket), such connection is
 	 * used, otherwise <br>
 	 * - a new connection is established
-	 * 
+	 *
 	 * @return Returns a ConnectionIdentifier in case of connection-oriented delivery (e.g. TCP) or null in case of
 	 *         connection-less delivery (e.g. UDP)
 	 */
@@ -913,7 +914,7 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 
 		if (conn_id != null && connections.containsKey(conn_id)) { // connection exists
 			log.debug("active connection found matching " + conn_id);
-			ConnectedTransport conn = (ConnectedTransport) connections.get(conn_id);
+			ConnectedTransport conn = connections.get(conn_id);
 			try {
 				conn.sendMessage(msg);
 				// logs
@@ -1141,7 +1142,7 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 		if (connections.containsKey(conn_id)) { // remove the previous connection
 			log.warn("trying to add the already established connection " + conn_id);
 			log.warn("connection " + conn_id + " will be replaced");
-			ConnectedTransport old_conn = (ConnectedTransport) connections.get(conn_id);
+			ConnectedTransport old_conn = connections.get(conn_id);
 			old_conn.halt();
 			connections.remove(conn_id);
 		} else if (connections.size() >= nmax_connections) { // remove the older unused connection
@@ -1158,19 +1159,19 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 		}
 		connections.put(conn_id, conn);
 		conn_id = new ConnectionIdentifier(conn);
-		conn = (ConnectedTransport) connections.get(conn_id);
+		conn = connections.get(conn_id);
 		// DEBUG log:
 		log.trace("active connenctions:");
 		for (Enumeration<ConnectionIdentifier> e = connections.keys(); e.hasMoreElements();) {
 			ConnectionIdentifier id = e.nextElement();
-			log.trace("conn-id=" + id + ": " + ((ConnectedTransport) connections.get(id)).toString());
+			log.trace("conn-id=" + id + ": " + connections.get(id).toString());
 		}
 	}
 
 	/** Removes a Connection */
 	private void removeConnection(ConnectionIdentifier conn_id) {
 		if (connections.containsKey(conn_id)) {
-			ConnectedTransport conn = (ConnectedTransport) connections.get(conn_id);
+			ConnectedTransport conn = connections.get(conn_id);
 			conn.halt();
 			connections.remove(conn_id);
 			// DEBUG log:
@@ -1185,11 +1186,13 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	// ************************* Callback methods *************************
 
 	/** When a new SIP message is received. */
+	@Override
 	public void onReceivedMessage(Transport transport, Message msg) {
 		processReceivedMessage(msg);
 	}
 
 	/** When Transport terminates. */
+	@Override
 	public void onTransportTerminated(Transport transport, Exception error) {
 		log.debug("transport " + transport + " terminated");
 		if (transport.getProtocol().equals(PROTO_TCP)) {
@@ -1201,6 +1204,7 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	}
 
 	/** When a new incoming Connection is established */
+	@Override
 	public void onIncomingConnection(TcpServer tcp_server, TcpSocket socket) {
 		log.debug("incoming connection from " + socket.getAddress() + ":" + socket.getPort());
 		ConnectedTransport conn = new TcpTransport(socket, this);
@@ -1209,6 +1213,7 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	}
 
 	/** When TcpServer terminates. */
+	@Override
 	public void onServerTerminated(TcpServer tcp_server, Exception error) {
 		log.debug("tcp server " + tcp_server + " terminated");
 	}

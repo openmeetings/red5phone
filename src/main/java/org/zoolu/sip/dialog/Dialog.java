@@ -1,22 +1,22 @@
 /*
  * Copyright (C) 2005 Luca Veltri - University of Parma - Italy
- * 
+ *
  * This file is part of MjSip (http://www.mjsip.org)
- * 
+ *
  * MjSip is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * MjSip is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with MjSip; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Author(s):
  * Luca Veltri (luca.veltri@unipr.it)
  */
@@ -93,6 +93,7 @@ public abstract class Dialog extends DialogInfo implements SipProviderListener {
 	abstract public boolean isTerminated();
 
 	/** When a new Message is received by the SipProvider. */
+	@Override
 	abstract public void onReceivedMessage(SipProvider provider, Message message);
 
 	// **************************** Costructors ***************************
@@ -144,7 +145,7 @@ public abstract class Dialog extends DialogInfo implements SipProviderListener {
 
 	/**
 	 * Updates empty attributes (tags, route set) and mutable attributes (cseqs, contacts), based on a new message.
-	 * 
+	 *
 	 * @param side
 	 *            indicates whether the Dialog is acting as transaction client or server for the current message (use
 	 *            constant values Dialog.UAC or Dialog.UAS)
@@ -214,26 +215,26 @@ public abstract class Dialog extends DialogInfo implements SipProviderListener {
 			if (side == UAC && msg.isResponse() && msg.hasRecordRouteHeader()) {
 				Vector<Header> rr = msg.getRecordRoutes().getHeaders();
 				int size = rr.size();
-				route = new Vector<String>(size);
+				route = new Vector<>(size);
 				for (int i = 0; i < size; i++)
-					route.insertElementAt((new RecordRouteHeader((Header) rr.elementAt(size - 1 - i))).getNameAddress()
+					route.insertElementAt((new RecordRouteHeader(rr.elementAt(size - 1 - i))).getNameAddress()
 							.toString(), i);
 			}
 		} else {
 			if (msg.isRequest() && msg.hasRouteHeader() && route == null) {
 				Vector<String> reverse_route = msg.getRoutes().getValues();
 				int size = reverse_route.size();
-				route = new Vector<String>(size);
+				route = new Vector<>(size);
 				for (int i = 0; i < size; i++)
 					route.insertElementAt(reverse_route.elementAt(size - 1 - i), i);
 			}
 			if (msg.isRequest() && msg.hasRecordRouteHeader()) {
 				Vector<Header> rr = msg.getRecordRoutes().getHeaders();
 				int size = rr.size();
-				route = new Vector<String>(size);
+				route = new Vector<>(size);
 				for (int i = 0; i < size; i++)
 					route.insertElementAt(
-							(new RecordRouteHeader((Header) rr.elementAt(i))).getNameAddress().toString(), i);
+							(new RecordRouteHeader(rr.elementAt(i))).getNameAddress().toString(), i);
 			}
 		}
 

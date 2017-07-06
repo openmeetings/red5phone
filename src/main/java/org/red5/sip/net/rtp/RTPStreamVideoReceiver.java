@@ -4,9 +4,6 @@ import java.net.DatagramSocket;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import local.net.RtpPacket;
-import local.net.RtpSocket;
-
 import org.red5.codecs.SIPCodec;
 import org.red5.sip.app.IMediaReceiver;
 import org.red5.sip.app.SIPTransport;
@@ -14,6 +11,9 @@ import org.red5.sip.app.SIPVideoConverter;
 import org.red5.sip.app.SIPVideoConverter.RTMPPacketInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import local.net.RtpPacket;
+import local.net.RtpSocket;
 
 public class RTPStreamVideoReceiver extends Thread {
 	protected static Logger log = LoggerFactory.getLogger(RTPStreamVideoReceiver.class);
@@ -66,7 +66,7 @@ public class RTPStreamVideoReceiver extends Thread {
 
 		public ConverterThread(SIPTransport sipTransport) {
 			log.debug("... ConverterThread constructor !!!");
-			packetQueue = new ConcurrentLinkedQueue<RtpPacket>();
+			packetQueue = new ConcurrentLinkedQueue<>();
 			converter = new SIPVideoConverter(sipTransport);
 		}
 

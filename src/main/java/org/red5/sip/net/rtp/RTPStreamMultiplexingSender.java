@@ -7,9 +7,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Iterator;
 
-import local.net.RtpPacket;
-import local.net.RtpSocket;
-
 import org.apache.mina.util.ConcurrentHashSet;
 import org.red5.codecs.SIPCodec;
 import org.red5.codecs.asao.ByteStream;
@@ -22,6 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.laszlosystems.libresample4j.Resampler;
+
+import local.net.RtpPacket;
+import local.net.RtpSocket;
 
 public class RTPStreamMultiplexingSender implements IMediaSender, Runnable {
 	protected static Logger log = LoggerFactory.getLogger(RTPStreamMultiplexingSender.class);
@@ -85,7 +85,7 @@ public class RTPStreamMultiplexingSender implements IMediaSender, Runnable {
 
 	private Thread sendThread = new Thread(this, "RTPStreamMultiplexingSender sendThread");
 
-	ConcurrentHashSet<WeakReference<RTPStreamForMultiplex>> streamSet = new ConcurrentHashSet<WeakReference<RTPStreamForMultiplex>>();
+	ConcurrentHashSet<WeakReference<RTPStreamForMultiplex>> streamSet = new ConcurrentHashSet<>();
 	// Set<RTPStreamForMultiplex> streamSet = Collections.synchronizedSet(new
 	// WeakHashSet<RTPStreamForMultiplex>());
 
@@ -107,7 +107,7 @@ public class RTPStreamMultiplexingSender implements IMediaSender, Runnable {
 
 	/**
 	 * Constructs a RtpStreamSender.
-	 * 
+	 *
 	 * @param mediaReceiver
 	 *            the RTMP stream source
 	 * @param do_sync
@@ -129,7 +129,7 @@ public class RTPStreamMultiplexingSender implements IMediaSender, Runnable {
 
 	/**
 	 * Constructs a RtpStreamSender.
-	 * 
+	 *
 	 * @param mediaReceiver
 	 *            the RTMP stream source
 	 * @param do_sync
@@ -173,6 +173,7 @@ public class RTPStreamMultiplexingSender implements IMediaSender, Runnable {
 		}
 	}
 
+	@Override
 	public void start() {
 		packetBuffer = new byte[sipCodec.getOutgoingEncodedFrameSize() + RTP_HEADER_SIZE];
 		rtpPacket = new RtpPacket(packetBuffer, 0);
@@ -191,7 +192,7 @@ public class RTPStreamMultiplexingSender implements IMediaSender, Runnable {
 	@Override
 	public IMediaStream createStream(Number streamId) {
 		RTPStreamForMultiplex stream = new RTPStreamForMultiplex(streamId);
-		streamSet.add(new WeakReference<RTPStreamForMultiplex>(stream));
+		streamSet.add(new WeakReference<>(stream));
 		return stream;
 	}
 
@@ -227,6 +228,7 @@ public class RTPStreamMultiplexingSender implements IMediaSender, Runnable {
 		}
 	}
 
+	@Override
 	public void run() {
 		if (!hasInitilializedBuffers) {
 			multiplexedBuffer = new float[NELLYMOSER_DECODED_PACKET_SIZE];
@@ -388,6 +390,7 @@ public class RTPStreamMultiplexingSender implements IMediaSender, Runnable {
 		return finalCopySize;
 	}
 
+	@Override
 	public void halt() {
 
 		DatagramSocket socket = rtpSocket.getDatagramSocket();

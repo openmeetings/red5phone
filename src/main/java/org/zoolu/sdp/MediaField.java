@@ -1,22 +1,22 @@
 /*
  * Copyright (C) 2005 Luca Veltri - University of Parma - Italy
- * 
+ *
  * This file is part of MjSip (http://www.mjsip.org)
- * 
+ *
  * MjSip is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * MjSip is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with MjSip; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Author(s):
  * Luca Veltri (luca.veltri@unipr.it)
  */
@@ -36,7 +36,7 @@ import org.zoolu.tools.Parser;
   * </PRE></BLOCKQUOTE>
   */
 public class MediaField extends SdpField
-{  
+{
    /** Creates a new MediaField. */
    public MediaField(String media_field)
    {  super('m',media_field);
@@ -64,32 +64,32 @@ public class MediaField extends SdpField
    public MediaField(SdpField sf)
    {  super(sf);
    }
-         
+
    /** Gets the media type. */
    public String getMedia()
    {  return new Parser(value).getString();
-   }  
+   }
 
    /** Gets the media port. */
    public int getPort()
    {  String port=(new Parser(value)).skipString().getString();
       int i=port.indexOf('/');
       if (i<0) return Integer.parseInt(port); else return Integer.parseInt(port.substring(0,i));
-   }  
+   }
 
    /** Gets the transport protocol. */
    public String getTransport()
    {  return (new Parser(value)).skipString().skipString().getString();
-   }  
+   }
 
    /** Gets the media formats. */
    public String getFormats()
    {  return (new Parser(value)).skipString().skipString().skipString().skipWSP().getRemainingString();
-   }  
+   }
 
    /** Gets the media formats as a Vector of String. */
    public Vector<String> getFormatList()
-   {  Vector<String> formatlist=new Vector<String>();
+   {  Vector<String> formatlist=new Vector<>();
       Parser par=new Parser(value);
       par.skipString().skipString().skipString();
       while (par.hasMore())
@@ -97,6 +97,6 @@ public class MediaField extends SdpField
          if (fmt!=null && fmt.length()>0) formatlist.addElement(fmt);
       }
       return formatlist;
-   }  
+   }
 
 }

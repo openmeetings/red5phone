@@ -27,23 +27,25 @@ public class Application implements Daemon {
 	private Properties props = null;
 	private Map<Long, SIPTransport> transportMap = new HashMap<>();
 	private RTMPControlClient rtmpControlClient;
+	private String host;
+	private String context;
+	private String uid;
 
-	private SIPTransport createSIPTransport(Properties prop, long room_id) {
-		log.info("Creating SIP trasport for room: " + room_id);
-		RTPStreamSender.useASAO = prop.getProperty("red5.codec", "asao").equals("asao");
-		RTMPRoomClient roomClient = new RTMPRoomClient(prop.getProperty("red5.host"), prop.getProperty("om.context",
-				"openmeetings"), room_id);
+	private SIPTransport createSIPTransport(Properties prop, long roomId) {
+		log.info("Creating SIP trasport for room: " + roomId);
+		RTPStreamSender.useASAO = "asao".equals(prop.getProperty("red5.codec"));
+		RTMPRoomClient roomClient = new RTMPRoomClient(host, context, uid, roomId);
 
 		SIPTransport sipTransport = new SIPTransport(roomClient, sipPort++, soundPort++, videoPort++) {
-			public void onUaRegistrationSuccess(SIPRegisterAgent ra, NameAddress target, NameAddress contact,
-					String result) {
+			@Override
+			public void onUaRegistrationSuccess(SIPRegisterAgent ra, NameAddress target, NameAddress contact, String result) {
 				log.info("Registered successfully");
 				this.roomClient.setSipNumberListener(this);
 				this.roomClient.start();
 			}
 
-			public void onUaRegistrationFailure(SIPRegisterAgent ra, NameAddress target, NameAddress contact,
-					String result) {
+			@Override
+			public void onUaRegistrationFailure(SIPRegisterAgent ra, NameAddress target, NameAddress contact, String result) {
 				log.info("Register failure");
 				try {
 					Thread.sleep(3000);
@@ -69,6 +71,10 @@ public class Application implements Daemon {
 		}
 		props = PropertiesUtils.load(settings);
 		try {
+			host = props.getProperty("red5.host");
+			context = props.getProperty("om.context", "openmeetings");
+			uid = props.getProperty("uid");
+
 			RTPStreamMultiplexingSender.sampling = RTPStreamMultiplexingSender.SAMPLE_RATE.findByShortName(Integer
 					.parseInt(props.getProperty("red5.codec.rate", "22")));
 		} catch (NumberFormatException e) {
@@ -77,13 +83,15 @@ public class Application implements Daemon {
 
 	}
 
+	@Override
 	public void init(DaemonContext daemonContext) throws Exception {
 		init(daemonContext.getArguments());
 	}
 
+	@Override
 	public void start() throws Exception {
 		String roomsStr = props.getProperty("rooms", null);
-		if (props.getProperty("rooms.forceStart", "no").equals("yes") && roomsStr != null) {
+		if ("yes".equals(props.getProperty("rooms.forceStart")) && roomsStr != null) {
 			String[] rooms = roomsStr.split(",");
 			for (String room : rooms) {
 				try {
@@ -94,8 +102,7 @@ public class Application implements Daemon {
 				}
 			}
 		} else {
-			this.rtmpControlClient = new RTMPControlClient(props.getProperty("red5.host"), props.getProperty(
-					"om.context", "openmeetings")) {
+			this.rtmpControlClient = new RTMPControlClient(host, context) {
 				@Override
 				protected void startRoomClient(long roomId) {
 					transportMap.put(roomId, createSIPTransport(props, roomId));
@@ -113,6 +120,7 @@ public class Application implements Daemon {
 		}
 	}
 
+	@Override
 	public void stop() throws Exception {
 		if (this.rtmpControlClient != null) {
 			this.rtmpControlClient.stop();
@@ -123,7 +131,7 @@ public class Application implements Daemon {
 		transportMap.clear();
 	}
 
+	@Override
 	public void destroy() {
-
 	}
 }

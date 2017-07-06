@@ -1,22 +1,22 @@
 /*
  * Copyright (C) 2005 Luca Veltri - University of Parma - Italy
- * 
+ *
  * This file is part of MjSip (http://www.mjsip.org)
- * 
+ *
  * MjSip is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * MjSip is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with MjSip; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Author(s):
  * Luca Veltri (luca.veltri@unipr.it)
  */
@@ -45,12 +45,12 @@ import org.slf4j.LoggerFactory;
 public class Parser
 {
 	protected static Logger log = LoggerFactory.getLogger(Parser.class);
-   
+
    /** The string that is being parsed. */
    protected String str;
    /** The the current pointer to the next char within the string. */
    protected int index;
-   
+
    /** Creates the Parser from the String <i>s</i> and point to the beginning of the string.*/
    public Parser(String s)
    {  if (s==null) throw (new RuntimeException("Tried to costruct a new Parser with a null String"));
@@ -75,7 +75,7 @@ public class Parser
       str=sb.toString();
       index=i;
    }
-   
+
    /** Gets the current index position. */
    public int getPos() { return index; }
 
@@ -84,28 +84,28 @@ public class Parser
 
    /** Gets the rest of the (unparsed) string. */
    public String getRemainingString() { return str.substring(index); }
-   
+
    /** Returns a new the Parser of <i>len</i> chars statirng from the current position. */
-   public Parser subParser(int len) {  return new Parser(str.substring(index,index+len));  }   
+   public Parser subParser(int len) {  return new Parser(str.substring(index,index+len));  }
 
    /** Length of unparsed string. */
    public int length() { return (str.length()-index); }
 
    /** Whether there are more chars to parse. */
    public boolean hasMore() { return length()>0; }
-   
+
    /** Gets the next char and go over */
-   public char getChar() { return str.charAt(index++); }   
+   public char getChar() { return str.charAt(index++); }
 
    /** Gets the char at distance <i>n</i> WITHOUT going over */
-   public char charAt(int n) { return str.charAt(index+n); }   
+   public char charAt(int n) { return str.charAt(index+n); }
 
    /** Gets the next char WITHOUT going over */
-   public char nextChar() { return charAt(0); }   
+   public char nextChar() { return charAt(0); }
 
    /** Goes to position <i>i</i> */
    public Parser setPos(int i) { index= i; return this; }
-   
+
    /** Goes to the next occurence of <i>char c</i> */
    public Parser goTo(char c) { index=str.indexOf(c,index); if (index<0) index=str.length(); return this; }
 
@@ -128,10 +128,10 @@ public class Parser
    public Parser goToNextLine()
    {  while (index<str.length() && !isCRLF(str.charAt(index))) index++;
       // skip the end of the line (i.e. '\r' OR '\n' OR '\r\n')
-      if (index<str.length()) { if (str.startsWith("\r\n",index)) index+=2; else index++; }   
+      if (index<str.length()) { if (str.startsWith("\r\n",index)) index+=2; else index++; }
       return this;
    }
-   
+
    /** Characters space (SP) and tab (HT). */
    public static char[] WSP={' ','\t'};
    /** The same as WSP (for legacy) */
@@ -140,7 +140,7 @@ public class Parser
    public static char[] CRLF={'\r','\n'};
    /** Characters white-space, tab, CR, and LF. */
    public static char[] WSPCRLF={' ','\t','\r','\n'};
-   
+
    /** True if char <i>ch</i> is any char of array <i>ca</i> */
    public static boolean isAnyOf(char[] ca, char ch)
    {  boolean found=false;
@@ -160,7 +160,7 @@ public class Parser
    public static boolean isDigit(char c) { return (c>='0' && c<='9'); }
    /** Valid ASCII char */
    public static boolean isChar(char c) { return (c>' ' && c<='~'); }
-   /** CR */   
+   /** CR */
    public static boolean isCR(char c) { return (c=='\r'); }
    /** LF */
    public static boolean isLF(char c) { return (c=='\n'); }
@@ -235,7 +235,7 @@ public class Parser
       while (par.hasMore())
       {  if (par.startsWithIgnoreCase(s)) return par.getPos();
          else par.skipChar();
-      } 
+      }
       return -1;
    }
    /** Gets the index of the first occurence of any string of array <i>ss</i> ignoring case. */
@@ -244,7 +244,7 @@ public class Parser
       while (par.hasMore())
       {  if (par.startsWithIgnoreCase(ss)) return par.getPos();
          else par.skipChar();
-      } 
+      }
       return -1;
    }
 
@@ -255,10 +255,10 @@ public class Parser
       int i=par.getPos();
       return (i<str.length())? i : -1;
    }
- 
-   
+
+
    // ********************* Starts with *********************
-   
+
    /** Whether next chars equal to a specific String <i>s</i>. */
    public boolean startsWith(String s)
    {  return str.startsWith(s,index);
@@ -290,7 +290,7 @@ public class Parser
 
 
    // ************************ Skips ************************
-   
+
    /** Skips one char */
    public Parser skipChar()
    {  if(index<str.length()) index++;
@@ -377,15 +377,15 @@ public class Parser
       if (index<str.length())
       {  if (str.startsWith("\r\n",index)) index+=2;
          else index++;
-      }   
+      }
       return line;
    }
-   
+
    //********************** Vectors/arrays **********************
 
    /** Gets all string of chars separated by any char belonging to <i>separators</i> */
    public Vector<String> getWordVector(char[] separators)
-   {  Vector<String> list=new Vector<String>();
+   {  Vector<String> list=new Vector<>();
       do { list.addElement(getWord(separators)); } while (hasMore());
       return list;
    }
@@ -393,12 +393,12 @@ public class Parser
    public String[] getWordArray(char[] separators)
    {  Vector<String> list=getWordVector(separators);
       String[] array=new String[list.size()];
-      for (int i=0; i<list.size(); i++) array[i]=(String)list.elementAt(i);
+      for (int i=0; i<list.size(); i++) array[i]=list.elementAt(i);
       return array;
    }
    /** Gets all strings */
    public Vector<String> getStringVector()
-   {  Vector<String> list=new Vector<String>();
+   {  Vector<String> list=new Vector<>();
       do { list.addElement(getString()); } while (hasMore());
       return list;
    }
@@ -406,7 +406,7 @@ public class Parser
    public String[] getStringArray()
    {  Vector<String> list=getStringVector();
       String[] array=new String[list.size()];
-      for (int i=0; i<list.size(); i++) array[i]=(String)list.elementAt(i);
+      for (int i=0; i<list.size(); i++) array[i]=list.elementAt(i);
       return array;
    }
 
@@ -425,7 +425,7 @@ public class Parser
       }
       index=end;
       return str.substring(begin,end);
-   }   
+   }
    /** Gets the first quatable string, that is a normal string, or text in quotes.
      * <br>In the latter case, quotes are dropped. */
    public String getStringUnquoted()
@@ -434,7 +434,7 @@ public class Parser
       if (index==str.length()) return str.substring(index,index);
       // check whether is a quoted string
       int next_qmark;
-      if (str.charAt(index)=='"' && (next_qmark=str.indexOf("\"",index+1))>0) 
+      if (str.charAt(index)=='"' && (next_qmark=str.indexOf("\"",index+1))>0)
       {  // is quoted text
          String qtext=str.substring(index+1,next_qmark);
          index=next_qmark+1;
@@ -444,7 +444,7 @@ public class Parser
       {  // is not a quoted text
          return getString();
       }
-   }   
+   }
    /** Points to the next occurence of <i>char c</i> not in quotes. */
    public Parser goToSkippingQuoted(char c)
    {  boolean inside_quotes=false;
@@ -467,7 +467,8 @@ public class Parser
    //************************* toString *************************
 
    /** convert the rest of the unparsed chars into a string */
-   public String toString()
+   @Override
+public String toString()
    {  return getRemainingString();
    }
 }

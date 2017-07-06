@@ -1,22 +1,22 @@
 /*
  * Copyright (C) 2005 Luca Veltri - University of Parma - Italy
- * 
+ *
  * This file is part of MjSip (http://www.mjsip.org)
- * 
+ *
  * MjSip is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * MjSip is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with MjSip; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Author(s):
  * Luca Veltri (luca.veltri@unipr.it)
  */
@@ -43,14 +43,14 @@ public class MultipleHeader
 
    protected MultipleHeader()
    {  name=null;
-      values=new Vector<String>();
+      values=new Vector<>();
       compact=true;
    }
 
    /** Costructs a MultipleHeader named <i>hname</i> */
    public MultipleHeader(String hname)
    {  name=hname;
-      values=new Vector<String>();
+      values=new Vector<>();
       compact=true;
    }
 
@@ -60,21 +60,21 @@ public class MultipleHeader
       values=hvalues;
       compact=true;
    }
-   
+
    /** Costructs a MultipleHeader from a Vector of Headers. Each Header can be a single header or a multiple-comma-separated header. */
    public MultipleHeader(Vector<Header> headers)
    {  name=headers.elementAt(0).getName();
-      values=new Vector<String>(headers.size());
+      values=new Vector<>(headers.size());
       for (int i=0; i<headers.size(); i++)
-      {  addBottom((Header)headers.elementAt(i));
+      {  addBottom(headers.elementAt(i));
       }
       compact=false;
-   }   
+   }
 
    /** Costructs a MultipleHeader from a comma-separated header */
    public MultipleHeader(Header hd)
    {  name=hd.getName();
-      values=new Vector<String>();
+      values=new Vector<>();
       SipParser par=new SipParser(hd.getValue());
       int comma=par.indexOfCommaHeaderSeparator();
       while (comma>=0)
@@ -83,14 +83,14 @@ public class MultipleHeader
          comma=par.indexOfCommaHeaderSeparator();
       }
       values.addElement(par.getRemainingString().trim());
-      compact=true;      
+      compact=true;
    }
 
    /** Costructs a MultipleHeader from a MultipleHeader */
    public MultipleHeader(MultipleHeader mhd)
    {  name=mhd.getName();
       values=mhd.getValues();
-      compact=mhd.isCommaSeparated();      
+      compact=mhd.isCommaSeparated();
    }
 
    /** Checks if Header <i>hd</i> contains comma-separated multi-header */
@@ -120,12 +120,14 @@ public class MultipleHeader
    }
 
    /** Creates and returns a copy of Header */
-   public Object clone()
+   @Override
+public Object clone()
    {  return new MultipleHeader(getName(),getValues());
    }
 
    /** Indicates whether some other Object is "equal to" this Header */
-   public boolean equals(Object obj)
+   @Override
+public boolean equals(Object obj)
    {  MultipleHeader hd=(MultipleHeader)obj;
       if (hd.getName().equals(this.getName()) && hd.getValues().equals(this.getValues())) return true;
          else return false;
@@ -133,7 +135,7 @@ public class MultipleHeader
 
    /** Gets name of Header */
    public String getName()
-   {  return name; 
+   {  return name;
    }
 
    /** Gets a vector of header values */
@@ -143,37 +145,37 @@ public class MultipleHeader
 
    /** Sets header values */
    public void setValues(Vector<String> v)
-   {  values=v; 
+   {  values=v;
    }
-   
+
    /** Gets a vector of headers */
    public Vector<Header> getHeaders()
-   {  Vector<Header> v=new Vector<Header>(values.size());
+   {  Vector<Header> v=new Vector<>(values.size());
       for (int i=0; i<values.size(); i++)
       {  Header h=new Header(name,values.elementAt(i));
          v.addElement(h);
       }
-      return v; 
-   }   
+      return v;
+   }
 
    /** Sets header values */
    public void setHeaders(Vector<Header> hdv)
-   {  values=new Vector<String>(hdv.size());
+   {  values=new Vector<>(hdv.size());
       for (int i=0; i<hdv.size(); i++)
       {  values.addElement(hdv.elementAt(i).getValue());
       }
    }
-   
+
    /** Gets the i-value */
    public String getValue(int i)
-   {  return (String)values.elementAt(i);
+   {  return values.elementAt(i);
    }
 
    /** Adds top */
    //public void addTop(String value)
    //{  values.insertElementAt(value,0);
    //}
-   
+
    /** Adds top */
    public void addTop(Header hd)
    {  values.insertElementAt(hd.getValue(),0);
@@ -181,40 +183,40 @@ public class MultipleHeader
 
    /** Gets top Header */
    public Header getTop()
-   {  return new Header(name,(String)values.firstElement());
+   {  return new Header(name,values.firstElement());
    }
-   
+
    /** Removes top Header */
    public void removeTop()
    {  values.removeElementAt(0);
-   }   
+   }
 
    /** Adds bottom */
    //public void addBottom(String value)
    //{  values.addElement(value);
    //}
-   
+
    /** Adds bottom */
    public void addBottom(Header hd)
    {  if (!MultipleHeader.isCommaSeparated(hd)) values.addElement(hd.getValue());
       else addBottom(new MultipleHeader(hd));
-   }    
+   }
 
    /** Adds other MultipleHeader at bottom */
    public void addBottom(MultipleHeader mhd)
    {  for (int i=0; i<mhd.size(); i++)
-         values.addElement(mhd.getValue(i));   
+         values.addElement(mhd.getValue(i));
    }
 
    /** Gets bottom Header */
    public Header getBottom()
-   {  return new Header(name,(String)values.lastElement());
+   {  return new Header(name,values.lastElement());
    }
-   
+
    /** Removes bottom Header */
    public void removeBottom()
    {  values.removeElementAt(values.size()-1);
-   }   
+   }
 
    /** Gets an Header containing the comma-separated(compact) representation. */
    public Header toHeader()
@@ -229,20 +231,21 @@ public class MultipleHeader
     *  - empty String (i.e. ""), for multi-headers(extended) rapresentation,
     *  - empty-value Header (i.e. "HeaderName: \r\n"), for comma-separated(compact) rapresentation.
    */
-   public String toString()
+   @Override
+public String toString()
    {  if (compact)
       {  String str=name+": ";
          for (int i=0; i<values.size()-1; i++) str+=values.elementAt(i)+", ";
          if (values.size()>0) str+=values.elementAt(values.size()-1);
          return str+"\r\n";
       }
-      else 
+      else
       {  String str="";
          for (int i=0; i<values.size(); i++) str+=name+": "+values.elementAt(i)+"\r\n";
          return str;
       }
    }
 
-      
+
 }
 
