@@ -48,9 +48,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 
 	private Set<Long> broadcastIds = new HashSet<>();
 	private Map<Long, Double> clientStreamMap = new HashMap<>();
-	private String publicSID = null;
 	private long broadCastId = -1;
-	private RTMPConnection conn;
 	private IMediaSender audioSender;
 	private IMediaSender videoSender;
 	private IoBuffer audioBuffer;
@@ -84,7 +82,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	private Thread updateThread = null;
 
 	protected enum ServiceMethod {
-		connect, listRoomBroadcast, getPublicSID, createStream, setUserAVSettings
+		connect, listRoomBroadcast, createStream, setUserAVSettings
 		, setSipTransport, updateSipTransport, sendMessage, getSipNumber
 	}
 
@@ -146,7 +144,8 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	public void init(String destination) {
 		this.destination = destination;
 		streamCreated = false;
-		getPublicSID();
+		this.setUserAVSettings(true);
+		this.listBroadcastIds();
 	}
 
 	public void stop() {
@@ -165,10 +164,6 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	@Override
 	public void setVideoSender(IMediaSender videoSender) {
 		this.videoSender = videoSender;
-	}
-
-	protected void getPublicSID() {
-		invoke("getPublicSID", this);
 	}
 
 	protected void listBroadcastIds() {
@@ -192,10 +187,10 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	}
 
 	private class CreatePlayStreamCallBack implements IPendingServiceCallback {
-		private long broadCastId;
+		private long _broadCastId;
 
 		public CreatePlayStreamCallBack(long broadCastId) {
-			this.broadCastId = broadCastId;
+			this._broadCastId = broadCastId;
 		}
 
 		@Override
@@ -205,19 +200,19 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 
 			if (conn != null && streamId != null
 					&& (publishStreamId == null || !streamId.equals(publishStreamId))) {
-				clientStreamMap.put(broadCastId, streamId);
+				clientStreamMap.put(_broadCastId, streamId);
 				PlayNetStream stream = new PlayNetStream(audioSender, videoSender, RTMPRoomClient.this);
 				stream.setConnection(conn);
 				stream.setStreamId(streamId.intValue());
 				conn.addClientStream(stream);
-				play(streamId, "" + broadCastId, -2000, -1000);
+				play(streamId, "" + _broadCastId, -2000, -1000);
 				stream.start();
 			}
 		}
 	}
 
 	protected void setSipTransport() {
-		conn.invoke("setSipTransport", new Object[] { Long.valueOf(roomId), publicSID, "" + broadCastId }, this);
+		conn.invoke("setSipTransport", new Object[] { "" + broadCastId }, this);
 	}
 
 	protected void setUserAVSettings(boolean updateBroadcastId) {
@@ -253,7 +248,6 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	public void connectionOpened(RTMPConnection conn) {
 		log.debug("RTMP Connection opened");
 		super.connectionOpened(conn);
-		this.conn = conn;
 		retryNumber = 0;
 	}
 
@@ -344,7 +338,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 
 	public void receiveExclusiveAudioFlag(Client client) {
 		log.debug("receiveExclusiveAudioFlag:" + client.getPublicSID());
-		this.micMuted = !client.getPublicSID().equals(this.publicSID);
+		this.micMuted = !client.getPublicSID().equals(this.uid);
 		log.info("Mic switched: " + this.micMuted);
 	}
 
@@ -360,7 +354,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 					this.conn.close();
 				} else if ("updateMuteStatus".equals(msgValue.get(0))) {
 					Client client = (Client) msgValue.get(1);
-					if (this.publicSID.equals(client.getPublicSID())) {
+					if (this.uid.equals(client.getPublicSID())) {
 						log.info("Mic switched: " + client.getMicMuted());
 						this.micMuted = client.getMicMuted();
 					}
@@ -450,12 +444,6 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 					setAfterCallConnectedTask(startStreamingTask);
 				}
 				break;
-			case getPublicSID:
-				log.info("getPublicSID");
-				this.publicSID = (String) call.getResult();
-				this.setUserAVSettings(true);
-				this.listBroadcastIds();
-				break;
 			case createStream:
 				log.info("createStream");
 				publishStreamId = (Double) call.getResult();
@@ -497,7 +485,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	}
 
 	public void soundActivity() {
-		Object[] message = new Object[] { "audioActivity", !silence, this.publicSID };
+		Object[] message = new Object[] { "audioActivity", !silence, this.uid };
 		conn.invoke("sendMessage", message, this);
 	}
 
