@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.mina.core.RuntimeIoException;
 import org.apache.mina.core.buffer.IoBuffer;
@@ -132,8 +133,8 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 		reconnect = true;
 		Map<String, Object> params = makeDefaultConnectionParams(host, 1935, String.format("%s/%s", context, roomId));
 		Map<String, Object> args = new HashMap<>();
-		args.put("uid", uid);
-		args.put("sipClient", true);
+		args.put("uid", UUID.randomUUID().toString());
+		args.put("ownerSid", uid);
 		connect(host, 1935, params, this, new Object[]{args});
 	}
 

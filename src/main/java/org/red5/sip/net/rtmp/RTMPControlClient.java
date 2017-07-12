@@ -19,7 +19,6 @@ public abstract class RTMPControlClient extends RTMPClient implements ClientExce
 	private static final Logger log = LoggerFactory.getLogger(RTMPControlClient.class);
 	private static final int UPDATE_MS = 10000;
 
-	private RTMPConnection conn;
 	private final String host;
 	private final String context;
 	private boolean reconnect;
