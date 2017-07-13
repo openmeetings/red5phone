@@ -47,9 +47,9 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	private static final int MAX_RETRY_NUMBER = 100;
 	private static final int UPDATE_MS = 3000;
 
-	private Set<Long> broadcastIds = new HashSet<>();
-	private Map<Long, Double> clientStreamMap = new HashMap<>();
-	private long broadCastId = -1;
+	private Set<String> broadcastIds = new HashSet<>();
+	private Map<String, Double> clientStreamMap = new HashMap<>();
+	private String broadCastId = null;
 	private IMediaSender audioSender;
 	private IMediaSender videoSender;
 	private IoBuffer audioBuffer;
@@ -83,8 +83,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	private Thread updateThread = null;
 
 	protected enum ServiceMethod {
-		connect, listRoomBroadcast, createStream, setUserAVSettings
-		, setSipTransport, updateSipTransport, sendMessage, getSipNumber
+		connect, listRoomBroadcast, createStream, updateSipTransport, sendMessage, getSipNumber
 	}
 
 	final private long roomId;
@@ -145,7 +144,6 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	public void init(String destination) {
 		this.destination = destination;
 		streamCreated = false;
-		this.setUserAVSettings(true);
 		this.listBroadcastIds();
 	}
 
@@ -179,8 +177,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 		this.activeVideoStreamID = activeVideoStreamID;
 	}
 
-	private void createPlayStream(long broadCastId) {
-
+	private void createPlayStream(String broadCastId) {
 		log.debug("create play stream");
 		broadcastIds.add(broadCastId);
 		IPendingServiceCallback wrapper = new CreatePlayStreamCallBack(broadCastId);
@@ -188,9 +185,9 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 	}
 
 	private class CreatePlayStreamCallBack implements IPendingServiceCallback {
-		private long _broadCastId;
+		private String _broadCastId;
 
-		public CreatePlayStreamCallBack(long broadCastId) {
+		public CreatePlayStreamCallBack(String broadCastId) {
 			this._broadCastId = broadCastId;
 		}
 
@@ -206,18 +203,10 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 				stream.setConnection(conn);
 				stream.setStreamId(streamId.intValue());
 				conn.addClientStream(stream);
-				play(streamId, "" + _broadCastId, -2000, -1000);
+				play(streamId, _broadCastId, -2000, -1000);
 				stream.start();
 			}
 		}
-	}
-
-	protected void setSipTransport() {
-		conn.invoke("setSipTransport", new Object[] { "" + broadCastId }, this);
-	}
-
-	protected void setUserAVSettings(boolean updateBroadcastId) {
-		conn.invoke("setUserAVSettings", new Object[] { updateBroadcastId }, this);
 	}
 
 	protected void getSipNumber() {
@@ -234,8 +223,8 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 
 	protected void startStreaming() {
 		// red5 -> SIP
-		for (long broadCastId : broadcastIds) {
-			if (broadCastId != this.broadCastId) {
+		for (String broadCastId : broadcastIds) {
+			if (!broadCastId.equals(this.broadCastId)) {
 				createPlayStream(broadCastId);
 			}
 		}
@@ -385,7 +374,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 		if (broadcastIds.contains((int) client.getBroadCastID())) {
 			closeStream(client);
 		}
-		createPlayStream(client.getBroadCastID());
+		createPlayStream("" + client.getBroadCastID()); //TODO should be UID
 	}
 
 	private synchronized Runnable getAfterCallConnectedTask() {
@@ -431,8 +420,8 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 					public void run() {
 						log.debug("startStreamingTask.run()");
 						if (fcall.getResult() instanceof Collection) {
-							for (Double bId : (Collection<Double>) fcall.getResult()) {
-								RTMPRoomClient.this.broadcastIds.add(bId.longValue());
+							for (String bId : (Collection<String>) fcall.getResult()) {
+								RTMPRoomClient.this.broadcastIds.add(bId);
 							}
 						}
 						RTMPRoomClient.this.startStreaming();
@@ -448,20 +437,13 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 			case createStream:
 				log.info("createStream");
 				publishStreamId = (Double) call.getResult();
-				publish(publishStreamId, "" + broadCastId, "live", this);
-				this.setSipTransport();
-				break;
-			case setUserAVSettings:
-				log.info("setUserAVSettings");
-				this.broadCastId = ((Number) call.getResult()).intValue();
+				this.broadCastId = UUID.randomUUID().toString();
+				publish(publishStreamId, broadCastId, "live", this);
 				// SIP -> red5
 				if (!streamCreated) {
 					createStream(this);
 					streamCreated = true;
 				}
-				break;
-			case setSipTransport:
-				log.info("setSipTransport");
 				updateThread = new Thread(updateTask, "RTMPRoomClient updateThread");
 				updateThread.start();
 				break;

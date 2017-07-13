@@ -16,7 +16,7 @@ package com.laszlosystems.libresample4j;
  * This file provides Kaiser-windowed low-pass filter support,
  * including a function to create the filter coefficients, and
  * two functions to apply the filter at a particular point.
- * 
+ *
  * <pre>
  * reference: "Digital Filters, 2nd edition"
  *            R.W. Hamming, pp. 178-179
@@ -65,7 +65,7 @@ public class FilterKit {
         sum = u = n = 1;
         halfx = x / 2.0;
         do {
-            temp = halfx / (double) n;
+            temp = halfx / n;
             n += 1;
             temp *= temp;
             u *= temp;
@@ -81,7 +81,7 @@ public class FilterKit {
         // Calculate ideal lowpass filter impulse response coefficients:
         c[0] = 2.0 * frq;
         for (i = 1; i < N; i++) {
-            temp = Math.PI * (double) i / (double) Num;
+            temp = Math.PI * i / Num;
             c[i] = Math.sin(2.0 * temp * frq) / temp; // Analog sinc function,
             // cutoff = frq
         }
@@ -93,9 +93,9 @@ public class FilterKit {
          * first sidelobe.
          */
         IBeta = 1.0 / Izero(Beta);
-        inm1 = 1.0 / ((double) (N - 1));
+        inm1 = 1.0 / (N - 1);
         for (i = 1; i < N; i++) {
-            temp = (double) i * inm1;
+            temp = i * inm1;
             temp1 = 1.0 - temp * temp;
             temp1 = (temp1 < 0 ? 0 : temp1); /*
                                               * make sure it's not negative
@@ -108,7 +108,7 @@ public class FilterKit {
     }
 
     /**
-     * 
+     *
      * @param Imp impulse response
      * @param ImpD impulse response deltas
      * @param Nwing length of one wing of filter
@@ -132,7 +132,6 @@ public class FilterKit {
         float[] Hp_array = Imp;
         int Hp_index = (int) Ph;
 
-        float[] End_array = Imp;
         int End_index = Nwing;
 
         float[] Hdp_array = ImpD;
@@ -176,7 +175,7 @@ public class FilterKit {
     }
 
     /**
-     * 
+     *
      * @param Imp impulse response
      * @param ImpD impulse response deltas
      * @param Nwing length of one wing of filter
@@ -197,7 +196,6 @@ public class FilterKit {
         v = 0.0f; // The output value
         Ho = Ph * dhb;
 
-        float[] End_array = Imp;
         int End_index = Nwing;
 
         if (Inc == 1) // If doing right wing...
