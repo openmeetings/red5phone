@@ -4,7 +4,7 @@
 
 	<groupId>org.red5.sip</groupId>
 	<artifactId>red5sip</artifactId>
-	<version>3.3-SNAPSHOT</version>
+	<version>4.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>red5sip</name>
