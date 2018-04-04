@@ -131,7 +131,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 		Map<String, Object> params = makeDefaultConnectionParams(host, 1935, String.format("%s/%s", context, roomId));
 		Map<String, Object> args = new HashMap<>();
 		args.put("uid", UUID.randomUUID().toString());
-		args.put("ownerSid", uid);
+		args.put("sid", uid);
 		connect(host, 1935, params, this, new Object[]{args});
 	}
 
