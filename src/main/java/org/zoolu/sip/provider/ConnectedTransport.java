@@ -23,27 +23,25 @@
 
 package org.zoolu.sip.provider;
 
-
 import java.io.IOException;
 
 import org.zoolu.net.IpAddress;
 import org.zoolu.sip.message.Message;
 
+/**
+ * ConnectedTransport is a generic CO transport service for SIP.
+ */
+interface ConnectedTransport extends Transport {
+	/** Gets the remote IpAddress */
+	public IpAddress getRemoteAddress();
 
-/** ConnectedTransport is a generic CO transport service for SIP.
-  */
-interface ConnectedTransport extends Transport
-{
-   /** Gets the remote IpAddress */
-   public IpAddress getRemoteAddress();
-   
-   /** Gets the remote port */
-   public int getRemotePort();
+	/** Gets the remote port */
+	public int getRemotePort();
 
-   /** Gets the last time the ConnectedTransport has been used (in millisconds) */
-   public long getLastTimeMillis();
+	/** Gets the last time the ConnectedTransport has been used (in millisconds) */
+	public long getLastTimeMillis();
 
-   /** Sends a Message */      
-   public void sendMessage(Message msg) throws IOException;
+	/** Sends a Message */
+	public void sendMessage(Message msg) throws IOException;
 
 }

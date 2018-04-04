@@ -63,8 +63,8 @@ public class SplitterLine extends OutputStream {
 	}
 
 	/**
-	 * Closes this output stream and releases any system resources associated
-	 * with this stream.
+	 * Closes this output stream and releases any system resources associated with
+	 * this stream.
 	 */
 	@Override
 	public void close() throws IOException {
@@ -75,8 +75,8 @@ public class SplitterLine extends OutputStream {
 	}
 
 	/**
-	 * Flushes this output stream and forces any buffered output bytes to be
-	 * written out.
+	 * Flushes this output stream and forces any buffered output bytes to be written
+	 * out.
 	 */
 	@Override
 	public void flush() throws IOException {
@@ -86,8 +86,7 @@ public class SplitterLine extends OutputStream {
 	}
 
 	/**
-	 * Writes b.length bytes from the specified byte array to this output
-	 * stream.
+	 * Writes b.length bytes from the specified byte array to this output stream.
 	 */
 	@Override
 	public void write(byte[] b) throws IOException {
@@ -95,8 +94,8 @@ public class SplitterLine extends OutputStream {
 	}
 
 	/**
-	 * Writes len bytes from the specified byte array starting at offset off to
-	 * this output stream.
+	 * Writes len bytes from the specified byte array starting at offset off to this
+	 * output stream.
 	 */
 	@Override
 	public void write(byte[] b, int off, int len) throws IOException {

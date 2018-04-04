@@ -34,10 +34,11 @@ import org.zoolu.tools.Timer;
 import org.zoolu.tools.TimerListener;
 
 /**
- * Abstract class Transaction is hinerited by classes ClientTransaction, ServerTransaction, InviteClientTransaction and
- * InviteServerTransaction. An Object Transaction is responsable to handle a new SIP transaction.<BR>
- * The changes of the internal status and the received messages are fired to the TransactionListener passed to the
- * Transaction Objects.<BR>
+ * Abstract class Transaction is hinerited by classes ClientTransaction,
+ * ServerTransaction, InviteClientTransaction and InviteServerTransaction. An
+ * Object Transaction is responsable to handle a new SIP transaction.<BR>
+ * The changes of the internal status and the received messages are fired to the
+ * TransactionListener passed to the Transaction Objects.<BR>
  */
 public abstract class Transaction implements SipProviderListener, TimerListener {
 	protected static Logger log = LoggerFactory.getLogger(Transaction.class);
@@ -86,8 +87,9 @@ public abstract class Transaction implements SipProviderListener, TimerListener 
 	int transaction_sqn;
 
 	/**
-	 * Lower layer dispatcher that sends and receive messages. The messages received by the SipProvider are fired to the
-	 * Transaction by means of the onReceivedMessage() method.
+	 * Lower layer dispatcher that sends and receive messages. The messages received
+	 * by the SipProvider are fired to the Transaction by means of the
+	 * onReceivedMessage() method.
 	 */
 	SipProvider sip_provider;
 
@@ -156,8 +158,8 @@ public abstract class Transaction implements SipProviderListener, TimerListener 
 	}
 
 	/**
-	 * Method derived from interface SipListener. It's fired from the SipProvider when a new message is catch for to the
-	 * present ServerTransaction.
+	 * Method derived from interface SipListener. It's fired from the SipProvider
+	 * when a new message is catch for to the present ServerTransaction.
 	 */
 	public void onReceivedMessage(SipProvider provider, Message msg) { // do nothing
 	}

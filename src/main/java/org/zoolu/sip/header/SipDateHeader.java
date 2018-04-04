@@ -23,7 +23,6 @@
 
 package org.zoolu.sip.header;
 
-
 import java.util.Date;
 
 import org.zoolu.sip.provider.SipParser;
@@ -31,45 +30,45 @@ import org.zoolu.tools.DateFormat;
 //import java.text.DateFormat;
 //import java.text.SimpleDateFormat;
 
-
 /** SIP Header Date */
-public abstract class SipDateHeader extends Header
-{
-   
-   //public SipDateHeader(String hname)
-   //{  super(hname);
-   //}
+public abstract class SipDateHeader extends Header {
 
-   public SipDateHeader(String hname, String hvalue)
-   {  super(hname,hvalue);
-   }
+	// public SipDateHeader(String hname)
+	// { super(hname);
+	// }
 
-   public SipDateHeader(String hname, Date date)
-   {  super(hname,null);
-      //DateFormat df=new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss 'GMT'",Locale.US);
-      //value=df.format(date);
-      value=DateFormat.formatEEEddMMM(date);
-   }
+	public SipDateHeader(String hname, String hvalue) {
+		super(hname, hvalue);
+	}
 
-   public SipDateHeader(Header hd)
-   {  super(hd);
-   }
+	public SipDateHeader(String hname, Date date) {
+		super(hname, null);
+		// DateFormat df=new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss
+		// 'GMT'",Locale.US);
+		// value=df.format(date);
+		value = DateFormat.formatEEEddMMM(date);
+	}
 
-   /** Gets date value of DateHeader */
-   public Date getDate()
-   {  SipParser par=new SipParser(value);
-      return par.getDate();
-   }
-   
-   /** Sets date of DateHeader */
-   //public void setDate(Date date)
-   //{  DateFormat df=new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss 'GMT'",Locale.US);
-   //   value=df.format(date);
-   //}
+	public SipDateHeader(Header hd) {
+		super(hd);
+	}
 
-   /** Sets date in string format of DateHeader */
-   //public void setDate(String date)
-   //{  value=date;
-   //}
-   
+	/** Gets date value of DateHeader */
+	public Date getDate() {
+		SipParser par = new SipParser(value);
+		return par.getDate();
+	}
+
+	/** Sets date of DateHeader */
+	// public void setDate(Date date)
+	// { DateFormat df=new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss
+	// 'GMT'",Locale.US);
+	// value=df.format(date);
+	// }
+
+	/** Sets date in string format of DateHeader */
+	// public void setDate(String date)
+	// { value=date;
+	// }
+
 }

@@ -23,42 +23,49 @@
 
 package org.zoolu.sdp;
 
+/**
+ * SDP attribute field.
+ * <p>
+ * <BLOCKQUOTE>
+ * 
+ * <PRE>
+ *    attribute-fields = "a=" (att-field ":" att-value) | att-field CRLF
+ * </PRE>
+ * 
+ * </BLOCKQUOTE>
+ */
+public class AttributeField extends SdpField {
+	/** Creates a new AttributeField. */
+	public AttributeField(String attribute) {
+		super('a', attribute);
+	}
 
+	/** Creates a new AttributeField. */
+	public AttributeField(String attribute, String a_value) {
+		super('a', attribute + ":" + a_value);
+	}
 
+	/** Creates a new AttributeField. */
+	public AttributeField(SdpField sf) {
+		super(sf);
+	}
 
-/** SDP attribute field.
-  * <p>
-  * <BLOCKQUOTE><PRE>
-  *    attribute-fields = "a=" (att-field ":" att-value) | att-field CRLF
-  * </PRE></BLOCKQUOTE>
-  */
-public class AttributeField extends SdpField
-{  
-   /** Creates a new AttributeField. */
-   public AttributeField(String attribute)
-   {  super('a',attribute);
-   }
+	/** Gets the attribute name. */
+	public String getAttributeName() {
+		int i = value.indexOf(":");
+		if (i < 0)
+			return value;
+		else
+			return value.substring(0, i);
+	}
 
-   /** Creates a new AttributeField. */
-   public AttributeField(String attribute, String a_value)
-   {  super('a',attribute+":"+a_value);
-   }
-
-   /** Creates a new AttributeField. */
-   public AttributeField(SdpField sf)
-   {  super(sf);
-   }
-      
-   /** Gets the attribute name. */
-   public String getAttributeName()
-   {  int i=value.indexOf(":");
-      if (i<0) return value; else return value.substring(0,i);
-   }
-
-   /** Gets the attribute value. */
-   public String getAttributeValue()
-   {  int i=value.indexOf(":");
-      if (i<0) return null; else return value.substring(i+1);
-   }
+	/** Gets the attribute value. */
+	public String getAttributeValue() {
+		int i = value.indexOf(":");
+		if (i < 0)
+			return null;
+		else
+			return value.substring(i + 1);
+	}
 
 }

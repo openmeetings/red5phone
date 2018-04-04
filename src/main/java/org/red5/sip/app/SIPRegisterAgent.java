@@ -2,8 +2,6 @@ package org.red5.sip.app;
 
 import java.util.Vector;
 
-import local.net.KeepAliveSip;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zoolu.net.SocketAddress;
@@ -26,6 +24,8 @@ import org.zoolu.sip.provider.SipProvider;
 import org.zoolu.sip.provider.SipStack;
 import org.zoolu.sip.transaction.TransactionClient;
 import org.zoolu.sip.transaction.TransactionClientListener;
+
+import local.net.KeepAliveSip;
 
 /**
  * Register User Agent. It registers (one time or periodically) a contact address with a registrar server.
@@ -217,7 +217,7 @@ public class SIPRegisterAgent implements Runnable, TransactionClientListener {
 
 	/**
 	 * Periodically registers with the registrar server.
-	 * 
+	 *
 	 * @param expire_time
 	 *            expiration time in seconds
 	 * @param renew_time
@@ -234,7 +234,7 @@ public class SIPRegisterAgent implements Runnable, TransactionClientListener {
 
 	/**
 	 * Periodically registers with the registrar server.
-	 * 
+	 *
 	 * @param expire_time
 	 *            expiration time in seconds
 	 * @param renew_time
@@ -270,6 +270,7 @@ public class SIPRegisterAgent implements Runnable, TransactionClientListener {
 	// ***************************** run() *****************************
 
 	/** Run method */
+	@Override
 	public void run() {
 		is_running = true;
 		try {
@@ -297,15 +298,16 @@ public class SIPRegisterAgent implements Runnable, TransactionClientListener {
 	}
 
 	// **************** Transaction callback functions *****************
-
 	/** Callback function called when client sends back a failure response. */
 
 	/** Callback function called when client sends back a provisional response. */
+	@Override
 	public void onTransProvisionalResponse(TransactionClient transaction, Message resp) {
 		// do nothing..
 	}
 
 	/** Callback function called when client sends back a success response. */
+	@Override
 	public void onTransSuccessResponse(TransactionClient transaction, Message resp) {
 		if (transaction.getTransactionMethod().equals(SipMethods.REGISTER)) {
 			if (resp.hasAuthenticationInfoHeader()) {
@@ -350,6 +352,7 @@ public class SIPRegisterAgent implements Runnable, TransactionClientListener {
 	}
 
 	/** Callback function called when client sends back a failure response. */
+	@Override
 	public void onTransFailureResponse(TransactionClient transaction, Message resp) {
 		printLog("onTransFailureResponse start: ");
 
@@ -413,6 +416,7 @@ public class SIPRegisterAgent implements Runnable, TransactionClientListener {
 	}
 
 	/** Callback function called when client expires timeout. */
+	@Override
 	public void onTransTimeout(TransactionClient transaction) {
 		if (transaction.getTransactionMethod().equals(SipMethods.REGISTER)) {
 			if (listener == null) {

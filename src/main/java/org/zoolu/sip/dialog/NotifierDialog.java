@@ -86,7 +86,10 @@ public class NotifierDialog extends Dialog implements TransactionClientListener/
 	protected static final int D_PENDING = 3;
 	/** Internal state D_ACTIVE (subscription has been activated) */
 	protected static final int D_ACTIVE = 4;
-	/** Internal state D_TERMINATED (first subscription request has been refused or subscription has been terminated) */
+	/**
+	 * Internal state D_TERMINATED (first subscription request has been refused or
+	 * subscription has been terminated)
+	 */
 	protected static final int D_TERMINATED = 9;
 
 	// ************************* Protected methods ************************
@@ -161,7 +164,10 @@ public class NotifierDialog extends Dialog implements TransactionClientListener/
 		init(listener);
 	}
 
-	/** Creates a new NotifierDialog for the already received SUBSCRIBE request <i>subscribe</i>. */
+	/**
+	 * Creates a new NotifierDialog for the already received SUBSCRIBE request
+	 * <i>subscribe</i>.
+	 */
 	public NotifierDialog(SipProvider sip_provider, Message subscribe, NotifierDialogListener listener) {
 		super(sip_provider);
 		init(listener);
@@ -216,8 +222,8 @@ public class NotifierDialog extends Dialog implements TransactionClientListener/
 	}
 
 	/**
-	 * Responds with <i>code</i> and <i>reason</i>. This method can be called when the InviteDialog is in D_INVITED,
-	 * D_ReINVITED states
+	 * Responds with <i>code</i> and <i>reason</i>. This method can be called when
+	 * the InviteDialog is in D_INVITED, D_ReINVITED states
 	 */
 	public void respond(int code, String reason, int expires, String contact, String content_type, String body) {
 		log.debug("inside respond(" + code + "," + reason + ")");
@@ -304,13 +310,19 @@ public class NotifierDialog extends Dialog implements TransactionClientListener/
 
 	// ************** Inherited from TransactionClientListener **************
 
-	/** When the TransactionClient is (or goes) in "Proceeding" state and receives a new 1xx provisional response */
+	/**
+	 * When the TransactionClient is (or goes) in "Proceeding" state and receives a
+	 * new 1xx provisional response
+	 */
 	public void onTransProvisionalResponse(TransactionClient tc, Message resp) {
 		log.debug("onTransProvisionalResponse()");
 		// do nothing.
 	}
 
-	/** When the TransactionClient goes into the "Completed" state receiving a 2xx response */
+	/**
+	 * When the TransactionClient goes into the "Completed" state receiving a 2xx
+	 * response
+	 */
 	public void onTransSuccessResponse(TransactionClient tc, Message resp) {
 		log.debug("onTransSuccessResponse()");
 		StatusLine status_line = resp.getStatusLine();
@@ -318,7 +330,10 @@ public class NotifierDialog extends Dialog implements TransactionClientListener/
 			listener.onDlgNotificationSuccess(this, status_line.getCode(), status_line.getReason(), resp);
 	}
 
-	/** When the TransactionClient goes into the "Completed" state receiving a 300-699 response */
+	/**
+	 * When the TransactionClient goes into the "Completed" state receiving a
+	 * 300-699 response
+	 */
 	public void onTransFailureResponse(TransactionClient tc, Message resp) {
 		log.debug("onTransFailureResponse()");
 		StatusLine status_line = resp.getStatusLine();
@@ -326,7 +341,10 @@ public class NotifierDialog extends Dialog implements TransactionClientListener/
 			listener.onDlgNotificationFailure(this, status_line.getCode(), status_line.getReason(), resp);
 	}
 
-	/** When the TransactionClient goes into the "Terminated" state, caused by transaction timeout */
+	/**
+	 * When the TransactionClient goes into the "Terminated" state, caused by
+	 * transaction timeout
+	 */
 	public void onTransTimeout(TransactionClient tc) {
 		log.debug("onTransTimeout()");
 		if (!statusIs(D_TERMINATED)) {

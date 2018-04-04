@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SIPCodeciLBC implements SIPCodec {
-
 	protected static Logger log = LoggerFactory.getLogger(SIPCodeciLBC.class);
 
 	// Codec information

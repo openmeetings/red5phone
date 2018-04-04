@@ -23,33 +23,30 @@
 
 package org.zoolu.sip.header;
 
-
 import java.util.Vector;
 
-
 /** SIP Header Allow-Events */
-public class AllowEventsHeader extends ListHeader
-{
-   public AllowEventsHeader(String hvalue)
-   {  super(SipHeaders.Allow_Events,hvalue);
-   }
+public class AllowEventsHeader extends ListHeader {
+	public AllowEventsHeader(String hvalue) {
+		super(SipHeaders.Allow_Events, hvalue);
+	}
 
-   public AllowEventsHeader(Header hd)
-   {  super(hd);
-   }
+	public AllowEventsHeader(Header hd) {
+		super(hd);
+	}
 
-   /** Gets list of events (as Vector of Strings). */
-   public Vector<String> getEvents()
-   {  return super.getElements();
-   }
+	/** Gets list of events (as Vector of Strings). */
+	public Vector<String> getEvents() {
+		return super.getElements();
+	}
 
-   /** Sets the list of events. */
-   public void setEvents(Vector<String> events)
-   {  super.setElements(events);
-   }
+	/** Sets the list of events. */
+	public void setEvents(Vector<String> events) {
+		super.setElements(events);
+	}
 
-   /** Adds a new event to the event list. */
-   public void addEvent(String event)
-   {  super.addElement(event);
-   }
+	/** Adds a new event to the event list. */
+	public void addEvent(String event) {
+		super.addElement(event);
+	}
 }

@@ -79,8 +79,9 @@ public class Call implements InviteDialogListener {
 
 	/** Creates a new Call specifing the sdp */
 	/*
-	 * public Call(SipProvider sip_provider, String from_url, String contact_url, String sdp, CallListener
-	 * call_listener) { this.sip_provider=sip_provider; this.log=sip_provider.getLog(); this.listener=call_listener;
+	 * public Call(SipProvider sip_provider, String from_url, String contact_url,
+	 * String sdp, CallListener call_listener) { this.sip_provider=sip_provider;
+	 * this.log=sip_provider.getLog(); this.listener=call_listener;
 	 * this.from_url=from_url; this.contact_url=contact_url; local_sdp=sdp; }
 	 */
 
@@ -235,8 +236,9 @@ public class Call implements InviteDialogListener {
 	// ************** Inherited from InviteDialogListener **************
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onCallIncoming()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onCallIncoming()).
 	 */
 	public void onDlgInvite(InviteDialog d, NameAddress callee, NameAddress caller, String sdp, Message msg) {
 		if (d != dialog) {
@@ -250,8 +252,9 @@ public class Call implements InviteDialogListener {
 	}
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onCallModifying()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onCallModifying()).
 	 */
 	public void onDlgReInvite(InviteDialog d, String sdp, Message msg) {
 		if (d != dialog) {
@@ -265,8 +268,9 @@ public class Call implements InviteDialogListener {
 	}
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onCallRinging()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onCallRinging()).
 	 */
 	public void onDlgInviteProvisionalResponse(InviteDialog d, int code, String reason, String sdp, Message msg) {
 		if (d != dialog) {
@@ -281,8 +285,9 @@ public class Call implements InviteDialogListener {
 	}
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onCallAccepted()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onCallAccepted()).
 	 */
 	public void onDlgInviteSuccessResponse(InviteDialog d, int code, String reason, String sdp, Message msg) {
 		if (d != dialog) {
@@ -296,8 +301,9 @@ public class Call implements InviteDialogListener {
 	}
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onCallRedirection()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onCallRedirection()).
 	 */
 	public void onDlgInviteRedirectResponse(InviteDialog d, int code, String reason, MultipleHeader contacts,
 			Message msg) {
@@ -310,8 +316,9 @@ public class Call implements InviteDialogListener {
 	}
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onCallRefused()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onCallRefused()).
 	 */
 	public void onDlgInviteFailureResponse(InviteDialog d, int code, String reason, Message msg) {
 		if (d != dialog) {
@@ -323,8 +330,9 @@ public class Call implements InviteDialogListener {
 	}
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onCallTimeout()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onCallTimeout()).
 	 */
 	public void onDlgTimeout(InviteDialog d) {
 		if (d != dialog) {
@@ -335,7 +343,10 @@ public class Call implements InviteDialogListener {
 			listener.onCallTimeout(this);
 	}
 
-	/** Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. */
+	/**
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it.
+	 */
 	public void onDlgReInviteProvisionalResponse(InviteDialog d, int code, String reason, String sdp, Message msg) {
 		if (d != dialog) {
 			log.warn("NOT the current dialog");
@@ -346,8 +357,9 @@ public class Call implements InviteDialogListener {
 	}
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onCallReInviteAccepted()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onCallReInviteAccepted()).
 	 */
 	public void onDlgReInviteSuccessResponse(InviteDialog d, int code, String reason, String sdp, Message msg) {
 		if (d != dialog) {
@@ -361,18 +373,23 @@ public class Call implements InviteDialogListener {
 	}
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onCallReInviteRedirection()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onCallReInviteRedirection()).
 	 */
-	// public void onDlgReInviteRedirectResponse(InviteDialog d, int code, String reason, MultipleHeader contacts,
+	// public void onDlgReInviteRedirectResponse(InviteDialog d, int code, String
+	// reason, MultipleHeader contacts,
 	// Message msg)
-	// { if (d!=dialog) { printLog("NOT the current dialog",LogLevel.HIGH); return; }
-	// if (listener!=null) listener.onCallReInviteRedirection(this,reason,contacts.getValues(),msg);
+	// { if (d!=dialog) { printLog("NOT the current dialog",LogLevel.HIGH); return;
+	// }
+	// if (listener!=null)
+	// listener.onCallReInviteRedirection(this,reason,contacts.getValues(),msg);
 	// }
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onCallReInviteRefused()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onCallReInviteRefused()).
 	 */
 	public void onDlgReInviteFailureResponse(InviteDialog d, int code, String reason, Message msg) {
 		if (d != dialog) {
@@ -384,8 +401,9 @@ public class Call implements InviteDialogListener {
 	}
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onCallReInviteTimeout()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onCallReInviteTimeout()).
 	 */
 	public void onDlgReInviteTimeout(InviteDialog d) {
 		if (d != dialog) {
@@ -397,8 +415,9 @@ public class Call implements InviteDialogListener {
 	}
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onCallConfirmed()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onCallConfirmed()).
 	 */
 	public void onDlgAck(InviteDialog d, String sdp, Message msg) {
 		if (d != dialog) {
@@ -412,8 +431,9 @@ public class Call implements InviteDialogListener {
 	}
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onCallClosing()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onCallClosing()).
 	 */
 	public void onDlgCancel(InviteDialog d, Message msg) {
 		if (d != dialog) {
@@ -425,8 +445,9 @@ public class Call implements InviteDialogListener {
 	}
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onClosing()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onClosing()).
 	 */
 	public void onDlgBye(InviteDialog d, Message msg) {
 		if (d != dialog) {
@@ -438,8 +459,9 @@ public class Call implements InviteDialogListener {
 	}
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onClosed()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onClosed()).
 	 */
 	public void onDlgByeFailureResponse(InviteDialog d, int code, String reason, Message msg) {
 		if (d != dialog) {
@@ -451,8 +473,9 @@ public class Call implements InviteDialogListener {
 	}
 
 	/**
-	 * Inherited from class InviteDialogListener and called by an InviteDialag. Normally you should not use it. Use
-	 * specific callback methods instead (e.g. onClosed()).
+	 * Inherited from class InviteDialogListener and called by an InviteDialag.
+	 * Normally you should not use it. Use specific callback methods instead (e.g.
+	 * onClosed()).
 	 */
 	public void onDlgByeSuccessResponse(InviteDialog d, int code, String reason, Message msg) {
 		if (d != dialog) {

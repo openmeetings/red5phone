@@ -207,8 +207,8 @@ public class ExtendedInviteDialog extends org.zoolu.sip.dialog.InviteDialog {
 	}
 
 	/**
-	 * Inherited from TransactionClientListener. When the TransactionClientListener goes into the "Completed" state,
-	 * receiving a failure response
+	 * Inherited from TransactionClientListener. When the TransactionClientListener
+	 * goes into the "Completed" state, receiving a failure response
 	 */
 	@Override
 	public void onTransFailureResponse(TransactionClient tc, Message msg) {
@@ -220,10 +220,10 @@ public class ExtendedInviteDialog extends org.zoolu.sip.dialog.InviteDialog {
 		String reason = status_line.getReason();
 
 		// AUTHENTICATION-BEGIN
-		if ((code == 401 && attempts < MAX_ATTEMPTS && msg.hasWwwAuthenticateHeader() && msg.getWwwAuthenticateHeader()
-				.getRealmParam().equalsIgnoreCase(realm))
-				|| (code == 407 && attempts < MAX_ATTEMPTS && msg.hasProxyAuthenticateHeader() && msg
-						.getProxyAuthenticateHeader().getRealmParam().equalsIgnoreCase(realm))) {
+		if ((code == 401 && attempts < MAX_ATTEMPTS && msg.hasWwwAuthenticateHeader()
+				&& msg.getWwwAuthenticateHeader().getRealmParam().equalsIgnoreCase(realm))
+				|| (code == 407 && attempts < MAX_ATTEMPTS && msg.hasProxyAuthenticateHeader()
+						&& msg.getProxyAuthenticateHeader().getRealmParam().equalsIgnoreCase(realm))) {
 			attempts++;
 
 			Message ack = MessageFactory.createRequest(this, SipMethods.ACK, null);
@@ -247,8 +247,8 @@ public class ExtendedInviteDialog extends org.zoolu.sip.dialog.InviteDialog {
 			String qop_options = wah.getQopOptionsParam();
 			qop = (qop_options != null) ? "auth" : null;
 			RequestLine rl = req.getRequestLine();
-			DigestAuthentication digest = new DigestAuthentication(rl.getMethod(), rl.getAddress().toString(), wah,
-					qop, null, username, passwd);
+			DigestAuthentication digest = new DigestAuthentication(rl.getMethod(), rl.getAddress().toString(), wah, qop,
+					null, username, passwd);
 			AuthorizationHeader ah;
 			if (code == 401)
 				ah = digest.getAuthorizationHeader();
@@ -257,7 +257,8 @@ public class ExtendedInviteDialog extends org.zoolu.sip.dialog.InviteDialog {
 			req.setAuthorizationHeader(ah);
 
 			if (req.isInvite()) // make sure it's an invite
-				this.invite_req = req; // must track last invite so cancel will work correctly - fixes 503 from asterisk
+				this.invite_req = req; // must track last invite so cancel will work correctly - fixes 503 from
+										// asterisk
 										// on cancel
 
 			transactions.remove(tc.getTransactionId());
@@ -279,8 +280,8 @@ public class ExtendedInviteDialog extends org.zoolu.sip.dialog.InviteDialog {
 	}
 
 	/**
-	 * Inherited from TransactionClientListener. When an TransactionClientListener goes into the "Terminated" state,
-	 * receiving a 2xx response
+	 * Inherited from TransactionClientListener. When an TransactionClientListener
+	 * goes into the "Terminated" state, receiving a 2xx response
 	 */
 	@Override
 	public void onTransSuccessResponse(TransactionClient t, Message msg) {
@@ -304,8 +305,8 @@ public class ExtendedInviteDialog extends org.zoolu.sip.dialog.InviteDialog {
 	}
 
 	/**
-	 * Inherited from TransactionClientListener. When the TransactionClient goes into the "Terminated" state, caused by
-	 * transaction timeout
+	 * Inherited from TransactionClientListener. When the TransactionClient goes
+	 * into the "Terminated" state, caused by transaction timeout
 	 */
 	@Override
 	public void onTransTimeout(TransactionClient t) {

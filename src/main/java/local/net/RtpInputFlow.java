@@ -21,45 +21,43 @@
 
 package local.net;
 
-
 import java.net.DatagramSocket;
 import java.io.IOException;
 
-
-/** This class represents a RTP flow for receiving rtp packets. 
+/**
+ * This class represents a RTP flow for receiving rtp packets.
  */
-public class RtpInputFlow extends RtpFlow
-{
-   static final int MAX_PACKET_SIZE=1500;
+public class RtpInputFlow extends RtpFlow {
+	static final int MAX_PACKET_SIZE = 1500;
 
-   /** Buffered RTP packet */
-   RtpPacket packet;
+	/** Buffered RTP packet */
+	RtpPacket packet;
 
-   /** Creates a new RTP input flow */ 
-   public RtpInputFlow(DatagramSocket datagram_socket)
-   {  super();
-      socket=new RtpSocket(datagram_socket);
-      byte[] buff=new byte[MAX_PACKET_SIZE];
-      packet=new RtpPacket(buff,0);
-   }
+	/** Creates a new RTP input flow */
+	public RtpInputFlow(DatagramSocket datagram_socket) {
+		super();
+		socket = new RtpSocket(datagram_socket);
+		byte[] buff = new byte[MAX_PACKET_SIZE];
+		packet = new RtpPacket(buff, 0);
+	}
 
-   /** Receives a block of RTP data */ 
-   public byte[] receive() throws IOException 
-   {  socket.receive(packet);
+	/** Receives a block of RTP data */
+	public byte[] receive() throws IOException {
+		socket.receive(packet);
 
-      padding=packet.hasPadding();
-      extension=packet.hasExtension();
-      csrc_count=packet.getCscrCount();
-      marker=packet.hasMarker();
-      payload_type=packet.getPayloadType();
-      sequence_number=packet.getSequenceNumber();
-      timestamp=packet.getTimestamp();
-      ssrc=packet.getSscr();
-      csrc_list=packet.getCscrList();
-         
-      initialized=true;
-      
-      return packet.getPayload();
-   }
+		padding = packet.hasPadding();
+		extension = packet.hasExtension();
+		csrc_count = packet.getCscrCount();
+		marker = packet.hasMarker();
+		payload_type = packet.getPayloadType();
+		sequence_number = packet.getSequenceNumber();
+		timestamp = packet.getTimestamp();
+		ssrc = packet.getSscr();
+		csrc_list = packet.getCscrList();
+
+		initialized = true;
+
+		return packet.getPayload();
+	}
 
 }

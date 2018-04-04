@@ -13,9 +13,9 @@
 package com.laszlosystems.libresample4j;
 
 /**
- * This file provides Kaiser-windowed low-pass filter support,
- * including a function to create the filter coefficients, and
- * two functions to apply the filter at a particular point.
+ * This file provides Kaiser-windowed low-pass filter support, including a
+ * function to create the filter coefficients, and two functions to apply the
+ * filter at a particular point.
  *
  * <pre>
  * reference: "Digital Filters, 2nd edition"
@@ -55,186 +55,200 @@ package com.laszlosystems.libresample4j;
  */
 public class FilterKit {
 
-    // Max error acceptable in Izero
-    private static final double IzeroEPSILON = 1E-21;
+	// Max error acceptable in Izero
+	private static final double IzeroEPSILON = 1E-21;
 
-    private static double Izero(double x) {
-        double sum, u, halfx, temp;
-        int n;
+	private static double Izero(double x) {
+		double sum, u, halfx, temp;
+		int n;
 
-        sum = u = n = 1;
-        halfx = x / 2.0;
-        do {
-            temp = halfx / n;
-            n += 1;
-            temp *= temp;
-            u *= temp;
-            sum += u;
-        } while (u >= IzeroEPSILON * sum);
-        return (sum);
-    }
+		sum = u = n = 1;
+		halfx = x / 2.0;
+		do {
+			temp = halfx / n;
+			n += 1;
+			temp *= temp;
+			u *= temp;
+			sum += u;
+		} while (u >= IzeroEPSILON * sum);
+		return (sum);
+	}
 
-    public static void lrsLpFilter(double c[], int N, double frq, double Beta, int Num) {
-        double IBeta, temp, temp1, inm1;
-        int i;
+	public static void lrsLpFilter(double c[], int N, double frq, double Beta, int Num) {
+		double IBeta, temp, temp1, inm1;
+		int i;
 
-        // Calculate ideal lowpass filter impulse response coefficients:
-        c[0] = 2.0 * frq;
-        for (i = 1; i < N; i++) {
-            temp = Math.PI * i / Num;
-            c[i] = Math.sin(2.0 * temp * frq) / temp; // Analog sinc function,
-            // cutoff = frq
-        }
+		// Calculate ideal lowpass filter impulse response coefficients:
+		c[0] = 2.0 * frq;
+		for (i = 1; i < N; i++) {
+			temp = Math.PI * i / Num;
+			c[i] = Math.sin(2.0 * temp * frq) / temp; // Analog sinc function,
+			// cutoff = frq
+		}
 
-        /*
-         * Calculate and Apply Kaiser window to ideal lowpass filter. Note: last
-         * window value is IBeta which is NOT zero. You're supposed to really
-         * truncate the window here, not ramp it to zero. This helps reduce the
-         * first sidelobe.
-         */
-        IBeta = 1.0 / Izero(Beta);
-        inm1 = 1.0 / (N - 1);
-        for (i = 1; i < N; i++) {
-            temp = i * inm1;
-            temp1 = 1.0 - temp * temp;
-            temp1 = (temp1 < 0 ? 0 : temp1); /*
-                                              * make sure it's not negative
-                                              * since we're taking the square
-                                              * root - this happens on Pentium
-                                              * 4's due to tiny roundoff errors
-                                              */
-            c[i] *= Izero(Beta * Math.sqrt(temp1)) * IBeta;
-        }
-    }
+		/*
+		 * Calculate and Apply Kaiser window to ideal lowpass filter. Note: last window
+		 * value is IBeta which is NOT zero. You're supposed to really truncate the
+		 * window here, not ramp it to zero. This helps reduce the first sidelobe.
+		 */
+		IBeta = 1.0 / Izero(Beta);
+		inm1 = 1.0 / (N - 1);
+		for (i = 1; i < N; i++) {
+			temp = i * inm1;
+			temp1 = 1.0 - temp * temp;
+			temp1 = (temp1 < 0 ? 0 : temp1); /*
+												 * make sure it's not negative since we're taking the square root - this
+												 * happens on Pentium 4's due to tiny roundoff errors
+												 */
+			c[i] *= Izero(Beta * Math.sqrt(temp1)) * IBeta;
+		}
+	}
 
-    /**
-     *
-     * @param Imp impulse response
-     * @param ImpD impulse response deltas
-     * @param Nwing length of one wing of filter
-     * @param Interp Interpolate coefs using deltas?
-     * @param Xp_array Current sample array
-     * @param Xp_index Current sample index
-     * @param Ph Phase
-     * @param Inc increment (1 for right wing or -1 for left)
-     * @return
-     */
-    public static float lrsFilterUp(float Imp[], float ImpD[], int Nwing, boolean Interp, float[] Xp_array, int Xp_index, double Ph,
-            int Inc) {
-        double a = 0;
-        float v, t;
+	/**
+	 *
+	 * @param Imp
+	 *            impulse response
+	 * @param ImpD
+	 *            impulse response deltas
+	 * @param Nwing
+	 *            length of one wing of filter
+	 * @param Interp
+	 *            Interpolate coefs using deltas?
+	 * @param Xp_array
+	 *            Current sample array
+	 * @param Xp_index
+	 *            Current sample index
+	 * @param Ph
+	 *            Phase
+	 * @param Inc
+	 *            increment (1 for right wing or -1 for left)
+	 * @return
+	 */
+	public static float lrsFilterUp(float Imp[], float ImpD[], int Nwing, boolean Interp, float[] Xp_array,
+			int Xp_index, double Ph, int Inc) {
+		double a = 0;
+		float v, t;
 
-        Ph *= Resampler.Npc; // Npc is number of values per 1/delta in impulse
-        // response
+		Ph *= Resampler.Npc; // Npc is number of values per 1/delta in impulse
+		// response
 
-        v = 0.0f; // The output value
+		v = 0.0f; // The output value
 
-        float[] Hp_array = Imp;
-        int Hp_index = (int) Ph;
+		float[] Hp_array = Imp;
+		int Hp_index = (int) Ph;
 
-        int End_index = Nwing;
+		int End_index = Nwing;
 
-        float[] Hdp_array = ImpD;
-        int Hdp_index = (int) Ph;
+		float[] Hdp_array = ImpD;
+		int Hdp_index = (int) Ph;
 
-        if (Interp) {
-            // Hdp = &ImpD[(int)Ph];
-            a = Ph - Math.floor(Ph); /* fractional part of Phase */
-        }
+		if (Interp) {
+			// Hdp = &ImpD[(int)Ph];
+			a = Ph - Math.floor(Ph); /* fractional part of Phase */
+		}
 
-        if (Inc == 1) // If doing right wing...
-        { // ...drop extra coeff, so when Ph is
-            End_index--; // 0.5, we don't do too many mult's
-            if (Ph == 0) // If the phase is zero...
-            { // ...then we've already skipped the
-                Hp_index += Resampler.Npc; // first sample, so we must also
-                Hdp_index += Resampler.Npc; // skip ahead in Imp[] and ImpD[]
-            }
-        }
+		if (Inc == 1) // If doing right wing...
+		{ // ...drop extra coeff, so when Ph is
+			End_index--; // 0.5, we don't do too many mult's
+			if (Ph == 0) // If the phase is zero...
+			{ // ...then we've already skipped the
+				Hp_index += Resampler.Npc; // first sample, so we must also
+				Hdp_index += Resampler.Npc; // skip ahead in Imp[] and ImpD[]
+			}
+		}
 
-        if (Interp)
-            while (Hp_index < End_index) {
-                t = Hp_array[Hp_index]; /* Get filter coeff */
-                t += Hdp_array[Hdp_index] * a; /* t is now interp'd filter coeff */
-                Hdp_index += Resampler.Npc; /* Filter coeff differences step */
-                t *= Xp_array[Xp_index]; /* Mult coeff by input sample */
-                v += t; /* The filter output */
-                Hp_index += Resampler.Npc; /* Filter coeff step */
-                Xp_index += Inc; /* Input signal step. NO CHECK ON BOUNDS */
-            }
-        else
-            while (Hp_index < End_index) {
-                t = Hp_array[Hp_index]; /* Get filter coeff */
-                t *= Xp_array[Xp_index]; /* Mult coeff by input sample */
-                v += t; /* The filter output */
-                Hp_index += Resampler.Npc; /* Filter coeff step */
-                Xp_index += Inc; /* Input signal step. NO CHECK ON BOUNDS */
-            }
+		if (Interp)
+			while (Hp_index < End_index) {
+				t = Hp_array[Hp_index]; /* Get filter coeff */
+				t += Hdp_array[Hdp_index] * a; /* t is now interp'd filter coeff */
+				Hdp_index += Resampler.Npc; /* Filter coeff differences step */
+				t *= Xp_array[Xp_index]; /* Mult coeff by input sample */
+				v += t; /* The filter output */
+				Hp_index += Resampler.Npc; /* Filter coeff step */
+				Xp_index += Inc; /* Input signal step. NO CHECK ON BOUNDS */
+			}
+		else
+			while (Hp_index < End_index) {
+				t = Hp_array[Hp_index]; /* Get filter coeff */
+				t *= Xp_array[Xp_index]; /* Mult coeff by input sample */
+				v += t; /* The filter output */
+				Hp_index += Resampler.Npc; /* Filter coeff step */
+				Xp_index += Inc; /* Input signal step. NO CHECK ON BOUNDS */
+			}
 
-        return v;
-    }
+		return v;
+	}
 
-    /**
-     *
-     * @param Imp impulse response
-     * @param ImpD impulse response deltas
-     * @param Nwing length of one wing of filter
-     * @param Interp Interpolate coefs using deltas?
-     * @param Xp_array Current sample array
-     * @param Xp_index Current sample index
-     * @param Ph Phase
-     * @param Inc increment (1 for right wing or -1 for left)
-     * @param dhb filter sampling period
-     * @return
-     */
-    public static float lrsFilterUD(float Imp[], float ImpD[], int Nwing, boolean Interp, float[] Xp_array, int Xp_index, double Ph,
-            int Inc, double dhb) {
-        float a;
-        float v, t;
-        double Ho;
+	/**
+	 *
+	 * @param Imp
+	 *            impulse response
+	 * @param ImpD
+	 *            impulse response deltas
+	 * @param Nwing
+	 *            length of one wing of filter
+	 * @param Interp
+	 *            Interpolate coefs using deltas?
+	 * @param Xp_array
+	 *            Current sample array
+	 * @param Xp_index
+	 *            Current sample index
+	 * @param Ph
+	 *            Phase
+	 * @param Inc
+	 *            increment (1 for right wing or -1 for left)
+	 * @param dhb
+	 *            filter sampling period
+	 * @return
+	 */
+	public static float lrsFilterUD(float Imp[], float ImpD[], int Nwing, boolean Interp, float[] Xp_array,
+			int Xp_index, double Ph, int Inc, double dhb) {
+		float a;
+		float v, t;
+		double Ho;
 
-        v = 0.0f; // The output value
-        Ho = Ph * dhb;
+		v = 0.0f; // The output value
+		Ho = Ph * dhb;
 
-        int End_index = Nwing;
+		int End_index = Nwing;
 
-        if (Inc == 1) // If doing right wing...
-        { // ...drop extra coeff, so when Ph is
-            End_index--; // 0.5, we don't do too many mult's
-            if (Ph == 0) // If the phase is zero...
-                Ho += dhb; // ...then we've already skipped the
-        } // first sample, so we must also
-        // skip ahead in Imp[] and ImpD[]
+		if (Inc == 1) // If doing right wing...
+		{ // ...drop extra coeff, so when Ph is
+			End_index--; // 0.5, we don't do too many mult's
+			if (Ph == 0) // If the phase is zero...
+				Ho += dhb; // ...then we've already skipped the
+		} // first sample, so we must also
+			// skip ahead in Imp[] and ImpD[]
 
-        float[] Hp_array = Imp;
-        int Hp_index;
+		float[] Hp_array = Imp;
+		int Hp_index;
 
-        if (Interp) {
-            float[] Hdp_array = ImpD;
-            int Hdp_index;
+		if (Interp) {
+			float[] Hdp_array = ImpD;
+			int Hdp_index;
 
-            while ((Hp_index = (int) Ho) < End_index) {
-                t = Hp_array[Hp_index]; // Get IR sample
-                Hdp_index = (int) Ho; // get interp bits from diff table
-                a = (float) (Ho - Math.floor(Ho)); // a is logically between 0
-                                                   // and 1
-                t += Hdp_array[Hdp_index] * a; // t is now interp'd filter coeff
-                t *= Xp_array[Xp_index]; // Mult coeff by input sample
-                v += t; // The filter output
-                Ho += dhb; // IR step
-                Xp_index += Inc; // Input signal step. NO CHECK ON BOUNDS
-            }
-        } else {
-            while ((Hp_index = (int) Ho) < End_index) {
-                t = Hp_array[Hp_index]; // Get IR sample
-                t *= Xp_array[Xp_index]; // Mult coeff by input sample
-                v += t; // The filter output
-                Ho += dhb; // IR step
-                Xp_index += Inc; // Input signal step. NO CHECK ON BOUNDS
-            }
-        }
+			while ((Hp_index = (int) Ho) < End_index) {
+				t = Hp_array[Hp_index]; // Get IR sample
+				Hdp_index = (int) Ho; // get interp bits from diff table
+				a = (float) (Ho - Math.floor(Ho)); // a is logically between 0
+													// and 1
+				t += Hdp_array[Hdp_index] * a; // t is now interp'd filter coeff
+				t *= Xp_array[Xp_index]; // Mult coeff by input sample
+				v += t; // The filter output
+				Ho += dhb; // IR step
+				Xp_index += Inc; // Input signal step. NO CHECK ON BOUNDS
+			}
+		} else {
+			while ((Hp_index = (int) Ho) < End_index) {
+				t = Hp_array[Hp_index]; // Get IR sample
+				t *= Xp_array[Xp_index]; // Mult coeff by input sample
+				v += t; // The filter output
+				Ho += dhb; // IR step
+				Xp_index += Inc; // Input signal step. NO CHECK ON BOUNDS
+			}
+		}
 
-        return v;
-    }
+		return v;
+	}
 
 }

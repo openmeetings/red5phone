@@ -1,6 +1,5 @@
 package org.zoolu.sip.provider;
 
-public interface OptionHandler
-{
-    String onOptionMsgReceived();
+public interface OptionHandler {
+	String onOptionMsgReceived();
 }

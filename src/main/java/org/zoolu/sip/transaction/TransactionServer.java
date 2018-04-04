@@ -33,17 +33,22 @@ import org.zoolu.sip.provider.TransactionIdentifier;
 import org.zoolu.tools.Timer;
 
 /**
- * Generic server transaction as defined in RFC 3261 (Section 17.2.2). A TransactionServer is responsable to create a
- * new SIP transaction that starts with a request message received by the SipProvider and ends sending a final response.<BR>
- * The changes of the internal status and the received messages are fired to the TransactionListener passed to the
- * TransactionServer object.<BR>
- * When costructing a new TransactionServer, the transaction type is passed as String parameter to the costructor (e.g.
- * "CANCEL", "BYE", etc..)
+ * Generic server transaction as defined in RFC 3261 (Section 17.2.2). A
+ * TransactionServer is responsable to create a new SIP transaction that starts
+ * with a request message received by the SipProvider and ends sending a final
+ * response.<BR>
+ * The changes of the internal status and the received messages are fired to the
+ * TransactionListener passed to the TransactionServer object.<BR>
+ * When costructing a new TransactionServer, the transaction type is passed as
+ * String parameter to the costructor (e.g. "CANCEL", "BYE", etc..)
  */
 
 public class TransactionServer extends Transaction {
 	private static Logger log = LoggerFactory.getLogger(TransactionServer.class);
-	/** the TransactionServerListener that captures the events fired by the TransactionServer */
+	/**
+	 * the TransactionServerListener that captures the events fired by the
+	 * TransactionServer
+	 */
 	TransactionServerListener transaction_listener;
 
 	/** last response message */
@@ -65,7 +70,9 @@ public class TransactionServer extends Transaction {
 		init(listener, new TransactionIdentifier(method), null);
 	}
 
-	/** Creates a new TransactionServer for the already received request <i>req</i>. */
+	/**
+	 * Creates a new TransactionServer for the already received request <i>req</i>.
+	 */
 	public TransactionServer(SipProvider provider, Message req, TransactionServerListener listener) {
 		super(provider);
 		request = new Message(req);
@@ -119,8 +126,8 @@ public class TransactionServer extends Transaction {
 	}
 
 	/**
-	 * Method derived from interface SipListener. It's fired from the SipProvider when a new message is received for to
-	 * the present TransactionServer.
+	 * Method derived from interface SipListener. It's fired from the SipProvider
+	 * when a new message is received for to the present TransactionServer.
 	 */
 	public void onReceivedMessage(SipProvider provider, Message msg) {
 		if (msg.isRequest()) {

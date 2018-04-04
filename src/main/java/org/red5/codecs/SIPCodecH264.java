@@ -1,31 +1,29 @@
 package org.red5.codecs;
 
 public class SIPCodecH264 implements SIPCodec {
-
 	private static final String codecName = "H264";
 	private static final int codecId = 35;
 	private static int defaultEncodedFrameSize = 160;
-    private static int defaultDecodedFrameSize = 160;
+	private static int defaultDecodedFrameSize = 160;
 	private int outgoingPacketization = 90000;
-    private int incomingPacketization = 90000;
-	
+	private int incomingPacketization = 90000;
+
 	@Override
 	public void encodeInit(int defaultEncodePacketization) {
-		if (this.outgoingPacketization == 0) {        
-            this.outgoingPacketization = defaultEncodePacketization;
-        }
+		if (this.outgoingPacketization == 0) {
+			this.outgoingPacketization = defaultEncodePacketization;
+		}
 	}
 
 	@Override
 	public void decodeInit(int defaultDecodePacketization) {
 		if (this.incomingPacketization == 0) {
-            this.incomingPacketization = defaultDecodePacketization;
-        }
+			this.incomingPacketization = defaultDecodePacketization;
+		}
 	}
 
 	@Override
-	public String codecNegotiateAttribute(String attributeName,
-			String localAttributeValue, String remoteAttributeValue) {
+	public String codecNegotiateAttribute(String attributeName, String localAttributeValue, String remoteAttributeValue) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -90,19 +88,20 @@ public class SIPCodecH264 implements SIPCodec {
 
 	@Override
 	public int getOutgoingPacketization() {
-		return 2048;//( defaultDecodedFrameSize / SIPCodec.DEFAULT_PACKETIZATION ) * outgoingPacketization;
+		return 2048;// ( defaultDecodedFrameSize / SIPCodec.DEFAULT_PACKETIZATION ) *
+					// outgoingPacketization;
 	}
 
 	@Override
 	public void setLocalPtime(int localPtime) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setRemotePtime(int remotePtime) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -110,5 +109,4 @@ public class SIPCodecH264 implements SIPCodec {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

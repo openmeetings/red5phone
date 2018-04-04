@@ -26,198 +26,247 @@ package org.zoolu.tools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
-
-/** Mangle collects some static methods for mangling binary-data structures 
-  */
-public class Mangle
-{
+/**
+ * Mangle collects some static methods for mangling binary-data structures
+ */
+public class Mangle {
 	protected static Logger log = LoggerFactory.getLogger(Mangle.class);
 
-   /** Compares two arrays of bytes */
-   public static boolean compare(byte[] a, byte[] b)
-   {  if (a.length!=b.length) return false;
-      for (int i=0; i<a.length; i++)
-         if (a[i]!=b[i]) return false;
-      return true;
-   }
-   
-   /** Initalizes a byte array with value <i>value</i> */
-   public static byte[] initBytes(byte[] b, int value)
-   {  for (int i=0; i<b.length; i++) b[i]=(byte)value;
-      return b;
-   }
+	/** Compares two arrays of bytes */
+	public static boolean compare(byte[] a, byte[] b) {
+		if (a.length != b.length)
+			return false;
+		for (int i = 0; i < a.length; i++)
+			if (a[i] != b[i])
+				return false;
+		return true;
+	}
 
-   /** Gets the unsigned representatin of a byte (into a short) */
-   public static short uByte(byte b)
-   {  return (short)(((short)b+256)%256);
-   } 
+	/** Initalizes a byte array with value <i>value</i> */
+	public static byte[] initBytes(byte[] b, int value) {
+		for (int i = 0; i < b.length; i++)
+			b[i] = (byte) value;
+		return b;
+	}
 
-   /** Gets the unsigned representatin of a 32-bit word (into a long) */
-   public static long uWord(int n)
-   {  long wmask=0x10000;
-      wmask*=wmask;
-      return (long)(((long)n+wmask)%wmask);
-   } 
+	/** Gets the unsigned representatin of a byte (into a short) */
+	public static short uByte(byte b) {
+		return (short) (((short) b + 256) % 256);
+	}
 
-   /** Returns a copy of an array of bytes <i>b</i> */
-   public static byte[] clone(byte[] b) { return getBytes(b,0,b.length); }
+	/** Gets the unsigned representatin of a 32-bit word (into a long) */
+	public static long uWord(int n) {
+		long wmask = 0x10000;
+		wmask *= wmask;
+		return (long) (((long) n + wmask) % wmask);
+	}
 
-   /** Returns a <i>len</i>-byte array from array <i>b</i> with offset <i>offset</i> */
-   public static byte[] getBytes(byte[] b, int offset, int len) { byte[] bb=new byte[len]; for (int k=0; k<len; k++) bb[k]=b[offset+k]; return bb; }
-   
-   /** Returns a 2-byte array from array <i>b</i> with offset <i>offset</i> */
-   public static byte[] twoBytes(byte[] b, int offset) { return getBytes(b,offset,2); }
-   
-   /** Returns a 4-byte array from array <i>b</i> with offset <i>offset</i> */
-   public static byte[] fourBytes(byte[] b, int offset) { return getBytes(b,offset,4); }
-   
-   /** Copies all bytes of array <i>src</i> into array <i>dst</i> with offset <i>offset</i> */
-   public static void copyBytes(byte[] src, byte[] dst, int offset) { for (int k=0; k<src.length; k++) dst[offset+k]=src[k]; }
+	/** Returns a copy of an array of bytes <i>b</i> */
+	public static byte[] clone(byte[] b) {
+		return getBytes(b, 0, b.length);
+	}
 
-   /** Copies the first <i>len</i> bytes of array <i>src</i> into array <i>dst</i> with offset <i>offset</i> */
-   public static void copyBytes(byte[] src, byte[] dst, int offset, int len) { for (int k=0; k<len; k++) dst[offset+k]=src[k]; }
-   
-   /** Copies the first 2 bytes of array <i>src</i> into array <i>dst</i> with offset <i>offset</i> */
-   public static void copyTwoBytes(byte[] src, byte[] dst, int offset) { copyBytes(src,dst,offset,2); }
-   
-   /** Copies a the first 4 bytes of array <i>src</i> into array <i>dst</i> with offset <i>index</i> */
-   public static void copyFourBytes(byte[] src, byte[] dst, int offset) { copyBytes(src,dst,offset,4); }
+	/**
+	 * Returns a <i>len</i>-byte array from array <i>b</i> with offset <i>offset</i>
+	 */
+	public static byte[] getBytes(byte[] b, int offset, int len) {
+		byte[] bb = new byte[len];
+		for (int k = 0; k < len; k++)
+			bb[k] = b[offset + k];
+		return bb;
+	}
 
+	/** Returns a 2-byte array from array <i>b</i> with offset <i>offset</i> */
+	public static byte[] twoBytes(byte[] b, int offset) {
+		return getBytes(b, offset, 2);
+	}
 
-   /** Transforms the first <i>len</i> bytes of an array into a string of hex values */
-   public static String bytesToHexString(byte[] b, int len)
-   {  String s=new String();
-      for (int i=0; i<len; i++)
-      {  s+=Integer.toHexString((((b[i]+256)%256)/16)%16);
-         s+=Integer.toHexString(((b[i]+256)%256)%16);
-      }
-      return s;
-   }
+	/** Returns a 4-byte array from array <i>b</i> with offset <i>offset</i> */
+	public static byte[] fourBytes(byte[] b, int offset) {
+		return getBytes(b, offset, 4);
+	}
 
-   /** Transforms a byte array into a string of hex values */
-   public static String bytesToHexString(byte[] b)
-   {  return bytesToHexString(b,b.length);
-   }
-       
-   /** Transforms a string of hex values into an array of bytes of max length <i>len</i>.
-     * The string may include ':' chars. 
-     * If <i>len</i> is set to -1, all string is converted. */
-   public static byte[] hexStringToBytes(String str, int len)
-   {  // if the string is of the form xx:yy:zz:ww.., remove all ':' first
-      if (str.indexOf(":")>=0)
-      {  String aux="";
-         char c;
-         for (int i=0; i<str.length(); i++) if ((c=str.charAt(i))!=':') aux+=c;
-         str=aux;
-      }
-      // if len=-1, set the len value
-      if (len<0) len=str.length()/2; 
-      byte[] b=new byte[len];
-      for (int i=0; i<len; i++)
-      {  if (len<str.length()/2) b[i]=(byte)Integer.parseInt(str.substring(i*2,i*2+2),16);
-         else b[i]=0;
-      }
-      return b;
-   }
-   
-   /** Transforms a string of hex values into an array of bytes.
-     * The string may include ':' chars. */
-   public static byte[] hexStringToBytes(String str)
-   {  return hexStringToBytes(str,-1); 
-   }
+	/**
+	 * Copies all bytes of array <i>src</i> into array <i>dst</i> with offset
+	 * <i>offset</i>
+	 */
+	public static void copyBytes(byte[] src, byte[] dst, int offset) {
+		for (int k = 0; k < src.length; k++)
+			dst[offset + k] = src[k];
+	}
 
-   /** Transforms a four-bytes array into a dotted four-decimals string */
-   public static String bytesToAddress(byte[] b)
-   {  return Integer.toString(uByte(b[0]))+"."+Integer.toString(uByte(b[1]))+"."+Integer.toString(uByte(b[2]))+"."+Integer.toString(uByte(b[3]));
-   }
-   
-   /** Transforms a dotted four-decimals string into a four-bytes array */
-   public static byte[] addressToBytes(String addr)
-   {  int begin=0, end;
-      byte[] b=new byte[4];
-      for (int i=0; i<4; i++)
-      {
-         if (i<3)
-         {  end=addr.indexOf('.',begin);
-            b[i]=(byte)Integer.parseInt(addr.substring(begin,end));
-            begin=end+1;
-         }
-      else b[3]=(byte)Integer.parseInt(addr.substring(begin));
-      }
-      return b;
-   } 
-   
-   /** Transforms a 4-bytes array into a 32-bit int */
-   public static long bytesToInt(byte[] b)
-   {  return ((((((long)uByte(b[0])<<8)+uByte(b[1]))<<8)+uByte(b[2]))<<8)+uByte(b[3]);
-   }
-   
-   /** Transforms a 32-bit int into a 4-bytes array */
-   public static byte[] intToBytes(long n)
-   {  byte[] b=new byte[4];
-      b[0]=(byte)(n>>24);
-      b[1]=(byte)((n>>16)%256);
-      b[2]=(byte)((n>>8)%256);
-      b[3]=(byte)(n%256);
-      return b;
-   }
+	/**
+	 * Copies the first <i>len</i> bytes of array <i>src</i> into array <i>dst</i>
+	 * with offset <i>offset</i>
+	 */
+	public static void copyBytes(byte[] src, byte[] dst, int offset, int len) {
+		for (int k = 0; k < len; k++)
+			dst[offset + k] = src[k];
+	}
 
-   /** Transforms a 4-bytes array into a 32-bit word (with the more significative byte at left) */
-   public static long bytesToWord(byte[] b, int offset)
-   {  return ((((((long)uByte(b[offset+3])<<8)+uByte(b[offset+2]))<<8)+uByte(b[offset+1]))<<8)+uByte(b[offset+0]);
-   }
+	/**
+	 * Copies the first 2 bytes of array <i>src</i> into array <i>dst</i> with
+	 * offset <i>offset</i>
+	 */
+	public static void copyTwoBytes(byte[] src, byte[] dst, int offset) {
+		copyBytes(src, dst, offset, 2);
+	}
 
-   /** Transforms a 4-bytes array into a 32-bit word (with the more significative byte at left) */
-   public static long bytesToWord(byte[] b)
-   {  return ((((((long)uByte(b[3])<<8)+uByte(b[2]))<<8)+uByte(b[1]))<<8)+uByte(b[0]);
-   }
-   
-   /** Transforms a 32-bit word (with the more significative byte at left) into a 4-bytes array */
-   public static byte[] wordToBytes(long n)
-   {  byte[] b=new byte[4];
-      b[3]=(byte)(n>>24);
-      b[2]=(byte)((n>>16)%256);
-      b[1]=(byte)((n>>8)%256);
-      b[0]=(byte)(n%256);
-      return b;
-   }
-   
-   
-   
+	/**
+	 * Copies a the first 4 bytes of array <i>src</i> into array <i>dst</i> with
+	 * offset <i>index</i>
+	 */
+	public static void copyFourBytes(byte[] src, byte[] dst, int offset) {
+		copyBytes(src, dst, offset, 4);
+	}
 
-   private static void print(String str)
-   {
-	   log.debug(str);
-   }
-   
+	/**
+	 * Transforms the first <i>len</i> bytes of an array into a string of hex values
+	 */
+	public static String bytesToHexString(byte[] b, int len) {
+		String s = new String();
+		for (int i = 0; i < len; i++) {
+			s += Integer.toHexString((((b[i] + 256) % 256) / 16) % 16);
+			s += Integer.toHexString(((b[i] + 256) % 256) % 16);
+		}
+		return s;
+	}
 
-   // *************************** MAIN ****************************
+	/** Transforms a byte array into a string of hex values */
+	public static String bytesToHexString(byte[] b) {
+		return bytesToHexString(b, b.length);
+	}
 
+	/**
+	 * Transforms a string of hex values into an array of bytes of max length
+	 * <i>len</i>. The string may include ':' chars. If <i>len</i> is set to -1, all
+	 * string is converted.
+	 */
+	public static byte[] hexStringToBytes(String str, int len) { // if the string is of the form xx:yy:zz:ww.., remove
+																	// all ':' first
+		if (str.indexOf(":") >= 0) {
+			String aux = "";
+			char c;
+			for (int i = 0; i < str.length(); i++)
+				if ((c = str.charAt(i)) != ':')
+					aux += c;
+			str = aux;
+		}
+		// if len=-1, set the len value
+		if (len < 0)
+			len = str.length() / 2;
+		byte[] b = new byte[len];
+		for (int i = 0; i < len; i++) {
+			if (len < str.length() / 2)
+				b[i] = (byte) Integer.parseInt(str.substring(i * 2, i * 2 + 2), 16);
+			else
+				b[i] = 0;
+		}
+		return b;
+	}
 
-   private static void decode(byte buffer[], int[] out)
-   {  int offset=0; 
-      int len=64;
-      for (int i = 0; offset < len; i++, offset += 4)
-      {  out[i] = ((int) (buffer[offset] & 0xff)) |
-         (((int) (buffer[offset + 1] & 0xff)) << 8) |
-         (((int) (buffer[offset + 2] & 0xff)) << 16) |
-         (((int)  buffer[offset + 3]) << 24);
-      }
-   }
+	/**
+	 * Transforms a string of hex values into an array of bytes. The string may
+	 * include ':' chars.
+	 */
+	public static byte[] hexStringToBytes(String str) {
+		return hexStringToBytes(str, -1);
+	}
 
+	/** Transforms a four-bytes array into a dotted four-decimals string */
+	public static String bytesToAddress(byte[] b) {
+		return Integer.toString(uByte(b[0])) + "." + Integer.toString(uByte(b[1])) + "." + Integer.toString(uByte(b[2]))
+				+ "." + Integer.toString(uByte(b[3]));
+	}
 
-   public static void main(String[] args)
-   {  
-      byte[] buff=new byte[64];
-      for (int i=0; i<64; i++) buff[i]=(byte)i;
-      
-      int[] x=new int[16];
-      for (int i=0; i<16; i++) x[i]=(int)bytesToWord(buff,(i*4));
-      
-      for (int i=0; i<16; i++) print("x["+i+"]: "+bytesToHexString(wordToBytes(x[i]))); 
-      decode(buff,x);      
-      for (int i=0; i<16; i++) print("x["+i+"]: "+bytesToHexString(wordToBytes(x[i]))); 
-   }
+	/** Transforms a dotted four-decimals string into a four-bytes array */
+	public static byte[] addressToBytes(String addr) {
+		int begin = 0, end;
+		byte[] b = new byte[4];
+		for (int i = 0; i < 4; i++) {
+			if (i < 3) {
+				end = addr.indexOf('.', begin);
+				b[i] = (byte) Integer.parseInt(addr.substring(begin, end));
+				begin = end + 1;
+			} else
+				b[3] = (byte) Integer.parseInt(addr.substring(begin));
+		}
+		return b;
+	}
+
+	/** Transforms a 4-bytes array into a 32-bit int */
+	public static long bytesToInt(byte[] b) {
+		return ((((((long) uByte(b[0]) << 8) + uByte(b[1])) << 8) + uByte(b[2])) << 8) + uByte(b[3]);
+	}
+
+	/** Transforms a 32-bit int into a 4-bytes array */
+	public static byte[] intToBytes(long n) {
+		byte[] b = new byte[4];
+		b[0] = (byte) (n >> 24);
+		b[1] = (byte) ((n >> 16) % 256);
+		b[2] = (byte) ((n >> 8) % 256);
+		b[3] = (byte) (n % 256);
+		return b;
+	}
+
+	/**
+	 * Transforms a 4-bytes array into a 32-bit word (with the more significative
+	 * byte at left)
+	 */
+	public static long bytesToWord(byte[] b, int offset) {
+		return ((((((long) uByte(b[offset + 3]) << 8) + uByte(b[offset + 2])) << 8) + uByte(b[offset + 1])) << 8)
+				+ uByte(b[offset + 0]);
+	}
+
+	/**
+	 * Transforms a 4-bytes array into a 32-bit word (with the more significative
+	 * byte at left)
+	 */
+	public static long bytesToWord(byte[] b) {
+		return ((((((long) uByte(b[3]) << 8) + uByte(b[2])) << 8) + uByte(b[1])) << 8) + uByte(b[0]);
+	}
+
+	/**
+	 * Transforms a 32-bit word (with the more significative byte at left) into a
+	 * 4-bytes array
+	 */
+	public static byte[] wordToBytes(long n) {
+		byte[] b = new byte[4];
+		b[3] = (byte) (n >> 24);
+		b[2] = (byte) ((n >> 16) % 256);
+		b[1] = (byte) ((n >> 8) % 256);
+		b[0] = (byte) (n % 256);
+		return b;
+	}
+
+	private static void print(String str) {
+		log.debug(str);
+	}
+
+	// *************************** MAIN ****************************
+
+	private static void decode(byte buffer[], int[] out) {
+		int offset = 0;
+		int len = 64;
+		for (int i = 0; offset < len; i++, offset += 4) {
+			out[i] = ((int) (buffer[offset] & 0xff)) | (((int) (buffer[offset + 1] & 0xff)) << 8)
+					| (((int) (buffer[offset + 2] & 0xff)) << 16) | (((int) buffer[offset + 3]) << 24);
+		}
+	}
+
+	public static void main(String[] args) {
+		byte[] buff = new byte[64];
+		for (int i = 0; i < 64; i++)
+			buff[i] = (byte) i;
+
+		int[] x = new int[16];
+		for (int i = 0; i < 16; i++)
+			x[i] = (int) bytesToWord(buff, (i * 4));
+
+		for (int i = 0; i < 16; i++)
+			print("x[" + i + "]: " + bytesToHexString(wordToBytes(x[i])));
+		decode(buff, x);
+		for (int i = 0; i < 16; i++)
+			print("x[" + i + "]: " + bytesToHexString(wordToBytes(x[i])));
+	}
 }

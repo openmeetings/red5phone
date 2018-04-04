@@ -112,7 +112,7 @@ public final class Codec {
 				d1 += d2 * d2 + d3 * d3;
 			}
 
-			af3[k1] = Math.round(Math.log(Math.max(1.0D, d1 / (double) h[k1])) * 1477.3197004799999D);
+			af3[k1] = Math.round(Math.log(Math.max(1.0D, d1 / h[k1])) * 1477.3197004799999D);
 		}
 
 		int l1 = process(af3[0], i_nelly_init_table, 0, 64);
@@ -125,7 +125,7 @@ public final class Codec {
 		}
 
 		for (int i3 = 0; i3 < 23; i3++) {
-			af3[i3] = (float) (1.0D / Math.pow(2D, (double) af4[i3] * 0.00048828125D));
+			af3[i3] = (float) (1.0D / Math.pow(2D, af4[i3] * 0.00048828125D));
 		}
 
 		for (int j3 = 0; j3 < 23; j3++) {
@@ -163,7 +163,6 @@ public final class Codec {
 				i5 -= 8;
 			} while (true);
 		}
-
 	}
 
 	public static void process(float[] af, byte[] abyte0, int i1, float[] af1, int j1, float[] af2, float[] af3,
@@ -180,7 +179,7 @@ public final class Codec {
 		}
 
 		for (int l2 = 0; l2 < 23; l2++) {
-			float f1 = (float) Math.pow(2D, (double) af2[l2] * 0.00048828125D);
+			float f1 = (float) Math.pow(2D, af2[l2] * 0.00048828125D);
 			int k3 = f[l2];
 			for (int k4 = f[l2 + 1]; k3 < k4; k3++) {
 				af4[k3] = af2[l2];
@@ -202,9 +201,9 @@ public final class Codec {
 				} else {
 					double d1 = Math.random() * 4294967296D;
 					if (d1 < 1073758208D) {
-						f2 = (float) ((double) f2 * -0.70709997400000002D);
+						f2 = (float) (f2 * -0.70709997400000002D);
 					} else {
-						f2 = (float) ((double) f2 * 0.70709997400000002D);
+						f2 = (float) (f2 * 0.70709997400000002D);
 					}
 				}
 				af2[l3] = f2;
@@ -248,10 +247,10 @@ public final class Codec {
 			double d4 = af2[i1 + i2];
 			af[l2] = -af2[i1 + k2];
 			af[k2] = -af2[i1 + l2];
-			af2[i1 + l2] = (float) (d1 * (double) d[i2] + d3 * (double) d[l2]);
-			af2[i1 + k2] = (float) (d2 * (double) d[j2] + d4 * (double) d[k2]);
-			af2[i1 + j2] = (float) ((double) d[j2] * -d4 + (double) d[k2] * d2);
-			af2[i1 + i2] = (float) ((double) d[i2] * -d3 + (double) d[l2] * d1);
+			af2[i1 + l2] = (float) (d1 * d[i2] + d3 * d[l2]);
+			af2[i1 + k2] = (float) (d2 * d[j2] + d4 * d[k2]);
+			af2[i1 + j2] = (float) (d[j2] * -d4 + d[k2] * d2);
+			af2[i1 + i2] = (float) (d[i2] * -d3 + d[l2] * d1);
 			l2++;
 			k2--;
 			j2++;
@@ -295,10 +294,10 @@ public final class Codec {
 			double d2 = af[i1 + l2 + 1];
 			double d4 = af[i1 + i3];
 			double d6 = af[i1 + k3];
-			af1[j1 + l2] = (float) ((double) a[k2] * d1 - (double) c[k2] * d4);
-			af1[j1 + l2 + 1] = (float) (d4 * (double) a[k2] + d1 * (double) c[k2]);
-			af1[j1 + k3] = (float) ((double) a[i2 - k2] * d6 - (double) c[i2 - k2] * d2);
-			af1[j1 + i3] = (float) (d2 * (double) a[i2 - k2] + d6 * (double) c[i2 - k2]);
+			af1[j1 + l2] = (float) (a[k2] * d1 - c[k2] * d4);
+			af1[j1 + l2 + 1] = (float) (d4 * a[k2] + d1 * c[k2]);
+			af1[j1 + k3] = (float) (a[i2 - k2] * d6 - c[i2 - k2] * d2);
+			af1[j1 + i3] = (float) (d2 * a[i2 - k2] + d6 * c[i2 - k2]);
 		}
 
 		process(af1, j1, k1 - 1);
@@ -317,10 +316,10 @@ public final class Codec {
 			double d5 = af1[(j1 + l3) - 1];
 			double d7 = af1[j1 + j4];
 			double d8 = af1[(j1 + j4) - 1];
-			af1[(j1 + j4) - 1] = (float) ((double) b[i4] * d7 + (double) b[j4 - 1 >> 1] * d8);
-			af1[j1 + j4] = (float) (d5 * (double) b[j4 + 1 >> 1] - d3 * (double) b[i4 - 1]);
-			af1[j1 + l3] = (float) (d8 * (double) b[i4] - d7 * (double) b[j4 - 1 >> 1]);
-			af1[(j1 + l3) - 1] = (float) ((double) b[j4 + 1 >> 1] * d3 + (double) b[i4 - 1] * d5);
+			af1[(j1 + j4) - 1] = (float) (b[i4] * d7 + b[j4 - 1 >> 1] * d8);
+			af1[j1 + j4] = (float) (d5 * b[j4 + 1 >> 1] - d3 * b[i4 - 1]);
+			af1[j1 + l3] = (float) (d8 * b[i4] - d7 * b[j4 - 1 >> 1]);
+			af1[(j1 + l3) - 1] = (float) (b[j4 + 1 >> 1] * d3 + b[i4 - 1] * d5);
 			j3++;
 			i4--;
 			l3 -= 2;
@@ -381,10 +380,10 @@ public final class Codec {
 					double d3 = af[i1 + i2 + 1];
 					double d5 = af[i1 + l4];
 					double d7 = af[i1 + l4 + 1];
-					af[i1 + l4] = (float) (d1 - (d5 * (double) e[128 - l2] + d7 * (double) e[l2]));
-					af[i1 + i2] = (float) (d1 + (d5 * (double) e[128 - l2] + d7 * (double) e[l2]));
-					af[i1 + l4 + 1] = (float) (d3 + (d5 * (double) e[l2] - d7 * (double) e[128 - l2]));
-					af[i1 + i2 + 1] = (float) (d3 - (d5 * (double) e[l2] - d7 * (double) e[128 - l2]));
+					af[i1 + l4] = (float) (d1 - (d5 * e[128 - l2] + d7 * e[l2]));
+					af[i1 + i2] = (float) (d1 + (d5 * e[128 - l2] + d7 * e[l2]));
+					af[i1 + l4 + 1] = (float) (d3 + (d5 * e[l2] - d7 * e[128 - l2]));
+					af[i1 + i2 + 1] = (float) (d3 - (d5 * e[l2] - d7 * e[128 - l2]));
 					j4--;
 					i2 += 2;
 					l2 += j3;
@@ -396,10 +395,10 @@ public final class Codec {
 					double d4 = af[i1 + i2 + 1];
 					double d6 = af[i1 + i5];
 					double d8 = af[i1 + i5 + 1];
-					af[i1 + i5] = (float) (d2 + (d6 * (double) e[128 - l2] - d8 * (double) e[l2]));
-					af[i1 + i2] = (float) (d2 - (d6 * (double) e[128 - l2] - d8 * (double) e[l2]));
-					af[i1 + i5 + 1] = (float) (d4 + (d8 * (double) e[128 - l2] + d6 * (double) e[l2]));
-					af[i1 + i2 + 1] = (float) (d4 - (d8 * (double) e[128 - l2] + d6 * (double) e[l2]));
+					af[i1 + i5] = (float) (d2 + (d6 * e[128 - l2] - d8 * e[l2]));
+					af[i1 + i2] = (float) (d2 - (d6 * e[128 - l2] - d8 * e[l2]));
+					af[i1 + i5 + 1] = (float) (d4 + (d8 * e[128 - l2] + d6 * e[l2]));
+					af[i1 + i2 + 1] = (float) (d4 - (d8 * e[128 - l2] + d6 * e[l2]));
 					k4--;
 					i2 += 2;
 					l2 -= j3;
@@ -666,7 +665,7 @@ public final class Codec {
 		float[] af = new float[64];
 		int i1 = 0;
 		for (int j1 = af.length; i1 < j1; i1++) {
-			af[i1] = (float) Math.cos((((double) i1 + 0.25D) / 64D) * 1.5707963267948966D);
+			af[i1] = (float) Math.cos(((i1 + 0.25D) / 64D) * 1.5707963267948966D);
 		}
 
 		return af;
@@ -677,7 +676,7 @@ public final class Codec {
 		float[] af = new float[64];
 		int i1 = 0;
 		for (int j1 = af.length; i1 < j1; i1++) {
-			af[i1] = (float) (Math.cos((double) ((float) i1 / 64F) * 1.5707963267948966D) * Math.sqrt(0.015625D));
+			af[i1] = (float) (Math.cos(i1 / 64F * 1.5707963267948966D) * Math.sqrt(0.015625D));
 		}
 
 		return af;
@@ -688,7 +687,7 @@ public final class Codec {
 		float[] af = new float[64];
 		int i1 = 0;
 		for (int j1 = af.length; i1 < j1; i1++) {
-			af[i1] = (float) (-Math.sin((double) (((float) i1 + 0.25F) / 64F) * 1.5707963267948966D));
+			af[i1] = (float) (-Math.sin((i1 + 0.25F) / 64F * 1.5707963267948966D));
 		}
 
 		return af;
@@ -699,7 +698,7 @@ public final class Codec {
 		float[] af = new float[128];
 		int i1 = 0;
 		for (int j1 = af.length; i1 < j1; i1++) {
-			af[i1] = (float) Math.sin((double) (((float) i1 + 0.5F) / 128F) * 1.5707963267948966D);
+			af[i1] = (float) Math.sin((i1 + 0.5F) / 128F * 1.5707963267948966D);
 		}
 
 		return af;
@@ -710,7 +709,7 @@ public final class Codec {
 		float[] af = new float[129];
 		int i1 = 0;
 		for (int j1 = af.length; i1 < j1; i1++) {
-			af[i1] = (float) Math.sin((double) ((float) i1 / 128F) * 1.5707963267948966D);
+			af[i1] = (float) Math.sin(i1 / 128F * 1.5707963267948966D);
 		}
 
 		return af;

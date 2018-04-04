@@ -64,8 +64,8 @@ public class MixerLine extends InputStream {
 
 	/**
 	 * Returns the number of bytes that can be read (or skipped over) from this
-	 * input stream without blocking by the next caller of a method for this
-	 * input stream.
+	 * input stream without blocking by the next caller of a method for this input
+	 * stream.
 	 */
 	@Override
 	public int available() throws IOException {
@@ -80,8 +80,8 @@ public class MixerLine extends InputStream {
 	}
 
 	/**
-	 * Closes this input stream and releases any system resources associated
-	 * with the stream.
+	 * Closes this input stream and releases any system resources associated with
+	 * the stream.
 	 */
 	@Override
 	public void close() throws IOException {
@@ -142,8 +142,7 @@ public class MixerLine extends InputStream {
 	}
 
 	/**
-	 * Reads up to len bytes of data from the input stream into an array of
-	 * bytes.
+	 * Reads up to len bytes of data from the input stream into an array of bytes.
 	 */
 	@Override
 	public int read(byte[] b, int off, int len) throws IOException {
@@ -152,8 +151,8 @@ public class MixerLine extends InputStream {
 	}
 
 	/**
-	 * Repositions this stream to the position at the time the mark method was
-	 * last called on this input stream.
+	 * Repositions this stream to the position at the time the mark method was last
+	 * called on this input stream.
 	 */
 	@Override
 	public void reset() throws IOException {

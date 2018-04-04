@@ -21,7 +21,6 @@
 package org.red5.codecs.asao;
 
 public class CodecImpl {
-
 	private static class BitStream {
 
 		private int byteOffset = 0;
@@ -46,7 +45,7 @@ public class CodecImpl {
 
 		public int pop(int len, byte[] buf) {
 
-			int val = ((int) buf[byteOffset] & 0xff) >> bitOffset;
+			int val = (buf[byteOffset] & 0xff) >> bitOffset;
 			final int bits_read = 8 - bitOffset;
 
 			if (len >= bits_read) {
@@ -308,7 +307,7 @@ public class CodecImpl {
 
 		/*
 		 * i--> <--j ---------------------------- x--> <--y
-		 * 
+		 *
 		 * i, j, x, y are indexes into table7. table7 is defined as follows: for (int i = 0; i < 128; ++i) { table7[i] =
 		 * Math.sin((i + 0.5) / 128 * (Math.PI / 2)); }
 		 */
@@ -343,7 +342,7 @@ public class CodecImpl {
 
 		/*
 		 * i--> <--j ---------------------------- x--> <--y
-		 * 
+		 *
 		 * i, j, x, y are indexes into table7. table7 is defined as follows: for (int i = 0; i < 128; ++i) { table7[i] =
 		 * Math.sin((i + 0.5) / 128 * (Math.PI / 2)); }
 		 */
@@ -579,7 +578,7 @@ public class CodecImpl {
 		final Factor factor = new Factor(len);
 
 		for (int i = 0; i < len; ++i) {
-			scaled_input[i] = (short) (((int) scaled_input[i] * 3) >> 2); // *=
+			scaled_input[i] = (short) ((scaled_input[i] * 3) >> 2); // *=
 																			// 0.75
 		}
 
@@ -684,7 +683,7 @@ public class CodecImpl {
 		}
 
 		for (int i = 0; i < len; ++i) {
-			int tmp = (int) scaled_input[i] - scaled_input_base;
+			int tmp = scaled_input[i] - scaled_input_base;
 			if (tmp >= 0) {
 				tmp = (tmp + (1 << (max_input_scale - 1))) >> max_input_scale;
 			} else {
@@ -720,7 +719,7 @@ public class CodecImpl {
 		final int var_1 = 1 << (scale - 1);
 
 		for (int i = 0; i < len; ++i) {
-			int var_2 = (int) in[i] - base;
+			int var_2 = in[i] - base;
 			if (var_2 < 0) {
 				var_2 = 0;
 			} else {
@@ -771,7 +770,7 @@ public class CodecImpl {
 
 	/**
 	 * Lookup table.
-	 * 
+	 *
 	 * <pre>
 	 * for (int i = 0; i &lt; 64; ++i) {
 	 * 	table4[i] = Math.cos((i + 0.25) / 64 * (Math.PI / 2));
@@ -791,7 +790,7 @@ public class CodecImpl {
 
 	/**
 	 * Lookup table.
-	 * 
+	 *
 	 * <pre>
 	 * for (int i = 0; i &lt; 64; ++i) {
 	 * 	table5[i] = Math.cos(i / 64.0 * (Math.PI / 2)) * Math.sqrt(2.0 / 128);
@@ -811,7 +810,7 @@ public class CodecImpl {
 
 	/**
 	 * Lookup table.
-	 * 
+	 *
 	 * <pre>
 	 * for (int i = 0; i &lt; 64; ++i) {
 	 * 	table6[i] = -Math.sin((i + 0.25) / 64 * (Math.PI / 2));
@@ -831,7 +830,7 @@ public class CodecImpl {
 
 	/**
 	 * Lookup table.
-	 * 
+	 *
 	 * <pre>
 	 * for (int i = 0; i &lt; 128; ++i) {
 	 * 	table7[i] = Math.sin((i + 0.5) / 128 * (Math.PI / 2));
@@ -863,7 +862,7 @@ public class CodecImpl {
 
 	/**
 	 * Lookup table.
-	 * 
+	 *
 	 * <pre>
 	 * for (int i = 0; i &lt;= 128; ++i) {
 	 * 	table10[i] = Math.sin((i / 128.0) * (Math.PI / 2));

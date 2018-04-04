@@ -31,7 +31,6 @@ package org.red5.codecs.asao;
 //
 //------------------------------------------------------------------------
 class SetupTable {
-
 	public final int parameterA;
 
 	public final int parameterB;

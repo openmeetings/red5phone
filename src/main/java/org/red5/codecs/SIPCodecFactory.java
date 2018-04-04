@@ -26,7 +26,7 @@ public class SIPCodecFactory {
 	// Available video codecs
 
 	private static final int videoCodecH264 = 35;
-	    
+
 	private int[] availableVideoCodecsId = {videoCodecH264};
 
 	private static SIPCodecFactory singletonSIPCodecFactory = new SIPCodecFactory();
@@ -34,13 +34,12 @@ public class SIPCodecFactory {
 	private static String[] codecCommonAudioMediaAttributes = { "ptime:20" };
 
 	public static SIPCodecFactory getInstance() {
-
 		return singletonSIPCodecFactory;
 	}
 
 	/**
 	 * Create a new instance of SIPCodec by codec id.
-	 * 
+	 *
 	 * @return The codec associated with "codecId".
 	 * */
 	public SIPCodec getSIPMediaCodec(int codecId) {
@@ -82,7 +81,7 @@ public class SIPCodecFactory {
 
 	/**
 	 * Get all available audio codecs
-	 * 
+	 *
 	 * @return SIPCodec array containing all audio codecs instances
 	 */
 	public SIPCodec[] getAvailableAudioCodecs() {
@@ -103,7 +102,7 @@ public class SIPCodecFactory {
 
 	/**
 	 * Get all available video codecs
-	 * 
+	 *
 	 * @return SIPCodec array containing all video codecs instances
 	 */
 	public SIPCodec[] getAvailableVideoCodecs() {
@@ -124,7 +123,7 @@ public class SIPCodecFactory {
 
 	/**
 	 * Get all available codecs
-	 * 
+	 *
 	 * @param codecsPrecedence
 	 *            semicolon separated ids from the codecs
 	 * @return SIPCodec array containing all codecs instances

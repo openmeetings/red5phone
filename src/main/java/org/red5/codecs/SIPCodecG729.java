@@ -4,7 +4,6 @@ import org.red5.codecs.g729.Decoder;
 import org.red5.codecs.g729.Encoder;
 
 public class SIPCodecG729 implements SIPCodec {
-
 	// Codec information
 	private static final String codecName = "G729";
 

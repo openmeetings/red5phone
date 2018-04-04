@@ -39,8 +39,7 @@ public class UdpMultiRelay extends Thread {
 	/** Destination sockets */
 	Vector<SocketAddress> dest_sockets;
 	/**
-	 * Destination socket of remote host to which the packets must not be
-	 * relayed
+	 * Destination socket of remote host to which the packets must not be relayed
 	 */
 	SocketAddress no_relay_dest_socket;
 
@@ -90,16 +89,14 @@ public class UdpMultiRelay extends Thread {
 	}
 
 	/**
-	 * Sets the maximum time that the UDP relay can remain active after been
-	 * halted
+	 * Sets the maximum time that the UDP relay can remain active after been halted
 	 */
 	public void setSoTimeout(int so_to) {
 		socket_to = so_to;
 	}
 
 	/**
-	 * Gets the maximum time that the UDP relay can remain active after been
-	 * halted
+	 * Gets the maximum time that the UDP relay can remain active after been halted
 	 */
 	public int getSoTimeout() {
 		return socket_to;

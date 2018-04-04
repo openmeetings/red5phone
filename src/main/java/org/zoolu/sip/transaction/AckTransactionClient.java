@@ -29,13 +29,17 @@ import org.zoolu.sip.message.Message;
 import org.zoolu.sip.provider.SipProvider;
 
 /**
- * ACK client transaction should follow an INVITE client transaction within an INVITE Dialog in a SIP UAC. The
- * AckTransactionClient simply sends an ACK request message and terminates.
+ * ACK client transaction should follow an INVITE client transaction within an
+ * INVITE Dialog in a SIP UAC. The AckTransactionClient simply sends an ACK
+ * request message and terminates.
  */
 public class AckTransactionClient extends Transaction {
 	private static final Logger log = LoggerFactory.getLogger(AckTransactionClient.class);
 
-	/** the TransactionClientListener that captures the events fired by the AckTransactionClient */
+	/**
+	 * the TransactionClientListener that captures the events fired by the
+	 * AckTransactionClient
+	 */
 	TransactionClientListener transaction_listener;
 
 	/** Creates a new AckTransactionClient. */
@@ -53,7 +57,8 @@ public class AckTransactionClient extends Transaction {
 		log.trace("start");
 		sip_provider.sendMessage(request);
 		changeStatus(STATE_TERMINATED);
-		// if (transaction_listener!=null) transaction_listener.onAckCltTerminated(this);
+		// if (transaction_listener!=null)
+		// transaction_listener.onAckCltTerminated(this);
 		// (CHANGE-040421) free the link to transaction_listener
 		transaction_listener = null;
 	}

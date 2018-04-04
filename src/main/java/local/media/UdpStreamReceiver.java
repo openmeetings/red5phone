@@ -21,126 +21,136 @@
 
 package local.media;
 
-
 import java.io.OutputStream;
 
 import org.zoolu.net.UdpPacket;
 import org.zoolu.net.UdpSocket;
 
+/**
+ * UdpStreamReceiver is a generic stream receiver. It receives packets from UDP
+ * and writes them into an OutputStream.
+ */
+public class UdpStreamReceiver extends Thread {
 
-/** UdpStreamReceiver is a generic stream receiver.
-  * It receives packets from UDP and writes them into an OutputStream.
-  */
-public class UdpStreamReceiver extends Thread
-{
+	/** Whether debug mode */
+	private static final boolean DEBUG = true;
 
-   /** Whether debug mode */
-   private static final boolean DEBUG=true;
+	/** Size of the read buffer */
+	private static final int BUFFER_SIZE = 32768;
 
-   /** Size of the read buffer */
-   private static final int BUFFER_SIZE=32768;
+	/** Maximum blocking time, spent waiting for reading new bytes [milliseconds] */
+	private static final int SO_TIMEOUT = 200;
 
-   /** Maximum blocking time, spent waiting for reading new bytes [milliseconds] */
-   private static final int SO_TIMEOUT=200;
+	/** The OutputStream */
+	OutputStream output_stream = null;
 
-   /** The OutputStream */
-   OutputStream output_stream=null;
+	/** The UdpSocket */
+	UdpSocket udp_socket = null;
 
-   /** The UdpSocket */
-   UdpSocket udp_socket=null;
+	/** Whether the socket has been created here */
+	boolean socket_is_local = false;
 
-   /** Whether the socket has been created here */
-   boolean socket_is_local=false;
+	/** Whether it is running */
+	boolean running = false;
 
-   /** Whether it is running */
-   boolean running=false;
+	/**
+	 * Constructs a UdpStreamReceiver.
+	 * 
+	 * @param output_stream
+	 *            the stream sink
+	 * @param local_port
+	 *            the local receiver port
+	 */
+	public UdpStreamReceiver(OutputStream output_stream, int local_port) {
+		try {
+			UdpSocket socket = new UdpSocket(local_port);
+			socket_is_local = true;
+			init(output_stream, socket);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
+	/**
+	 * Constructs a UdpStreamReceiver.
+	 * 
+	 * @param output_stream
+	 *            the stream sink
+	 * @param socket
+	 *            the local receiver UdpSocket
+	 */
+	public UdpStreamReceiver(OutputStream output_stream, UdpSocket socket) {
+		init(output_stream, socket);
+	}
 
-   /** Constructs a UdpStreamReceiver.
-     * @param output_stream the stream sink
-     * @param local_port the local receiver port */
-   public UdpStreamReceiver(OutputStream output_stream, int local_port)
-   {  try
-      {  UdpSocket socket=new UdpSocket(local_port);
-         socket_is_local=true;
-         init(output_stream,socket);
-      }
-      catch (Exception e) {  e.printStackTrace();  }
-   }
+	/** Inits the UdpStreamReceiver */
+	private void init(OutputStream output_stream, UdpSocket socket) {
+		this.output_stream = output_stream;
+		if (socket != null)
+			udp_socket = socket;
+	}
 
-   /** Constructs a UdpStreamReceiver.
-     * @param output_stream the stream sink
-     * @param socket the local receiver UdpSocket */
-   public UdpStreamReceiver(OutputStream output_stream, UdpSocket socket)
-   {  init(output_stream,socket);
-   }
+	/** Whether is running */
+	public boolean isRunning() {
+		return running;
+	}
 
-   /** Inits the UdpStreamReceiver */
-   private void init(OutputStream output_stream, UdpSocket socket)
-   {  this.output_stream=output_stream;
-      if (socket!=null) udp_socket=socket;
-   }
+	/** Stops running */
+	public void halt() {
+		running = false;
+	}
 
+	/** Runs it in a new Thread. */
+	public void run() {
+		if (udp_socket == null) {
+			if (DEBUG)
+				println("ERROR: RTP socket is null");
+			return;
+		}
+		// else
 
-   /** Whether is running */
-   public boolean isRunning()
-   {  return running;
-   }
+		byte[] buffer = new byte[BUFFER_SIZE];
+		UdpPacket udp_packet = new UdpPacket(buffer, 0);
 
-   /** Stops running */
-   public void halt()
-   {  running=false;
-   }
+		if (DEBUG)
+			println("Reading blocks of max " + buffer.length + " bytes");
 
-   /** Runs it in a new Thread. */
-   public void run()
-   {
-      if (udp_socket==null)
-      {  if (DEBUG) println("ERROR: RTP socket is null");
-         return;
-      }
-      //else
+		// byte[] aux=new byte[BUFFER_SIZE];
 
-      byte[] buffer=new byte[BUFFER_SIZE];
-      UdpPacket udp_packet=new UdpPacket(buffer,0);
+		running = true;
+		try {
+			udp_socket.setSoTimeout(SO_TIMEOUT);
+			while (running) {
+				try { // read a block of data from the rtp socket
+					udp_socket.receive(udp_packet);
+					// if (DEBUG) System.out.print(".");
 
-      if (DEBUG) println("Reading blocks of max "+buffer.length+" bytes");
+					// write this block to the output_stream (only if still running..)
+					if (running)
+						output_stream.write(udp_packet.getData(), udp_packet.getOffset(), udp_packet.getLength());
+				} catch (java.io.InterruptedIOException e) {
+				}
+			}
+		} catch (Exception e) {
+			running = false;
+			e.printStackTrace();
+		}
 
-      //byte[] aux=new byte[BUFFER_SIZE];
+		// close UdpSocket
+		if (socket_is_local && udp_socket != null)
+			udp_socket.close();
 
-      running=true;
-      try
-      {  udp_socket.setSoTimeout(SO_TIMEOUT);
-         while (running)
-         {  try
-            {  // read a block of data from the rtp socket
-               udp_socket.receive(udp_packet);
-               //if (DEBUG) System.out.print(".");
-               
-               // write this block to the output_stream (only if still running..)
-               if (running) output_stream.write(udp_packet.getData(), udp_packet.getOffset(), udp_packet.getLength());
-            }
-            catch (java.io.InterruptedIOException e) { }
-         }
-      }
-      catch (Exception e) {  running=false; e.printStackTrace();  }
+		// free all
+		output_stream = null;
+		udp_socket = null;
 
-      // close UdpSocket
-      if (socket_is_local && udp_socket!=null) udp_socket.close();
-      
-      // free all
-      output_stream=null;
-      udp_socket=null;
-      
-      if (DEBUG) println("udp receiver terminated");
-   }
+		if (DEBUG)
+			println("udp receiver terminated");
+	}
 
+	/** Debug output */
+	private static void println(String str) {
+		System.out.println("UdpStreamReceiver: " + str);
+	}
 
-   /** Debug output */
-   private static void println(String str)
-   {  System.out.println("UdpStreamReceiver: "+str);
-   }
-   
 }
-
-

@@ -73,7 +73,8 @@ public class IpAddress {
 
 	/** Gets the host address */
 	/*
-	 * public String getAddress() { if (address==null) address=inet_address.getHostAddress(); return address; }
+	 * public String getAddress() { if (address==null)
+	 * address=inet_address.getHostAddress(); return address; }
 	 */
 
 	/** Makes a copy */

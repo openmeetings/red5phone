@@ -21,65 +21,63 @@
 
 package local.net;
 
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+/**
+ * RtpSocket implements a RTP socket for receiving and sending RTP packets.
+ * <p>
+ * RtpSocket is associated to a DatagramSocket that is used to send and/or
+ * receive RtpPackets.
+ */
+public class RtpSocket {
+	/** UDP socket */
+	DatagramSocket socket;
 
-/** RtpSocket implements a RTP socket for receiving and sending RTP packets. 
-  * <p> RtpSocket is associated to a DatagramSocket that is used
-  * to send and/or receive RtpPackets.
-  */
-public class RtpSocket
-{
-   /** UDP socket */
-   DatagramSocket socket;
-        
-   /** Remote address */
-   InetAddress r_addr;
+	/** Remote address */
+	InetAddress r_addr;
 
-   /** Remote port */
-   int r_port;
+	/** Remote port */
+	int r_port;
 
-   /** Creates a new RTP socket (only receiver) */ 
-   public RtpSocket(DatagramSocket datagram_socket)
-   {  socket=datagram_socket;
-      r_addr=null;
-      r_port=0;
-   }
+	/** Creates a new RTP socket (only receiver) */
+	public RtpSocket(DatagramSocket datagram_socket) {
+		socket = datagram_socket;
+		r_addr = null;
+		r_port = 0;
+	}
 
-   /** Creates a new RTP socket (sender and receiver) */ 
-   public RtpSocket(DatagramSocket datagram_socket, InetAddress remote_address, int remote_port)
-   {  socket=datagram_socket;
-      r_addr=remote_address;
-      r_port=remote_port;
-   }
+	/** Creates a new RTP socket (sender and receiver) */
+	public RtpSocket(DatagramSocket datagram_socket, InetAddress remote_address, int remote_port) {
+		socket = datagram_socket;
+		r_addr = remote_address;
+		r_port = remote_port;
+	}
 
-   /** Returns the RTP DatagramSocket */ 
-   public DatagramSocket getDatagramSocket()
-   {  return socket;
-   }
+	/** Returns the RTP DatagramSocket */
+	public DatagramSocket getDatagramSocket() {
+		return socket;
+	}
 
-   /** Receives a RTP packet from this socket */
-   public void receive(RtpPacket rtpp) throws IOException
-   {  DatagramPacket datagram=new DatagramPacket(rtpp.packet,rtpp.packet.length);
-      socket.receive(datagram);
-      rtpp.packet_len=datagram.getLength();     
-   }
-   
-   /** Sends a RTP packet from this socket */      
-   public void send(RtpPacket rtpp) throws IOException
-   {  DatagramPacket datagram=new DatagramPacket(rtpp.packet,rtpp.packet_len);
-      datagram.setAddress(r_addr);
-      datagram.setPort(r_port);
-      socket.send(datagram);
-   }
+	/** Receives a RTP packet from this socket */
+	public void receive(RtpPacket rtpp) throws IOException {
+		DatagramPacket datagram = new DatagramPacket(rtpp.packet, rtpp.packet.length);
+		socket.receive(datagram);
+		rtpp.packet_len = datagram.getLength();
+	}
 
-   /** Closes this socket */      
-   public void close()
-   {  //socket.close();
-   }
+	/** Sends a RTP packet from this socket */
+	public void send(RtpPacket rtpp) throws IOException {
+		DatagramPacket datagram = new DatagramPacket(rtpp.packet, rtpp.packet_len);
+		datagram.setAddress(r_addr);
+		datagram.setPort(r_port);
+		socket.send(datagram);
+	}
+
+	/** Closes this socket */
+	public void close() { // socket.close();
+	}
 
 }

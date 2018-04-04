@@ -41,7 +41,6 @@ public class SIPCodecAttributes {
 	}
 
 	public String getDecodeAttribute(String attributeName) {
-
 		return codecDecodeAttributes.get(attributeName);
 	}
 

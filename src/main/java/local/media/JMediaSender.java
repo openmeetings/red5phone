@@ -59,13 +59,13 @@ public class JMediaSender {
 		processor.configure();
 		while (processor.getState() < Processor.Configured) {
 			// wait..
-			//synchronized (getStateLock()) {
-			//	try {
-			//		getStateLock().wait();
-			//	} catch (InterruptedException ie) {
-			//		return;
-			//	}
-			//}
+			// synchronized (getStateLock()) {
+			// try {
+			// getStateLock().wait();
+			// } catch (InterruptedException ie) {
+			// return;
+			// }
+			// }
 		}
 		System.out.println("Processor configured");
 

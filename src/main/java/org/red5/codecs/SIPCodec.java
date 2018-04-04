@@ -4,7 +4,6 @@ package org.red5.codecs;
  * Interface for media codecs
  * */
 public interface SIPCodec {
-
 	// Codec constants
 	public static String MEDIA_TYPE_AUDIO = "audio";
 
@@ -57,7 +56,7 @@ public interface SIPCodec {
 
 	/**
 	 * Get codec media attributes used for SDP negotiation Example: iLBC codec will return "fmtp:111 mode=30"
-	 * 
+	 *
 	 * @return String array containing codec attribute
 	 */
 	public String[] getCodecMediaAttributes();

@@ -31,7 +31,6 @@ package org.red5.codecs.asao;
 //
 //------------------------------------------------------------------------
 public final class Encoder {
-
 	public Encoder() {
 
 	}

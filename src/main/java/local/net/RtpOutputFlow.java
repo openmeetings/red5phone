@@ -21,34 +21,32 @@
 
 package local.net;
 
-
 import java.net.InetAddress;
-import java.net.DatagramSocket; 
-import java.io.IOException; 
+import java.net.DatagramSocket;
+import java.io.IOException;
 //import org.zoolu.tools.Random;
 
-
-/** This class represents a RTP flow for sending rtp packets. 
+/**
+ * This class represents a RTP flow for sending rtp packets.
  */
-public class RtpOutputFlow extends RtpFlow
-{
-   static final int MAX_PACKET_SIZE=1500;
+public class RtpOutputFlow extends RtpFlow {
+	static final int MAX_PACKET_SIZE = 1500;
 
-   /** Buffered RTP packet */
-   RtpPacket packet;
+	/** Buffered RTP packet */
+	RtpPacket packet;
 
-   /** Creates a new RTP input flow */ 
-   public RtpOutputFlow(DatagramSocket datagram_socket, InetAddress remote_address, int remote_port)
-   {  super();
-      socket=new RtpSocket(datagram_socket,remote_address,remote_port);
-      byte[] buff=new byte[MAX_PACKET_SIZE];
-      packet=new RtpPacket(buff,0);
-   }
+	/** Creates a new RTP input flow */
+	public RtpOutputFlow(DatagramSocket datagram_socket, InetAddress remote_address, int remote_port) {
+		super();
+		socket = new RtpSocket(datagram_socket, remote_address, remote_port);
+		byte[] buff = new byte[MAX_PACKET_SIZE];
+		packet = new RtpPacket(buff, 0);
+	}
 
-   /** Receives a block of RTP data */ 
-   public void send(byte[] data) throws IOException 
-   {  packet.setSequenceNumber(packet.getSequenceNumber()+1);           
-      packet.setPayload(data,data.length);
-   }
+	/** Receives a block of RTP data */
+	public void send(byte[] data) throws IOException {
+		packet.setSequenceNumber(packet.getSequenceNumber() + 1);
+		packet.setPayload(data, data.length);
+	}
 
 }

@@ -23,30 +23,29 @@
 
 package org.zoolu.sip.header;
 
-
 import org.zoolu.sip.address.NameAddress;
 import org.zoolu.sip.address.SipURL;
 
+/**
+ * SIP Referred-By header (draft-ietf-sip-referredby).
+ * <p>
+ * Referred-By is a request header field (request-header). It appears in REFER
+ * requests. It provides the URL of the referrer.
+ */
+public class ReferredByHeader extends NameAddressHeader {
 
-/** SIP Referred-By header (draft-ietf-sip-referredby).
-  * <p>Referred-By is a request header field (request-header).
-  * It appears in REFER requests. It provides the URL of the referrer. */
-public class ReferredByHeader extends NameAddressHeader
-{
+	/** Costructs a new ReferredByHeader. */
+	public ReferredByHeader(NameAddress nameaddr) {
+		super(SipHeaders.Referred_By, nameaddr);
+	}
 
-   /** Costructs a new ReferredByHeader. */
-   public ReferredByHeader(NameAddress nameaddr)
-   {  super(SipHeaders.Referred_By,nameaddr);
-   }
+	/** Costructs a new ReferredByHeader. */
+	public ReferredByHeader(SipURL url) {
+		super(SipHeaders.Referred_By, url);
+	}
 
-   /** Costructs a new ReferredByHeader. */
-   public ReferredByHeader(SipURL url)
-   {  super(SipHeaders.Referred_By,url);
-   }
-
-   /** Costructs a new ReferredByHeader. */
-   public ReferredByHeader(Header hd)
-   {  super(hd);
-   }
+	/** Costructs a new ReferredByHeader. */
+	public ReferredByHeader(Header hd) {
+		super(hd);
+	}
 }
-

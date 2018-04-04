@@ -21,7 +21,6 @@
 
 package local.media;
 
-
 import local.net.RtpPacket;
 import local.net.RtpSocket;
 
@@ -29,200 +28,243 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.DatagramSocket;
 
+/**
+ * RtpStreamSender is a generic stream sender. It takes an InputStream and sends
+ * it through RTP.
+ */
+public class RtpStreamSender extends Thread {
+	/** Whether working in debug mode. */
+	// private static final boolean DEBUG=true;
+	public static boolean DEBUG = false;
 
-/** RtpStreamSender is a generic stream sender.
-  * It takes an InputStream and sends it through RTP.
-  */
-public class RtpStreamSender extends Thread
-{
-   /** Whether working in debug mode. */
-   //private static final boolean DEBUG=true;
-   public static boolean DEBUG=false;
-   
-   /** The InputStream */
-   InputStream input_stream=null;
-   
-   /** The RtpSocket */
-   RtpSocket rtp_socket=null;
-   
-   /** Payload type */
-   int p_type;
-   
-   /** Number of frame per second */
-   long frame_rate;  
+	/** The InputStream */
+	InputStream input_stream = null;
 
-   /** Number of bytes per frame */
-   int frame_size;
+	/** The RtpSocket */
+	RtpSocket rtp_socket = null;
 
-   /** Whether the socket has been created here */
-   boolean socket_is_local=false;   
+	/** Payload type */
+	int p_type;
 
-   /** Whether it works synchronously with a local clock, or it it acts as slave of the InputStream  */
-   boolean do_sync=true;
+	/** Number of frame per second */
+	long frame_rate;
 
-   /** Synchronization correction value, in milliseconds.
-     * It accellarates the sending rate respect to the nominal value,
-     * in order to compensate program latencies. */
-   int sync_adj=0;
+	/** Number of bytes per frame */
+	int frame_size;
 
-   /** Whether it is running */
-   boolean running=false;   
+	/** Whether the socket has been created here */
+	boolean socket_is_local = false;
 
+	/**
+	 * Whether it works synchronously with a local clock, or it it acts as slave of
+	 * the InputStream
+	 */
+	boolean do_sync = true;
 
-   /** Constructs a RtpStreamSender.
-     * @param input_stream the stream source
-     * @param do_sync whether time synchronization must be performed by the RtpStreamSender,
-     *        or it is performed by the InputStream (e.g. the system audio input)
-     * @param payload_type the payload type
-     * @param frame_rate the frame rate, i.e. the number of frames that should be sent per second;
-     *        it is used to calculate the nominal packet time and,in case of do_sync==true,
-              the next departure time
-     * @param frame_size the size of the payload
-     * @param dest_addr the destination address
-     * @param dest_port the destination port */
-   public RtpStreamSender(InputStream input_stream, boolean do_sync, int payload_type, long frame_rate, int frame_size, String dest_addr, int dest_port)
-   {  init(input_stream,do_sync,payload_type,frame_rate,frame_size,null,dest_addr,dest_port);
-   }                
+	/**
+	 * Synchronization correction value, in milliseconds. It accellarates the
+	 * sending rate respect to the nominal value, in order to compensate program
+	 * latencies.
+	 */
+	int sync_adj = 0;
 
+	/** Whether it is running */
+	boolean running = false;
 
-   /** Constructs a RtpStreamSender.
-     * @param input_stream the stream source
-     * @param do_sync whether time synchronization must be performed by the RtpStreamSender,
-     *        or it is performed by the InputStream (e.g. the system audio input)
-     * @param payload_type the payload type
-     * @param frame_rate the frame rate, i.e. the number of frames that should be sent per second;
-     *        it is used to calculate the nominal packet time and,in case of do_sync==true,
-              the next departure time
-     * @param frame_size the size of the payload
-     * @param src_port the source port
-     * @param dest_addr the destination address
-     * @param dest_port the destination port */
-   //public RtpStreamSender(InputStream input_stream, boolean do_sync, int payload_type, long frame_rate, int frame_size, int src_port, String dest_addr, int dest_port)
-   //{  init(input_stream,do_sync,payload_type,frame_rate,frame_size,null,src_port,dest_addr,dest_port);
-   //}                
+	/**
+	 * Constructs a RtpStreamSender.
+	 * 
+	 * @param input_stream
+	 *            the stream source
+	 * @param do_sync
+	 *            whether time synchronization must be performed by the
+	 *            RtpStreamSender, or it is performed by the InputStream (e.g. the
+	 *            system audio input)
+	 * @param payload_type
+	 *            the payload type
+	 * @param frame_rate
+	 *            the frame rate, i.e. the number of frames that should be sent per
+	 *            second; it is used to calculate the nominal packet time and,in
+	 *            case of do_sync==true, the next departure time
+	 * @param frame_size
+	 *            the size of the payload
+	 * @param dest_addr
+	 *            the destination address
+	 * @param dest_port
+	 *            the destination port
+	 */
+	public RtpStreamSender(InputStream input_stream, boolean do_sync, int payload_type, long frame_rate, int frame_size,
+			String dest_addr, int dest_port) {
+		init(input_stream, do_sync, payload_type, frame_rate, frame_size, null, dest_addr, dest_port);
+	}
 
+	/**
+	 * Constructs a RtpStreamSender.
+	 * 
+	 * @param input_stream
+	 *            the stream source
+	 * @param do_sync
+	 *            whether time synchronization must be performed by the
+	 *            RtpStreamSender, or it is performed by the InputStream (e.g. the
+	 *            system audio input)
+	 * @param payload_type
+	 *            the payload type
+	 * @param frame_rate
+	 *            the frame rate, i.e. the number of frames that should be sent per
+	 *            second; it is used to calculate the nominal packet time and,in
+	 *            case of do_sync==true, the next departure time
+	 * @param frame_size
+	 *            the size of the payload
+	 * @param src_port
+	 *            the source port
+	 * @param dest_addr
+	 *            the destination address
+	 * @param dest_port
+	 *            the destination port
+	 */
+	// public RtpStreamSender(InputStream input_stream, boolean do_sync, int
+	// payload_type, long frame_rate, int frame_size, int src_port, String
+	// dest_addr, int dest_port)
+	// {
+	// init(input_stream,do_sync,payload_type,frame_rate,frame_size,null,src_port,dest_addr,dest_port);
+	// }
 
-   /** Constructs a RtpStreamSender.
-     * @param input_stream the stream to be sent
-     * @param do_sync whether time synchronization must be performed by the RtpStreamSender,
-     *        or it is performed by the InputStream (e.g. the system audio input)
-     * @param payload_type the payload type
-     * @param frame_rate the frame rate, i.e. the number of frames that should be sent per second;
-     *        it is used to calculate the nominal packet time and,in case of do_sync==true,
-              the next departure time
-     * @param frame_size the size of the payload
-     * @param src_socket the socket used to send the RTP packet
-     * @param dest_addr the destination address
-     * @param dest_port the thestination port */
-   public RtpStreamSender(InputStream input_stream, boolean do_sync, int payload_type, long frame_rate, int frame_size, DatagramSocket src_socket, String dest_addr, int dest_port)
-   {  init(input_stream,do_sync,payload_type,frame_rate,frame_size,src_socket,dest_addr,dest_port);
-   }                
+	/**
+	 * Constructs a RtpStreamSender.
+	 * 
+	 * @param input_stream
+	 *            the stream to be sent
+	 * @param do_sync
+	 *            whether time synchronization must be performed by the
+	 *            RtpStreamSender, or it is performed by the InputStream (e.g. the
+	 *            system audio input)
+	 * @param payload_type
+	 *            the payload type
+	 * @param frame_rate
+	 *            the frame rate, i.e. the number of frames that should be sent per
+	 *            second; it is used to calculate the nominal packet time and,in
+	 *            case of do_sync==true, the next departure time
+	 * @param frame_size
+	 *            the size of the payload
+	 * @param src_socket
+	 *            the socket used to send the RTP packet
+	 * @param dest_addr
+	 *            the destination address
+	 * @param dest_port
+	 *            the thestination port
+	 */
+	public RtpStreamSender(InputStream input_stream, boolean do_sync, int payload_type, long frame_rate, int frame_size,
+			DatagramSocket src_socket, String dest_addr, int dest_port) {
+		init(input_stream, do_sync, payload_type, frame_rate, frame_size, src_socket, dest_addr, dest_port);
+	}
 
+	/** Inits the RtpStreamSender */
+	private void init(InputStream input_stream, boolean do_sync, int payload_type, long frame_rate, int frame_size,
+			DatagramSocket src_socket, /* int src_port, */ String dest_addr, int dest_port) {
+		this.input_stream = input_stream;
+		this.p_type = payload_type;
+		this.frame_rate = frame_rate;
+		this.frame_size = frame_size;
+		this.do_sync = do_sync;
+		try {
+			if (src_socket == null) { // if (src_port>0) src_socket=new DatagramSocket(src_port); else
+				src_socket = new DatagramSocket();
+				socket_is_local = true;
+			}
+			rtp_socket = new RtpSocket(src_socket, InetAddress.getByName(dest_addr), dest_port);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-   /** Inits the RtpStreamSender */
-   private void init(InputStream input_stream, boolean do_sync, int payload_type, long frame_rate, int frame_size, DatagramSocket src_socket, /*int src_port,*/ String dest_addr, int dest_port)
-   {
-      this.input_stream=input_stream;
-      this.p_type=payload_type;
-      this.frame_rate=frame_rate;
-      this.frame_size=frame_size;
-      this.do_sync=do_sync;
-      try
-      {  if (src_socket==null)
-         {  //if (src_port>0) src_socket=new DatagramSocket(src_port); else
-            src_socket=new DatagramSocket();
-            socket_is_local=true;
-         }
-         rtp_socket=new RtpSocket(src_socket,InetAddress.getByName(dest_addr),dest_port);
-      }
-      catch (Exception e) {  e.printStackTrace();  }    
-   }          
+	/** Sets the synchronization adjustment time (in milliseconds). */
+	public void setSyncAdj(int millisecs) {
+		sync_adj = millisecs;
+	}
 
+	/** Whether is running */
+	public boolean isRunning() {
+		return running;
+	}
 
-   /** Sets the synchronization adjustment time (in milliseconds). */
-   public void setSyncAdj(int millisecs)
-   {  sync_adj=millisecs;
-   }
+	/** Stops running */
+	public void halt() {
+		running = false;
+	}
 
-   /** Whether is running */
-   public boolean isRunning()
-   {  return running;
-   }
+	/** Runs it in a new Thread. */
+	public void run() {
+		if (rtp_socket == null || input_stream == null)
+			return;
+		// else
 
-   /** Stops running */
-   public void halt()
-   {  running=false;
-   }
+		byte[] buffer = new byte[frame_size + 12];
+		RtpPacket rtp_packet = new RtpPacket(buffer, 0);
+		rtp_packet.setPayloadType(p_type);
+		int seqn = 0;
+		long time = 0;
+		// long start_time=System.currentTimeMillis();
+		long byte_rate = frame_rate * frame_size;
 
-   /** Runs it in a new Thread. */
-   public void run()
-   {
-      if (rtp_socket==null || input_stream==null) return;
-      //else
-      
-      byte[] buffer=new byte[frame_size+12];
-      RtpPacket rtp_packet=new RtpPacket(buffer,0);
-      rtp_packet.setPayloadType(p_type);      
-      int seqn=0;
-      long time=0;
-      //long start_time=System.currentTimeMillis();
-      long byte_rate=frame_rate*frame_size;
-      
-      running=true;
-            
-      if (DEBUG) println("Reading blocks of "+(buffer.length-12)+" bytes");
+		running = true;
 
-      try
-      {  while (running)
-         {
-            //if (DEBUG) System.out.print("o");
-            int num=input_stream.read(buffer,12,buffer.length-12);
-      		//if (DEBUG) System.out.print("*");
-            if (num>0)
-            {  rtp_packet.setSequenceNumber(seqn++);
-               rtp_packet.setTimestamp(time);
-               rtp_packet.setPayloadLength(num);
-               rtp_socket.send(rtp_packet);
-               // update rtp timestamp (in milliseconds)
-               long frame_time=(num*1000)/byte_rate;
-               time+=frame_time;
-               // wait fo next departure
-               if (do_sync)
-               {  // wait before next departure..
-                  //long frame_time=start_time+time-System.currentTimeMillis();
-                  // accellerate in order to compensate possible program latency.. ;)
-                  frame_time-=sync_adj;
-                  try {  Thread.sleep(frame_time);  } catch (Exception e) {}
-               }
-            }
-            else
-            if (num<0)
-            {  running=false;
-               if (DEBUG) println("Error reading from InputStream");
-            }
-         }
-      }
-      catch (Exception e) {  running=false;  e.printStackTrace();  }     
+		if (DEBUG)
+			println("Reading blocks of " + (buffer.length - 12) + " bytes");
 
-      //if (DEBUG) println("rtp time:  "+time);
-      //if (DEBUG) println("real time: "+(System.currentTimeMillis()-start_time));
+		try {
+			while (running) {
+				// if (DEBUG) System.out.print("o");
+				int num = input_stream.read(buffer, 12, buffer.length - 12);
+				// if (DEBUG) System.out.print("*");
+				if (num > 0) {
+					rtp_packet.setSequenceNumber(seqn++);
+					rtp_packet.setTimestamp(time);
+					rtp_packet.setPayloadLength(num);
+					rtp_socket.send(rtp_packet);
+					// update rtp timestamp (in milliseconds)
+					long frame_time = (num * 1000) / byte_rate;
+					time += frame_time;
+					// wait fo next departure
+					if (do_sync) { // wait before next departure..
+									// long frame_time=start_time+time-System.currentTimeMillis();
+									// accellerate in order to compensate possible program latency.. ;)
+						frame_time -= sync_adj;
+						try {
+							Thread.sleep(frame_time);
+						} catch (Exception e) {
+						}
+					}
+				} else if (num < 0) {
+					running = false;
+					if (DEBUG)
+						println("Error reading from InputStream");
+				}
+			}
+		} catch (Exception e) {
+			running = false;
+			e.printStackTrace();
+		}
 
-      // close RtpSocket and local DatagramSocket
-      DatagramSocket socket=rtp_socket.getDatagramSocket();
-      rtp_socket.close();
-      if (socket_is_local && socket!=null) socket.close();
+		// if (DEBUG) println("rtp time: "+time);
+		// if (DEBUG) println("real time: "+(System.currentTimeMillis()-start_time));
 
-      // free all
-      input_stream=null;
-      rtp_socket=null;
+		// close RtpSocket and local DatagramSocket
+		DatagramSocket socket = rtp_socket.getDatagramSocket();
+		rtp_socket.close();
+		if (socket_is_local && socket != null)
+			socket.close();
 
-      if (DEBUG) println("rtp sender terminated");
-   }
-   
+		// free all
+		input_stream = null;
+		rtp_socket = null;
 
-   /** Debug output */
-   private static void println(String str)
-   {  System.out.println("RtpStreamSender: "+str);
-   }
+		if (DEBUG)
+			println("rtp sender terminated");
+	}
+
+	/** Debug output */
+	private static void println(String str) {
+		System.out.println("RtpStreamSender: " + str);
+	}
 
 }

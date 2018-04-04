@@ -166,7 +166,8 @@ public class SubscriberDialog extends Dialog implements TransactionClientListene
 	// *************************** Public methods **************************
 
 	/**
-	 * Sends a new SUBSCRIBE request (starts a new subscription). It also initializes the dialog state information.
+	 * Sends a new SUBSCRIBE request (starts a new subscription). It also
+	 * initializes the dialog state information.
 	 * 
 	 * @param target
 	 *            the target url (and display name)
@@ -196,7 +197,8 @@ public class SubscriberDialog extends Dialog implements TransactionClientListene
 	}
 
 	/**
-	 * Sends a new SUBSCRIBE request (starts a new subscription). It also initializes the dialog state information.
+	 * Sends a new SUBSCRIBE request (starts a new subscription). It also
+	 * initializes the dialog state information.
 	 * 
 	 * @param req
 	 *            the SUBSCRIBE message
@@ -224,13 +226,19 @@ public class SubscriberDialog extends Dialog implements TransactionClientListene
 
 	// ************** Inherited from TransactionClientListener **************
 
-	/** When the TransactionClient is (or goes) in "Proceeding" state and receives a new 1xx provisional response */
+	/**
+	 * When the TransactionClient is (or goes) in "Proceeding" state and receives a
+	 * new 1xx provisional response
+	 */
 	public void onTransProvisionalResponse(TransactionClient tc, Message resp) {
 		log.debug("onTransProvisionalResponse()");
 		// do nothing.
 	}
 
-	/** When the TransactionClient goes into the "Completed" state receiving a 2xx response */
+	/**
+	 * When the TransactionClient goes into the "Completed" state receiving a 2xx
+	 * response
+	 */
 	public void onTransSuccessResponse(TransactionClient tc, Message resp) {
 		log.debug("onTransSuccessResponse()");
 		if (!statusIs(D_ACTIVE)) {
@@ -246,7 +254,10 @@ public class SubscriberDialog extends Dialog implements TransactionClientListene
 		}
 	}
 
-	/** When the TransactionClient goes into the "Completed" state receiving a 300-699 response */
+	/**
+	 * When the TransactionClient goes into the "Completed" state receiving a
+	 * 300-699 response
+	 */
 	public void onTransFailureResponse(TransactionClient tc, Message resp) {
 		log.debug("onTransFailureResponse()");
 		changeStatus(D_TERMINATED);
@@ -255,7 +266,10 @@ public class SubscriberDialog extends Dialog implements TransactionClientListene
 			listener.onDlgSubscriptionFailure(this, status_line.getCode(), status_line.getReason(), resp);
 	}
 
-	/** When the TransactionClient goes into the "Terminated" state, caused by transaction timeout */
+	/**
+	 * When the TransactionClient goes into the "Terminated" state, caused by
+	 * transaction timeout
+	 */
 	public void onTransTimeout(TransactionClient tc) {
 		log.debug("onTransTimeout()");
 		changeStatus(D_TERMINATED);

@@ -66,33 +66,42 @@ import org.zoolu.tools.Random;
 import org.zoolu.tools.SimpleDigest;
 
 /**
- * SipProvider implements the SIP transport layer, that is the layer responsable for sending and receiving SIP messages.
- * Messages are received by the callback function defined in the interface SipProviderListener.
+ * SipProvider implements the SIP transport layer, that is the layer responsable
+ * for sending and receiving SIP messages. Messages are received by the callback
+ * function defined in the interface SipProviderListener.
  * <p>
- * SipProvider implements also multiplexing/demultiplexing service through the use of SIP interface identifiers and
- * <i>onReceivedMessage()<i/> callback function of specific SipProviderListener.
+ * SipProvider implements also multiplexing/demultiplexing service through the
+ * use of SIP interface identifiers and <i>onReceivedMessage()<i/> callback
+ * function of specific SipProviderListener.
  * <p>
- * A SipProviderListener can be added to a SipProvider through the addSipProviderListener(id,listener) method, where:
- * <b> - <i>id<i/> is the SIP interface identifier the listener has to be bound to, <b> - <i>listener<i/> is the
- * SipProviderListener that received messages are passed to.
+ * A SipProviderListener can be added to a SipProvider through the
+ * addSipProviderListener(id,listener) method, where: <b> - <i>id<i/> is the SIP
+ * interface identifier the listener has to be bound to, <b> - <i>listener<i/>
+ * is the SipProviderListener that received messages are passed to.
  * <p/>
- * The SIP interface identifier specifies the type of messages the listener is going to receive for. Together with the
- * specific SipProvider, it represents the complete SIP Service Access Point (SAP) address/identifier used for
+ * The SIP interface identifier specifies the type of messages the listener is
+ * going to receive for. Together with the specific SipProvider, it represents
+ * the complete SIP Service Access Point (SAP) address/identifier used for
  * demultiplexing SIP messages at receiving side.
  * <p/>
- * The identifier can be of one of the three following types: transaction_id, dialog_id, or method_id. These types of
- * identifiers characterize respectively: <br>
+ * The identifier can be of one of the three following types: transaction_id,
+ * dialog_id, or method_id. These types of identifiers characterize
+ * respectively: <br>
  * - messages within a specific transaction, <br>
  * - messages within a specific dialog, <br>
- * - messages related to a specific SIP method. It is also possible to use the the identifier ANY to specify <br>
- * - all messages that are out of any transactions, dialogs, or already specified method types.
+ * - messages related to a specific SIP method. It is also possible to use the
+ * the identifier ANY to specify <br>
+ * - all messages that are out of any transactions, dialogs, or already
+ * specified method types.
  * <p>
- * When receiving a message, the SipProvider first tries to look for a matching transaction, then looks for a matching
- * dialog, then for a matching method type, and finally for a default listener (i.e. that with identifier ANY). For the
- * matched SipProviderListener, the method <i>onReceivedMessage()</i> is fired.
+ * When receiving a message, the SipProvider first tries to look for a matching
+ * transaction, then looks for a matching dialog, then for a matching method
+ * type, and finally for a default listener (i.e. that with identifier ANY). For
+ * the matched SipProviderListener, the method <i>onReceivedMessage()</i> is
+ * fired.
  * <p>
- * Note: no 482 (Loop Detected) responses are generated for requests that does not properly match any ongoing
- * transactions, dialogs, nor method types.
+ * Note: no 482 (Loop Detected) responses are generated for requests that does
+ * not properly match any ongoing transactions, dialogs, nor method types.
  */
 public class SipProvider implements Configurable, TransportListener, TcpServerListener {
 	protected static Logger log = LoggerFactory.getLogger(SipProvider.class);
@@ -107,28 +116,36 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	/** SCTP protocol type */
 	public static final String PROTO_SCTP = "sctp";
 
-	/** String value "auto-configuration" used for auto configuration of the host address. */
+	/**
+	 * String value "auto-configuration" used for auto configuration of the host
+	 * address.
+	 */
 	public static final String AUTO_CONFIGURATION = "AUTO-CONFIGURATION";
 
-	/** String value "auto-configuration" used for auto configuration of the host address. */
+	/**
+	 * String value "auto-configuration" used for auto configuration of the host
+	 * address.
+	 */
 	public static final String ALL_INTERFACES = "ALL-INTERFACES";
 
 	/** String value "NO-OUTBOUND" used for setting no outbound proxy. */
 	// public static final String NO_OUTBOUND="NO-OUTBOUND";
 
 	/**
-	 * Identifier used as listener id for capturing ANY incoming messages that does not match any active method_id,
-	 * transaction_id, nor dialog_id. <br>
-	 * In this context, "active" means that there is a active listener for that specific method, transaction, or dialog.
+	 * Identifier used as listener id for capturing ANY incoming messages that does
+	 * not match any active method_id, transaction_id, nor dialog_id. <br>
+	 * In this context, "active" means that there is a active listener for that
+	 * specific method, transaction, or dialog.
 	 */
 	public static final Identifier ANY = new Identifier("ANY");
 
 	/**
-	 * Identifier used as listener id for capturing any incoming messages in PROMISQUE mode, that means that messages
-	 * are passed to the present listener regardless of any other active SipProviderListeners for specific messages.
+	 * Identifier used as listener id for capturing any incoming messages in
+	 * PROMISQUE mode, that means that messages are passed to the present listener
+	 * regardless of any other active SipProviderListeners for specific messages.
 	 * <p/>
-	 * More than one SipProviderListener can be added and be active concurrently for capturing messages in PROMISQUE
-	 * mode.
+	 * More than one SipProviderListener can be added and be active concurrently for
+	 * capturing messages in PROMISQUE mode.
 	 */
 	public static final Identifier PROMISQUE = new Identifier("PROMISQUE");
 
@@ -140,7 +157,8 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	// ***************** Readable/configurable attributes *****************
 	String sipBusyUrl = null;
 	/**
-	 * Via address/name. Use 'auto-configuration' for auto detection, or let it undefined.
+	 * Via address/name. Use 'auto-configuration' for auto detection, or let it
+	 * undefined.
 	 */
 	String via_addr = null;
 
@@ -148,8 +166,8 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	int host_port = 0;
 
 	/**
-	 * Network interface (IP address) used by SIP. Use 'ALL-INTERFACES' for binding SIP to all interfaces (or let it
-	 * undefined).
+	 * Network interface (IP address) used by SIP. Use 'ALL-INTERFACES' for binding
+	 * SIP to all interfaces (or let it undefined).
 	 */
 	String host_ifaddr = null;
 
@@ -160,7 +178,8 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	int nmax_connections = 0;
 
 	/**
-	 * Outbound proxy (host_addr[:host_port]). Use 'NONE' for not using an outbound proxy (or let it undefined).
+	 * Outbound proxy (host_addr[:host_port]). Use 'NONE' for not using an outbound
+	 * proxy (or let it undefined).
 	 */
 	SocketAddress outbound_proxy = null;
 
@@ -206,7 +225,9 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	/** Whether adding 'rport' parameter on outgoing requests. */
 	boolean rport = true;
 
-	/** Whether forcing 'rport' parameter on incoming requests ('force-rport' mode). */
+	/**
+	 * Whether forcing 'rport' parameter on incoming requests ('force-rport' mode).
+	 */
 	boolean force_rport = false;
 
 	/** List of provider listeners */
@@ -238,8 +259,8 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	}
 
 	/**
-	 * Creates a new SipProvider. Costructs the SipProvider, initializing the SipProviderListeners, the transport
-	 * protocols, and other attributes.
+	 * Creates a new SipProvider. Costructs the SipProvider, initializing the
+	 * SipProviderListeners, the transport protocols, and other attributes.
 	 */
 	public SipProvider(String via_addr, int port, String[] protocols, String ifaddr) {
 		init(via_addr, port, protocols, ifaddr);
@@ -258,8 +279,8 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	}
 
 	/**
-	 * Inits the SipProvider, initializing the SipProviderListeners, the transport protocols, the outbound proxy, and
-	 * other attributes.
+	 * Inits the SipProvider, initializing the SipProviderListeners, the transport
+	 * protocols, the outbound proxy, and other attributes.
 	 */
 	private void init(String viaddr, int port, String[] protocols, String ifaddr) {
 		if (!SipStack.isInit())
@@ -290,8 +311,8 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 			else if (transport_protocols[i].equals(PROTO_TCP))
 				transport_tcp = true;
 			/*
-			 * else if (transport_protocols[i].equals(PROTO_TLS)) transport_tls=true; else if
-			 * (transport_protocols[i].equals(PROTO_SCTP)) transport_sctp=true;
+			 * else if (transport_protocols[i].equals(PROTO_TLS)) transport_tls=true; else
+			 * if (transport_protocols[i].equals(PROTO_SCTP)) transport_sctp=true;
 			 */
 		}
 		if (nmax_connections <= 0)
@@ -428,16 +449,20 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 		if (attribute.equals("host_addr"))
 			log.warn("WARNING: parameter 'host_addr' is no more supported; use 'via_addr' instead.");
 		if (attribute.equals("all_interfaces"))
-			log.warn("WARNING: parameter 'all_interfaces' is no more supported; use 'host_iaddr' for setting a specific interface or let it undefined.");
+			log.warn(
+					"WARNING: parameter 'all_interfaces' is no more supported; use 'host_iaddr' for setting a specific interface or let it undefined.");
 		if (attribute.equals("use_outbound"))
-			log.warn("WARNING: parameter 'use_outbound' is no more supported; use 'outbound_proxy' for setting an outbound proxy or let it undefined.");
+			log.warn(
+					"WARNING: parameter 'use_outbound' is no more supported; use 'outbound_proxy' for setting an outbound proxy or let it undefined.");
 		if (attribute.equals("outbound_addr")) {
-			log.warn("WARNING: parameter 'outbound_addr' has been deprecated; use 'outbound_proxy=<host_addr>[:<host_port>]' instead.");
+			log.warn(
+					"WARNING: parameter 'outbound_addr' has been deprecated; use 'outbound_proxy=<host_addr>[:<host_port>]' instead.");
 			outbound_addr = par.getString();
 			return;
 		}
 		if (attribute.equals("outbound_port")) {
-			log.warn("WARNING: parameter 'outbound_port' has been deprecated; use 'outbound_proxy=<host_addr>[:<host_port>]' instead.");
+			log.warn(
+					"WARNING: parameter 'outbound_port' has been deprecated; use 'outbound_proxy=<host_addr>[:<host_port>]' instead.");
 			outbound_port = par.getInt();
 			return;
 		}
@@ -488,7 +513,10 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 		return host_port;
 	}
 
-	/** Whether binding the sip provider to all interfaces or only on the specified host address. */
+	/**
+	 * Whether binding the sip provider to all interfaces or only on the specified
+	 * host address.
+	 */
 	public boolean isAllInterfaces() {
 		return host_ipaddr == null;
 	}
@@ -569,31 +597,34 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	}
 
 	/**
-	 * Adds a new listener to the SipProvider for caputering any message in PROMISQUE mode. It is the same as using
-	 * method addSipProviderListener(SipProvider.PROMISQUE,listener).
+	 * Adds a new listener to the SipProvider for caputering any message in
+	 * PROMISQUE mode. It is the same as using method
+	 * addSipProviderListener(SipProvider.PROMISQUE,listener).
 	 * <p/>
-	 * When capturing messages in promisque mode all messages are passed to the SipProviderListener before passing them
-	 * to the specific listener (if present). <br/>
-	 * Note that more that one SipProviderListener can be active in promisque mode at the same time;in that case the
-	 * same message is passed to all PROMISQUE SipProviderListeners.
+	 * When capturing messages in promisque mode all messages are passed to the
+	 * SipProviderListener before passing them to the specific listener (if
+	 * present). <br/>
+	 * Note that more that one SipProviderListener can be active in promisque mode
+	 * at the same time;in that case the same message is passed to all PROMISQUE
+	 * SipProviderListeners.
 	 *
 	 * @param listener
 	 *            is the SipProviderListener.
-	 * @return It returns <i>true</i> if the SipProviderListener is added, <i>false</i> if the listener_ID is already in
-	 *         use.
+	 * @return It returns <i>true</i> if the SipProviderListener is added,
+	 *         <i>false</i> if the listener_ID is already in use.
 	 */
 	public boolean addSipProviderPromisqueListener(SipProviderListener listener) {
 		return addSipProviderListener(PROMISQUE, listener);
 	}
 
 	/**
-	 * Adds a new listener to the SipProvider for caputering ANY message. It is the same as using method
-	 * addSipProviderListener(SipProvider.ANY,listener).
+	 * Adds a new listener to the SipProvider for caputering ANY message. It is the
+	 * same as using method addSipProviderListener(SipProvider.ANY,listener).
 	 *
 	 * @param listener
 	 *            is the SipProviderListener.
-	 * @return It returns <i>true</i> if the SipProviderListener is added, <i>false</i> if the listener_ID is already in
-	 *         use.
+	 * @return It returns <i>true</i> if the SipProviderListener is added,
+	 *         <i>false</i> if the listener_ID is already in use.
 	 */
 	public boolean addSipProviderListener(SipProviderListener listener) {
 		return addSipProviderListener(ANY, listener);
@@ -603,14 +634,16 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	 * Adds a new listener to the SipProvider.
 	 *
 	 * @param id
-	 *            is the unique identifier for the messages which the listener as to be associated to. It is used as
-	 *            key. It can identify a method, a transaction, or a dialog. Use SipProvider.ANY to capture all
-	 *            messages. Use SipProvider.PROMISQUE if you want to capture all message in promisque mode (letting
-	 *            other listeners to capture the same received messages).
+	 *            is the unique identifier for the messages which the listener as to
+	 *            be associated to. It is used as key. It can identify a method, a
+	 *            transaction, or a dialog. Use SipProvider.ANY to capture all
+	 *            messages. Use SipProvider.PROMISQUE if you want to capture all
+	 *            message in promisque mode (letting other listeners to capture the
+	 *            same received messages).
 	 * @param listener
 	 *            is the SipProviderListener for this message id.
-	 * @return It returns <i>true</i> if the SipProviderListener is added, <i>false</i> if the listener_ID is already in
-	 *         use.
+	 * @return It returns <i>true</i> if the SipProviderListener is added,
+	 *         <i>false</i> if the listener_ID is already in use.
 	 */
 	public boolean addSipProviderListener(Identifier key, SipProviderListener listener) {
 		log.debug("adding SipProviderListener: " + key);
@@ -642,7 +675,8 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	 *
 	 * @param id
 	 *            is the unique identifier used to select the listened messages.
-	 * @return It returns <i>true</i> if the SipProviderListener is removed, <i>false</i> if the identifier is missed.
+	 * @return It returns <i>true</i> if the SipProviderListener is removed,
+	 *         <i>false</i> if the identifier is missed.
 	 */
 	public boolean removeSipProviderListener(Identifier key) {
 		log.debug("removing SipProviderListener: " + key);
@@ -700,14 +734,15 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 		}
 		return r;
 	}
+
 	/**
-	 * Sets the SipProviderExceptionListener. The SipProviderExceptionListener is the listener for all exceptions thrown
-	 * by the SipProviders.
+	 * Sets the SipProviderExceptionListener. The SipProviderExceptionListener is
+	 * the listener for all exceptions thrown by the SipProviders.
 	 *
 	 * @param e_listener
 	 *            is the SipProviderExceptionListener.
-	 * @return It returns <i>true</i> if the SipProviderListener has been correctly set, <i>false</i> if the
-	 *         SipProviderListener was already set.
+	 * @return It returns <i>true</i> if the SipProviderListener has been correctly
+	 *         set, <i>false</i> if the SipProviderListener was already set.
 	 */
 	public boolean addSipProviderExceptionListener(SipProviderExceptionListener e_listener) {
 		log.debug("adding SipProviderExceptionListener");
@@ -725,8 +760,9 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	 *
 	 * @param e_listener
 	 *            is the SipProviderExceptionListener.
-	 * @return It returns <i>true</i> if the SipProviderExceptionListener has been correctly removed, <i>false</i> if
-	 *         the SipProviderExceptionListener is missed.
+	 * @return It returns <i>true</i> if the SipProviderExceptionListener has been
+	 *         correctly removed, <i>false</i> if the SipProviderExceptionListener
+	 *         is missed.
 	 */
 	public boolean removeSipProviderExceptionListener(SipProviderExceptionListener e_listener) {
 		log.debug("removing SipProviderExceptionListener");
@@ -742,16 +778,18 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	/**
 	 * Sends a Message, specifing the transport portocol, nexthop address and port.
 	 * <p>
-	 * This is a low level method and forces the message to be routed to a specific nexthop address, port and transport,
-	 * regardless whatever the Via, Route, or request-uri, address to.
+	 * This is a low level method and forces the message to be routed to a specific
+	 * nexthop address, port and transport, regardless whatever the Via, Route, or
+	 * request-uri, address to.
 	 * <p>
-	 * In case of connection-oriented transport, the connection is selected as follows: <br>
-	 * - if an existing connection is found matching the destination end point (socket), such connection is used,
-	 * otherwise <br>
+	 * In case of connection-oriented transport, the connection is selected as
+	 * follows: <br>
+	 * - if an existing connection is found matching the destination end point
+	 * (socket), such connection is used, otherwise <br>
 	 * - a new connection is established
 	 *
-	 * @return It returns a Connection in case of connection-oriented delivery (e.g. TCP) or null in case of
-	 *         connection-less delivery (e.g. UDP)
+	 * @return It returns a Connection in case of connection-oriented delivery (e.g.
+	 *         TCP) or null in case of connection-less delivery (e.g. UDP)
 	 */
 	public ConnectionIdentifier sendMessage(Message msg, String proto, String dest_addr, int dest_port, int ttl) {
 		if (log_all_packets || msg.getLength() > MIN_MESSAGE_LENGTH)
@@ -765,7 +803,9 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 		}
 	}
 
-	/** Sends a Message, specifing the transport portocol, nexthop address and port. */
+	/**
+	 * Sends a Message, specifing the transport portocol, nexthop address and port.
+	 */
 	private ConnectionIdentifier sendMessage(Message msg, String proto, IpAddress dest_ipaddr, int dest_port, int ttl) {
 		ConnectionIdentifier conn_id = new ConnectionIdentifier(proto, dest_ipaddr, dest_port);
 		if (log_all_packets || msg.getLength() > MIN_MESSAGE_LENGTH)
@@ -823,23 +863,25 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	 * Sends the message <i>msg</i>.
 	 * <p>
 	 * The destination for the request is computed as follows: <br>
-	 * - if <i>outbound_addr</i> is set, <i>outbound_addr</i> and <i>outbound_port</i> are used, otherwise <br>
-	 * - if message has Route header with lr option parameter (i.e. RFC3261 compliant), the first Route address is used,
-	 * otherwise <br>
+	 * - if <i>outbound_addr</i> is set, <i>outbound_addr</i> and
+	 * <i>outbound_port</i> are used, otherwise <br>
+	 * - if message has Route header with lr option parameter (i.e. RFC3261
+	 * compliant), the first Route address is used, otherwise <br>
 	 * - the request's Request-URI is considered.
 	 * <p>
-	 * The destination for the response is computed based on the sent-by parameter in the Via header field (RFC3261
-	 * compliant)
+	 * The destination for the response is computed based on the sent-by parameter
+	 * in the Via header field (RFC3261 compliant)
 	 * <p>
 	 * As transport it is used the protocol specified in the 'via' header field
 	 * <p>
 	 * In case of connection-oriented transport: <br>
-	 * - if an already established connection is found matching the destination end point (socket), such connection is
-	 * used, otherwise <br>
+	 * - if an already established connection is found matching the destination end
+	 * point (socket), such connection is used, otherwise <br>
 	 * - a new connection is established
 	 *
-	 * @return Returns a ConnectionIdentifier in case of connection-oriented delivery (e.g. TCP) or null in case of
-	 *         connection-less delivery (e.g. UDP)
+	 * @return Returns a ConnectionIdentifier in case of connection-oriented
+	 *         delivery (e.g. TCP) or null in case of connection-less delivery (e.g.
+	 *         UDP)
 	 */
 	public ConnectionIdentifier sendMessage(Message msg) {
 		log.trace("Sending message:\r\n" + msg.toString());
@@ -934,8 +976,9 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	}
 
 	/**
-	 * Processes the message received. It is called each time a new message is received by the transport layer, and it
-	 * performs the actual message processing.
+	 * Processes the message received. It is called each time a new message is
+	 * received by the transport layer, and it performs the actual message
+	 * processing.
 	 */
 	protected void processReceivedMessage(Message msg) {
 		try { // logs
@@ -1080,7 +1123,8 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 			}
 
 			if (msg.isRequest() && msg.isInvite()) {
-				// we are busy or can't answer - Invite would have been picked up above already if we could handle it
+				// we are busy or can't answer - Invite would have been picked up above already
+				// if we could handle it
 
 				if (sipBusyUrl != null) {
 					// redirect the call elsewhere
@@ -1090,8 +1134,8 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 
 					log.trace("Incoming SIP Call - Channel busy - Redirect to: " + redirect_Url);
 
-					Message resp = MessageFactory.createResponse(msg, 302, SipResponses.reasonOf(302), new NameAddress(
-							redirect_Url));
+					Message resp = MessageFactory.createResponse(msg, 302, SipResponses.reasonOf(302),
+							new NameAddress(redirect_Url));
 					InviteTransactionServer ts = new InviteTransactionServer(this, msg, null);
 					ts.respondWith(resp);
 					return;
@@ -1221,8 +1265,9 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	// ************************** Other methods ***************************
 
 	/**
-	 * Picks a fresh branch value. The branch ID MUST be unique across space and time for all requests sent by the UA.
-	 * The branch ID always begin with the characters "z9hG4bK". These 7 characters are used by RFC 3261 as a magic
+	 * Picks a fresh branch value. The branch ID MUST be unique across space and
+	 * time for all requests sent by the UA. The branch ID always begin with the
+	 * characters "z9hG4bK". These 7 characters are used by RFC 3261 as a magic
 	 * cookie.
 	 */
 	public static String pickBranch() { // String str=Long.toString(Math.abs(Random.nextLong()),16);
@@ -1232,7 +1277,8 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	}
 
 	/**
-	 * Picks an unique branch value based on a SIP message. This value could also be used as transaction ID
+	 * Picks an unique branch value based on a SIP message. This value could also be
+	 * used as transaction ID
 	 */
 	public String pickBranch(Message msg) {
 		StringBuffer sb = new StringBuffer();
@@ -1253,10 +1299,11 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	}
 
 	/**
-	 * Picks a new tag. A tag MUST be globally unique and cryptographically random with at least 32 bits of randomness.
-	 * A property of this selection requirement is that a UA will place a different tag into the From header of an
-	 * INVITE than it would place into the To header of the response to the same INVITE. This is needed in order for a
-	 * UA to invite itself to a session.
+	 * Picks a new tag. A tag MUST be globally unique and cryptographically random
+	 * with at least 32 bits of randomness. A property of this selection requirement
+	 * is that a UA will place a different tag into the From header of an INVITE
+	 * than it would place into the To header of the response to the same INVITE.
+	 * This is needed in order for a UA to invite itself to a session.
 	 */
 	public static String pickTag() { // String str=Long.toString(Math.abs(Random.nextLong()),16);
 										// if (str.length()<8) str+="00000000";
@@ -1265,8 +1312,9 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	}
 
 	/**
-	 * Picks a new tag. The tag is generated uniquely based on message <i>req</i>. This tag can be generated for
-	 * responses in a stateless manner - in a manner that will generate the same tag for the same request consistently.
+	 * Picks a new tag. The tag is generated uniquely based on message <i>req</i>.
+	 * This tag can be generated for responses in a stateless manner - in a manner
+	 * that will generate the same tag for the same request consistently.
 	 */
 	public static String pickTag(Message req) { // return String.valueOf(tag_generator++);
 												// return (new MD5(request.toString())).asHex().substring(0,8);
@@ -1274,8 +1322,9 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	}
 
 	/**
-	 * Picks a new call-id. The call-id is a globally unique identifier over space and time. It is implemented in the
-	 * form "localid@host". Call-id must be considered case-sensitive and is compared byte-by-byte.
+	 * Picks a new call-id. The call-id is a globally unique identifier over space
+	 * and time. It is implemented in the form "localid@host". Call-id must be
+	 * considered case-sensitive and is compared byte-by-byte.
 	 */
 	public String pickCallId() { // String str=Long.toString(Math.abs(Random.nextLong()),16);
 									// if (str.length()<12) str+="000000000000";
@@ -1289,13 +1338,14 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	}
 
 	/**
-	 * (<b>Deprecated</b>) Constructs a NameAddress based on an input string. The input string can be a: <br>
+	 * (<b>Deprecated</b>) Constructs a NameAddress based on an input string. The
+	 * input string can be a: <br>
 	 * - <i>user</i> name, <br>
 	 * - <i>user@address</i> url, <br>
 	 * - <i>"Name" &lt;sip:user@address&gt;</i> address,
 	 * <p>
-	 * In the former case, a SIP URL is costructed using the outbound proxy as host address if present, otherwise the
-	 * local via address is used.
+	 * In the former case, a SIP URL is costructed using the outbound proxy as host
+	 * address if present, otherwise the local via address is used.
 	 */
 	public NameAddress completeNameAddress(String str) {
 		if (str.indexOf("<sip:") >= 0)
@@ -1332,8 +1382,8 @@ public class SipProvider implements Configurable, TransportListener, TcpServerLi
 	}
 
 	/**
-	 * Constructs a SipURL for the given <i>username</i> on the local SIP UA. If <i>username</i> is null, only host
-	 * address and port are used.
+	 * Constructs a SipURL for the given <i>username</i> on the local SIP UA. If
+	 * <i>username</i> is null, only host address and port are used.
 	 */
 	/*
 	 * public SipURL getSipURL(String user_name) { return new

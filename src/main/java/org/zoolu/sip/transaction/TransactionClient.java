@@ -32,15 +32,20 @@ import org.zoolu.sip.provider.TransactionIdentifier;
 import org.zoolu.tools.Timer;
 
 /**
- * Generic client transaction as defined in RFC 3261 (Section 17.1.2). A TransactionClient is responsable to create a
- * new SIP transaction, starting with a request message sent through the SipProvider and ending with a final response.<BR>
- * The changes of the internal status and the received messages are fired to the TransactionListener passed to the
- * TransactionClient object.<BR>
+ * Generic client transaction as defined in RFC 3261 (Section 17.1.2). A
+ * TransactionClient is responsable to create a new SIP transaction, starting
+ * with a request message sent through the SipProvider and ending with a final
+ * response.<BR>
+ * The changes of the internal status and the received messages are fired to the
+ * TransactionListener passed to the TransactionClient object.<BR>
  */
 
 public class TransactionClient extends Transaction {
 	private static Logger log = LoggerFactory.getLogger(TransactionClient.class);
-	/** the TransactionClientListener that captures the events fired by the TransactionClient */
+	/**
+	 * the TransactionClientListener that captures the events fired by the
+	 * TransactionClient
+	 */
 	TransactionClientListener transaction_listener;
 
 	/** retransmission timeout ("Timer E" in RFC 3261) */
@@ -86,8 +91,8 @@ public class TransactionClient extends Transaction {
 	}
 
 	/**
-	 * Method derived from interface SipListener. It's fired from the SipProvider when a new message is received for to
-	 * the present TransactionClient.
+	 * Method derived from interface SipListener. It's fired from the SipProvider
+	 * when a new message is received for to the present TransactionClient.
 	 */
 	public void onReceivedMessage(SipProvider provider, Message msg) {
 		if (msg.isResponse()) {

@@ -21,40 +21,47 @@
 
 package local.media;
 
-
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.IOException;
 
+/**
+ * ExtendedPipedOutputStream.
+ */
+public class ExtendedPipedOutputStream extends PipedOutputStream {
 
-/** ExtendedPipedOutputStream. 
-  */
-public class ExtendedPipedOutputStream extends PipedOutputStream
-{
+	/** Creates a new ExtendedPipedOutputStream. */
+	public ExtendedPipedOutputStream() {
+		super();
+	}
 
-   /** Creates a new ExtendedPipedOutputStream. */
-   public ExtendedPipedOutputStream()
-   {  super();
-   }
+	/** Creates a new ExtendedPipedOutputStream. */
+	public ExtendedPipedOutputStream(PipedInputStream snk) throws IOException {
+		super(snk);
+	}
 
-   /** Creates a new ExtendedPipedOutputStream. */
-   public ExtendedPipedOutputStream(PipedInputStream snk) throws IOException
-   {  super(snk);
-   }
-   
-   /** Closes this piped output stream and releases any system resources associated with this stream. */
-   //public void close()
-   
-   /** Connects this piped output stream to a receiver. */
-   //public void connect(PipedInputStream snk) throws IOException
-   
-   /** Flushes this output stream and forces any buffered output bytes to be written out. */
-   //public void flush()
-   
-   /** Writes len bytes from the specified byte array starting at offset off to this piped output stream. */
-   //public void write(byte[] b, int off, int len)
-   
-   /** Writes the specified byte to the piped output stream. */
-   //public void write(int b) throws IOException
+	/**
+	 * Closes this piped output stream and releases any system resources associated
+	 * with this stream.
+	 */
+	// public void close()
+
+	/** Connects this piped output stream to a receiver. */
+	// public void connect(PipedInputStream snk) throws IOException
+
+	/**
+	 * Flushes this output stream and forces any buffered output bytes to be written
+	 * out.
+	 */
+	// public void flush()
+
+	/**
+	 * Writes len bytes from the specified byte array starting at offset off to this
+	 * piped output stream.
+	 */
+	// public void write(byte[] b, int off, int len)
+
+	/** Writes the specified byte to the piped output stream. */
+	// public void write(int b) throws IOException
 
 }

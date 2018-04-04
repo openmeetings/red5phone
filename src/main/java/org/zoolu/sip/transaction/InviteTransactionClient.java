@@ -34,14 +34,18 @@ import org.zoolu.tools.Timer;
 
 /**
  * INVITE client transaction as defined in RFC 3261 (Section 17.2.1). <BR>
- * An InviteTransactionClient is responsable to create a new SIP invite transaction, starting with a invite message sent
- * through the SipProvider and ending with a final response. <BR>
- * The changes of the internal status and the received messages are fired to the TransactionListener passed to the
- * InviteTransactionClient object.
+ * An InviteTransactionClient is responsable to create a new SIP invite
+ * transaction, starting with a invite message sent through the SipProvider and
+ * ending with a final response. <BR>
+ * The changes of the internal status and the received messages are fired to the
+ * TransactionListener passed to the InviteTransactionClient object.
  */
 public class InviteTransactionClient extends TransactionClient {
 	private static Logger log = LoggerFactory.getLogger(InviteTransactionClient.class);
-	/** the TransactionClientListener that captures the events fired by the InviteTransactionClient */
+	/**
+	 * the TransactionClientListener that captures the events fired by the
+	 * InviteTransactionClient
+	 */
 	TransactionClientListener transaction_listener;
 
 	/** ack message */
@@ -85,8 +89,8 @@ public class InviteTransactionClient extends TransactionClient {
 	}
 
 	/**
-	 * Method derived from interface SipListener. It's fired from the SipProvider when a new message is catch for to the
-	 * present ServerTransaction.
+	 * Method derived from interface SipListener. It's fired from the SipProvider
+	 * when a new message is catch for to the present ServerTransaction.
 	 */
 	public void onReceivedMessage(SipProvider provider, Message msg) {
 		if (msg.isResponse()) {

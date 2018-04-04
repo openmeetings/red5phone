@@ -41,7 +41,7 @@ public abstract class SIPTransport implements SIPUserAgentListener, SIPRegisterA
 	}
 
 	public void login(String obproxy, String phone, String username, String password, String realm, String proxy) {
-		p("login");
+		log.debug("login");
 
 		this.username = username;
 		this.password = password;
@@ -78,12 +78,12 @@ public abstract class SIPTransport implements SIPUserAgentListener, SIPRegisterA
 			ua.listen();
 
 		} catch (Exception e) {
-			p("login: Exception:>\n" + e);
+			log.debug("login: Exception:>\n" + e);
 		}
 	}
 
 	public void call(String destination) {
-		p("Calling " + destination);
+		log.debug("Calling " + destination);
 
 		try {
 			ua.setMedia(roomClient);
@@ -100,12 +100,12 @@ public abstract class SIPTransport implements SIPUserAgentListener, SIPRegisterA
 			ua.call(destination);
 			roomClient.init(destination);
 		} catch (Exception e) {
-			p("call: Exception:>\n" + e);
+			log.debug("call: Exception:>\n" + e);
 		}
 	}
 
 	public void register() {
-		p("register");
+		log.debug("register");
 		roomClient.stop();
 
 		try {
@@ -117,35 +117,35 @@ public abstract class SIPTransport implements SIPUserAgentListener, SIPRegisterA
 			}
 
 		} catch (Exception e) {
-			p("register: Exception:>\n" + e);
+			log.debug("register: Exception:>\n" + e);
 		}
 	}
 
 	public void close() {
-		p("close");
+		log.debug("close");
 
 		try {
 			hangup();
 		} catch (Exception e) {
-			p("close: Exception:>\n" + e);
+			log.debug("close: Exception:>\n" + e);
 		}
 
 		try {
-			p("provider.halt");
+			log.debug("provider.halt");
 			sipProvider.halt();
 		} catch (Exception e) {
-			p("close: Exception:>\n" + e);
+			log.debug("close: Exception:>\n" + e);
 		}
 
 		try {
 			unregister();
 		} catch (Exception e) {
-			p("close: Exception:>\n" + e);
+			log.debug("close: Exception:>\n" + e);
 		}
 	}
 
 	public void hangup() {
-		p("hangup");
+		log.debug("hangup");
 
 		if (ua != null) {
 			if (!ua.call_state.equals(SIPUserAgent.UA_IDLE)) {
@@ -158,12 +158,12 @@ public abstract class SIPTransport implements SIPUserAgentListener, SIPRegisterA
 		roomClient.stop();
 	}
 
-	private void closeStreams() {
-		p("closeStreams");
+	private static void closeStreams() {
+		log.debug("closeStreams");
 	}
 
 	public void unregister() {
-		p("unregister");
+		log.debug("unregister");
 
 		if (ra != null) {
 			if (ra.isRegistering()) {

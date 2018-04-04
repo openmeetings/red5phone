@@ -34,13 +34,17 @@ import org.zoolu.sip.provider.TransactionIdentifier;
 import org.zoolu.tools.Timer;
 
 /**
- * ACK server transaction should follow an INVITE server transaction within an INVITE Dialog in a SIP UAC. The
- * AckTransactionServer sends the final response message and retransmits it several times until the method terminate()
- * is called or the trasaction timeout fires.
+ * ACK server transaction should follow an INVITE server transaction within an
+ * INVITE Dialog in a SIP UAC. The AckTransactionServer sends the final response
+ * message and retransmits it several times until the method terminate() is
+ * called or the trasaction timeout fires.
  */
 public class AckTransactionServer extends Transaction {
 	private static final Logger log = LoggerFactory.getLogger(AckTransactionServer.class);
-	/** the TransactionServerListener that captures the events fired by the AckTransactionServer */
+	/**
+	 * the TransactionServerListener that captures the events fired by the
+	 * AckTransactionServer
+	 */
 	AckTransactionServerListener transaction_listener;
 
 	/** last response message */
@@ -53,8 +57,9 @@ public class AckTransactionServer extends Transaction {
 
 	/** Initializes timeouts and state */
 	/**
-	 * Creates a new AckTransactionServer. The AckTransactionServer starts sending a the <i>resp</i> message. It
-	 * retransmits the resp several times if no ACK request is received.
+	 * Creates a new AckTransactionServer. The AckTransactionServer starts sending a
+	 * the <i>resp</i> message. It retransmits the resp several times if no ACK
+	 * request is received.
 	 */
 	public AckTransactionServer(SipProvider sip_provider, Message resp, AckTransactionServerListener listener) {
 		super(sip_provider);
@@ -63,8 +68,8 @@ public class AckTransactionServer extends Transaction {
 	}
 
 	/**
-	 * Creates a new AckTransactionServer. The AckTransactionServer starts sending the response message <i>resp</i>
-	 * through the connection <i>conn_id</i>.
+	 * Creates a new AckTransactionServer. The AckTransactionServer starts sending
+	 * the response message <i>resp</i> through the connection <i>conn_id</i>.
 	 */
 	public AckTransactionServer(SipProvider sip_provider, ConnectionIdentifier connection_id, Message resp,
 			AckTransactionServerListener listener) {
@@ -92,7 +97,8 @@ public class AckTransactionServer extends Transaction {
 	public void respond() {
 		log.trace("start");
 		changeStatus(STATE_PROCEEDING);
-		// transaction_id=null; // it is not required since no SipProviderListener is implemented
+		// transaction_id=null; // it is not required since no SipProviderListener is
+		// implemented
 		// (CHANGE-040905) now timeouts started in listen()
 		transaction_to.start();
 		if (connection_id == null)
@@ -135,7 +141,8 @@ public class AckTransactionServer extends Transaction {
 		retransmission_to.halt();
 		transaction_to.halt();
 		changeStatus(STATE_TERMINATED);
-		// if (transaction_listener!=null) transaction_listener.onAckSrvTerminated(this);
+		// if (transaction_listener!=null)
+		// transaction_listener.onAckSrvTerminated(this);
 		// (CHANGE-040421) now it can free links to transaction_listener and timers
 		transaction_listener = null;
 		// retransmission_to=null;

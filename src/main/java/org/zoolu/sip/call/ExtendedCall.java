@@ -75,8 +75,9 @@ public class ExtendedCall extends Call implements ExtendedInviteDialogListener {
 
 	/** Creates a new ExtendedCall specifing the sdp. */
 	/*
-	 * public ExtendedCall(SipProvider sip_provider, String from_url, String contact_url, String sdp,
-	 * ExtendedCallListener call_listener) { super(sip_provider,from_url,contact_url,sdp,call_listener);
+	 * public ExtendedCall(SipProvider sip_provider, String from_url, String
+	 * contact_url, String sdp, ExtendedCallListener call_listener) {
+	 * super(sip_provider,from_url,contact_url,sdp,call_listener);
 	 * xcall_listener=call_listener; }
 	 */
 
@@ -211,13 +212,15 @@ public class ExtendedCall extends Call implements ExtendedInviteDialogListener {
 	}
 
 	/**
-	 * When an incoming request is received within the dialog different from INVITE, CANCEL, ACK, BYE
+	 * When an incoming request is received within the dialog different from INVITE,
+	 * CANCEL, ACK, BYE
 	 */
 	public void onDlgAltRequest(org.zoolu.sip.dialog.InviteDialog d, String method, String body, Message msg) {
 	}
 
 	/**
-	 * When a response is received for a request within the dialog different from INVITE, CANCEL, ACK, BYE
+	 * When a response is received for a request within the dialog different from
+	 * INVITE, CANCEL, ACK, BYE
 	 */
 	public void onDlgAltResponse(org.zoolu.sip.dialog.InviteDialog d, String method, int code, String reason,
 			String body, Message msg) {

@@ -23,29 +23,30 @@
 
 package org.zoolu.sip.dialog;
 
-
 import org.zoolu.sip.address.NameAddress;
 import org.zoolu.sip.message.Message;
 
+/**
+ * A NotifierDialogListener listens for NotifierDialog events. It collects all
+ * NOTIFY callback functions.
+ */
+public interface NotifierDialogListener {
+	/** When an incoming SUBSCRIBE is received. */
+	public void onDlgSubscribe(NotifierDialog dialog, NameAddress target, NameAddress subscriber, String event,
+			String id, Message msg);
 
-/** A NotifierDialogListener listens for NotifierDialog events.
-  * It collects all NOTIFY callback functions.
-  */
-public interface NotifierDialogListener
-{  
-   /** When an incoming SUBSCRIBE is received. */ 
-   public void onDlgSubscribe(NotifierDialog dialog, NameAddress target, NameAddress subscriber, String event, String id, Message msg);
+	/** When a re-SUBSCRIBE is received. */
+	// public void onDlgReSubscribe(NotifierDialog dialog, Message msg);
 
-   /** When a re-SUBSCRIBE is received. */ 
-   //public void onDlgReSubscribe(NotifierDialog dialog, Message msg);
+	/** When NOTIFY transaction expires without a final response. */
+	public void onDlgNotifyTimeout(NotifierDialog dialog);
 
-   /** When NOTIFY transaction expires without a final response. */ 
-   public void onDlgNotifyTimeout(NotifierDialog dialog);
+	/** When a 300-699 response is received for a NOTIFY transaction. */
+	public void onDlgNotificationFailure(NotifierDialog dialog, int code, String reason, Message msg);
 
-   /** When a 300-699 response is received for a NOTIFY transaction. */ 
-   public void onDlgNotificationFailure(NotifierDialog dialog, int code, String reason, Message msg);
-   
-   /** When a 2xx successfull final response is received for a NOTIFY transaction. */ 
-   public void onDlgNotificationSuccess(NotifierDialog dialog, int code, String reason, Message msg);
-   
+	/**
+	 * When a 2xx successfull final response is received for a NOTIFY transaction.
+	 */
+	public void onDlgNotificationSuccess(NotifierDialog dialog, int code, String reason, Message msg);
+
 }

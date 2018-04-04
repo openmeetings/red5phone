@@ -31,7 +31,6 @@ package org.red5.codecs.asao;
 //
 //------------------------------------------------------------------------
 public final class Utility {
-
 	public static final void byte2float(byte[] abyte0, int i, int j, float[] af, int k, boolean flag) {
 
 		if (flag) {

@@ -31,7 +31,6 @@ package org.red5.codecs.asao;
 //
 //------------------------------------------------------------------------
 final class NellyDecoderMap implements DecoderMap {
-
 	public final float[] a = new float[64];
 
 	public final float[] b = new float[256];

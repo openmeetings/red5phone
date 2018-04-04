@@ -37,19 +37,24 @@ import org.zoolu.tools.Timer;
 
 /**
  * INVITE server transaction as defined in RFC 3261 (Section 17.2.1). <BR>
- * An InviteTransactionServer is responsable to create a new SIP invite transaction that starts with a INVITE message
- * received by the SipProvider and ends sending a final response. <BR>
- * The changes of the internal status and the received messages are fired to the TransactionListener passed to the
- * InviteTransactionServer object. <BR>
- * This implementation of InviteTransactionServer automatically generates a "100 Trying" response when the INVITE
- * message is received (as suggested by RFC3261)
+ * An InviteTransactionServer is responsable to create a new SIP invite
+ * transaction that starts with a INVITE message received by the SipProvider and
+ * ends sending a final response. <BR>
+ * The changes of the internal status and the received messages are fired to the
+ * TransactionListener passed to the InviteTransactionServer object. <BR>
+ * This implementation of InviteTransactionServer automatically generates a "100
+ * Trying" response when the INVITE message is received (as suggested by
+ * RFC3261)
  */
 public class InviteTransactionServer extends TransactionServer {
 	private static Logger log = LoggerFactory.getLogger(InviteTransactionServer.class);
 	/** Default behavior for automatically sending 100 Trying on INVITE. */
 	public static boolean AUTO_TRYING = true;
 
-	/** the TransactionServerListener that captures the events fired by the InviteTransactionServer */
+	/**
+	 * the TransactionServerListener that captures the events fired by the
+	 * InviteTransactionServer
+	 */
 	InviteTransactionServerListener transaction_listener;
 
 	/** last response message */
@@ -71,7 +76,10 @@ public class InviteTransactionServer extends TransactionServer {
 		init(listener, new TransactionIdentifier(SipMethods.INVITE), null);
 	}
 
-	/** Creates a new InviteTransactionServer for the already received INVITE request <i>invite</i>. */
+	/**
+	 * Creates a new InviteTransactionServer for the already received INVITE request
+	 * <i>invite</i>.
+	 */
 	public InviteTransactionServer(SipProvider sip_provider, Message invite, InviteTransactionServerListener listener) {
 		super(sip_provider);
 		request = new Message(invite);
@@ -86,7 +94,10 @@ public class InviteTransactionServer extends TransactionServer {
 		}
 	}
 
-	/** Creates a new InviteTransactionServer for the already received INVITE request <i>invite</i>. */
+	/**
+	 * Creates a new InviteTransactionServer for the already received INVITE request
+	 * <i>invite</i>.
+	 */
 	public InviteTransactionServer(SipProvider sip_provider, Message invite, boolean auto_trying,
 			InviteTransactionServerListener listener) {
 		super(sip_provider);
@@ -161,8 +172,8 @@ public class InviteTransactionServer extends TransactionServer {
 	}
 
 	/**
-	 * Method derived from interface SipListener. It's fired from the SipProvider when a new message is catch for to the
-	 * present ServerTransaction.
+	 * Method derived from interface SipListener. It's fired from the SipProvider
+	 * when a new message is catch for to the present ServerTransaction.
 	 */
 	public void onReceivedMessage(SipProvider provider, Message msg) {
 		if (msg.isRequest()) {

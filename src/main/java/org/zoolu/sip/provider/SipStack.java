@@ -32,8 +32,8 @@ import org.zoolu.tools.Timer;
 /**
  * SipStack includes all static attributes used by the sip stack.
  * <p>
- * Static attributes includes the logging configuration, default SIP port, deafult supported transport protocols,
- * timeouts, etc.
+ * Static attributes includes the logging configuration, default SIP port,
+ * deafult supported transport protocols, timeouts, etc.
  */
 public class SipStack extends Configure {
 	protected static Logger log = LoggerFactory.getLogger(SipStack.class);
@@ -63,28 +63,39 @@ public class SipStack extends Configure {
 	// ************* default sip provider configurations **************
 
 	/**
-	 * Default SIP port. Note that this is not the port used by the running stack, but simply the standard default SIP
-	 * port. <br>
-	 * Normally it sould be set to 5060 as defined by RFC 3261. Using a different value may cause some problems when
-	 * interacting with other unaware SIP UAs.
+	 * Default SIP port. Note that this is not the port used by the running stack,
+	 * but simply the standard default SIP port. <br>
+	 * Normally it sould be set to 5060 as defined by RFC 3261. Using a different
+	 * value may cause some problems when interacting with other unaware SIP UAs.
 	 */
 	public static int default_port = 5060;
 	/** Default supported transport protocols. */
 	public static String[] default_transport_protocols = { SipProvider.PROTO_UDP, SipProvider.PROTO_TCP };
 	/** Default max number of contemporary open transport connections. */
 	public static int default_nmax_connections = 32;
-	/** Whether adding 'rport' parameter on via header fields of outgoing requests. */
+	/**
+	 * Whether adding 'rport' parameter on via header fields of outgoing requests.
+	 */
 	public static boolean use_rport = true;
-	/** Whether adding (forcing) 'rport' parameter on via header fields of incoming requests. */
+	/**
+	 * Whether adding (forcing) 'rport' parameter on via header fields of incoming
+	 * requests.
+	 */
 	public static boolean force_rport = false;
 
 	// ******************** general configurations ********************
 
 	/** default max-forwards value (RFC3261 recommends value 70) */
 	public static int max_forwards = 70;
-	/** starting retransmission timeout (milliseconds); called T1 in RFC2361; they suggest T1=500ms */
+	/**
+	 * starting retransmission timeout (milliseconds); called T1 in RFC2361; they
+	 * suggest T1=500ms
+	 */
 	public static long retransmission_timeout = 500;
-	/** maximum retransmission timeout (milliseconds); called T2 in RFC2361; they suggest T2=4sec */
+	/**
+	 * maximum retransmission timeout (milliseconds); called T2 in RFC2361; they
+	 * suggest T2=4sec
+	 */
 	public static long max_retransmission_timeout = 4000;
 	/** transaction timeout (milliseconds); RFC2361 suggests 64*T1=32000ms */
 	public static long transaction_timeout = 32000;
@@ -94,20 +105,25 @@ public class SipStack extends Configure {
 	/** Whether using only one thread for all timer instances. */
 	public static boolean single_timer = false;
 
-	/** Whether 1xx responses create an "early dialog" for methods that create dialog. */
+	/**
+	 * Whether 1xx responses create an "early dialog" for methods that create
+	 * dialog.
+	 */
 	public static boolean early_dialog = false;
 
-	/** Default 'expires' value in seconds. RFC2361 suggests 3600s as default value. */
+	/**
+	 * Default 'expires' value in seconds. RFC2361 suggests 3600s as default value.
+	 */
 	public static int default_expires = 3600;
 
 	/**
-	 * UA info included in request messages in the 'User-Agent' header field. Use "NONE" if the 'User-Agent' header
-	 * filed must not be added.
+	 * UA info included in request messages in the 'User-Agent' header field. Use
+	 * "NONE" if the 'User-Agent' header filed must not be added.
 	 */
 	public static String ua_info = release;
 	/**
-	 * Server info included in response messages in the 'Server' header field Use "NONE" if the 'Server' header filed
-	 * must not be added.
+	 * Server info included in response messages in the 'Server' header field Use
+	 * "NONE" if the 'Server' header filed must not be added.
 	 */
 	public static String server_info = release;
 
@@ -193,9 +209,11 @@ public class SipStack extends Configure {
 		if (attribute.equals("host_addr"))
 			printLog("WARNING: parameter 'host_addr' is no more supported; use 'via_addr' instead.");
 		if (attribute.equals("all_interfaces"))
-			printLog("WARNING: parameter 'all_interfaces' is no more supported; use 'host_iaddr' for setting a specific interface or let it undefined.");
+			printLog(
+					"WARNING: parameter 'all_interfaces' is no more supported; use 'host_iaddr' for setting a specific interface or let it undefined.");
 		if (attribute.equals("use_outbound"))
-			printLog("WARNING: parameter 'use_outbound' is no more supported; use 'outbound_addr' for setting an outbound proxy or let it undefined.");
+			printLog(
+					"WARNING: parameter 'use_outbound' is no more supported; use 'outbound_addr' for setting an outbound proxy or let it undefined.");
 		if (attribute.equals("log_file"))
 			printLog("WARNING: parameter 'log_file' is no more supported.");
 	}
@@ -219,15 +237,13 @@ public class SipStack extends Configure {
 		(new SipStack()).loadFile(file);
 
 		// user-agent info
-		if (ua_info != null
-				&& (ua_info.length() == 0 || ua_info.equalsIgnoreCase(Configure.NONE) || ua_info
-						.equalsIgnoreCase("NO-UA-INFO")))
+		if (ua_info != null && (ua_info.length() == 0 || ua_info.equalsIgnoreCase(Configure.NONE)
+				|| ua_info.equalsIgnoreCase("NO-UA-INFO")))
 			ua_info = null;
 
 		// server info
-		if (server_info != null
-				&& (server_info.length() == 0 || server_info.equalsIgnoreCase(Configure.NONE) || server_info
-						.equalsIgnoreCase("NO-SERVER-INFO")))
+		if (server_info != null && (server_info.length() == 0 || server_info.equalsIgnoreCase(Configure.NONE)
+				|| server_info.equalsIgnoreCase("NO-SERVER-INFO")))
 			server_info = null;
 
 		// timers

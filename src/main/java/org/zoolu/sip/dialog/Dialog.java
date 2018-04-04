@@ -37,7 +37,8 @@ import org.zoolu.sip.provider.SipProvider;
 import org.zoolu.sip.provider.SipProviderListener;
 
 /**
- * Class Dialog maintains a complete information status of a generic SIP dialog. It has the following attributes:
+ * Class Dialog maintains a complete information status of a generic SIP dialog.
+ * It has the following attributes:
  * <ul>
  * <li>sip-provider</li>
  * <li>call-id</li>
@@ -144,11 +145,13 @@ public abstract class Dialog extends DialogInfo implements SipProviderListener {
 	}
 
 	/**
-	 * Updates empty attributes (tags, route set) and mutable attributes (cseqs, contacts), based on a new message.
+	 * Updates empty attributes (tags, route set) and mutable attributes (cseqs,
+	 * contacts), based on a new message.
 	 *
 	 * @param side
-	 *            indicates whether the Dialog is acting as transaction client or server for the current message (use
-	 *            constant values Dialog.UAC or Dialog.UAS)
+	 *            indicates whether the Dialog is acting as transaction client or
+	 *            server for the current message (use constant values Dialog.UAC or
+	 *            Dialog.UAS)
 	 * @param msg
 	 *            the message that is used to update the Dialog state
 	 */
@@ -217,8 +220,8 @@ public abstract class Dialog extends DialogInfo implements SipProviderListener {
 				int size = rr.size();
 				route = new Vector<>(size);
 				for (int i = 0; i < size; i++)
-					route.insertElementAt((new RecordRouteHeader(rr.elementAt(size - 1 - i))).getNameAddress()
-							.toString(), i);
+					route.insertElementAt(
+							(new RecordRouteHeader(rr.elementAt(size - 1 - i))).getNameAddress().toString(), i);
 			}
 		} else {
 			if (msg.isRequest() && msg.hasRouteHeader() && route == null) {
@@ -233,8 +236,7 @@ public abstract class Dialog extends DialogInfo implements SipProviderListener {
 				int size = rr.size();
 				route = new Vector<>(size);
 				for (int i = 0; i < size; i++)
-					route.insertElementAt(
-							(new RecordRouteHeader(rr.elementAt(i))).getNameAddress().toString(), i);
+					route.insertElementAt((new RecordRouteHeader(rr.elementAt(i))).getNameAddress().toString(), i);
 			}
 		}
 

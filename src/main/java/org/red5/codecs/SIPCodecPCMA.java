@@ -5,7 +5,6 @@ import java.util.Arrays;
 import local.media.G711;
 
 public class SIPCodecPCMA implements SIPCodec {
-
 	// Codec information
 	private static final String codecName = "PCMA";
 
@@ -63,7 +62,7 @@ public class SIPCodecPCMA implements SIPCodec {
 
 		if (bufferIn.length > 0) {
 			for (int i = 0; i < bufferIn.length; i++) {
-				bufferOut[i] = (float) G711.alaw2linear((int) bufferIn[i]);
+				bufferOut[i] = G711.alaw2linear(bufferIn[i]);
 			}
 
 			return bufferOut.length;

@@ -31,7 +31,6 @@ package org.red5.codecs.asao;
 //
 //------------------------------------------------------------------------
 final class StateTable {
-
 	private final byte[] a;
 
 	private final int b;

@@ -9,7 +9,6 @@ import org.zoolu.sdp.SessionDescriptor;
  * A utility class for determine, instantiate and configure SIP codec, based on payload, local and remote SDP packets
  */
 public class SIPCodecUtils {
-
 	protected static Logger log = LoggerFactory.getLogger(SIPCodecUtils.class);
 
 	public static SIPCodec initSipAudioCodec(SIPCodec audioCodec, int defaultEncodePacketization,
@@ -53,7 +52,7 @@ public class SIPCodecUtils {
 	 * Converts a byte array into a short array. Since a byte is 8-bits, and a short is 16-bits, the returned short
 	 * array will be half in length than the byte array. If the length of the byte array is odd, the length of the short
 	 * array will be <code>(byteArray.length - 1)/2</code>, i.e., the last byte is discarded.
-	 * 
+	 *
 	 * @param byteArray
 	 *            a byte array
 	 * @param offset
@@ -62,9 +61,9 @@ public class SIPCodecUtils {
 	 *            how many bytes to convert
 	 * @param little
 	 *            specifies whether the result should be using little endian order or not.
-	 * 
+	 *
 	 * @return a short array, or <code>null</code> if byteArray is of zero length
-	 * 
+	 *
 	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 * @author Damian Minkov
 	 */
@@ -95,7 +94,7 @@ public class SIPCodecUtils {
 
 	/**
 	 * The result array must be twice as the input one. Since a byte is 8-bits, and a short is 16-bits.
-	 * 
+	 *
 	 * @param in
 	 *            the short[] array that we'll be transforming.
 	 * @param res
@@ -117,7 +116,7 @@ public class SIPCodecUtils {
 
 	/**
 	 * Get a pair of bytes representing a short value.
-	 * 
+	 *
 	 * @param v
 	 *            the short value to convert.
 	 * @param little
