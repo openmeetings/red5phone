@@ -12,8 +12,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<red5.version>1.0.9-M6</red5.version>
-		<red5.version>1.0.9-M6</red5.version>
+		<red5.version>1.0.10-M6</red5.version>
+		<red5.version>1.0.10-M6</red5.version>
 	</properties>
 
 	<build>
@@ -102,12 +102,12 @@
 		<dependency>
 			<groupId>commons-daemon</groupId>
 			<artifactId>commons-daemon</artifactId>
-			<version>1.0.15</version>
+			<version>1.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.openmeetings</groupId>
 			<artifactId>openmeetings-db</artifactId>
-			<version>3.3.0</version>
+			<version>4.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

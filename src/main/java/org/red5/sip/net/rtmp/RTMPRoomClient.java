@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import org.apache.mina.core.RuntimeIoException;
 import org.apache.mina.core.buffer.IoBuffer;
-import org.apache.openmeetings.db.entity.room.Client;
+import org.apache.openmeetings.db.entity.room.StreamClient;
 import org.red5.client.net.rtmp.BaseRTMPClientHandler;
 import org.red5.client.net.rtmp.ClientExceptionHandler;
 import org.red5.client.net.rtmp.INetStreamEventHandler;
@@ -119,10 +119,8 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 					return true;
 				}
 			});
-		} catch (NoSuchFieldException e) {
-			log.error("NoSuchFieldException", e);
-		} catch (IllegalAccessException e) {
-			log.error("IllegalAccessException", e);
+		} catch (NoSuchFieldException|IllegalAccessException e) {
+			log.error("Unexpected Exception", e);
 		}
 	}
 
@@ -290,19 +288,19 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 			}
 			switch (method) {
 			case receiveExclusiveAudioFlag:
-				receiveExclusiveAudioFlag(Client.class.cast(invoke.getCall().getArguments()[0]));
+				receiveExclusiveAudioFlag(StreamClient.class.cast(invoke.getCall().getArguments()[0]));
 				break;
 			case sendVarsToMessageWithClient:
 				sendVarsToMessageWithClient(invoke.getCall().getArguments()[0]);
 				break;
 			case newStream:
-				newStream(Client.class.cast(invoke.getCall().getArguments()[0]));
+				newStream(StreamClient.class.cast(invoke.getCall().getArguments()[0]));
 				break;
 			case closeStream:
-				closeStream(Client.class.cast(invoke.getCall().getArguments()[0]));
+				closeStream(StreamClient.class.cast(invoke.getCall().getArguments()[0]));
 				break;
 			default:
-				log.debug("Method not found: " + method + ", args number: " + invoke.getCall().getArguments().length);
+				log.debug("Method not found: {} , args number: {}", method, invoke.getCall().getArguments().length);
 			}
 		} catch (ClassCastException e) {
 			log.error("onInvoke error", e);
@@ -326,10 +324,10 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 		receiveExclusiveAudioFlag, sendVarsToMessageWithClient, closeStream, newStream
 	}
 
-	public void receiveExclusiveAudioFlag(Client client) {
-		log.debug("receiveExclusiveAudioFlag:" + client.getPublicSID());
-		this.micMuted = !client.getPublicSID().equals(this.uid);
-		log.info("Mic switched: " + this.micMuted);
+	public void receiveExclusiveAudioFlag(StreamClient client) {
+		log.debug("receiveExclusiveAudioFlag: {}", client.getUid());
+		this.micMuted = !client.getUid().equals(this.uid);
+		log.info("Mic switched: {}", this.micMuted);
 	}
 
 	public void sendVarsToMessageWithClient(Object message) {
@@ -343,10 +341,10 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 					log.info("Kicked by moderator. Reconnect");
 					this.conn.close();
 				} else if ("updateMuteStatus".equals(msgValue.get(0))) {
-					Client client = (Client) msgValue.get(1);
-					if (this.uid.equals(client.getPublicSID())) {
-						log.info("Mic switched: " + client.getMicMuted());
-						this.micMuted = client.getMicMuted();
+					StreamClient client = (StreamClient) msgValue.get(1);
+					if (this.uid.equals(client.getUid())) {
+						log.info("Mic switched: {}", client.isMicMuted());
+						this.micMuted = client.isMicMuted();
 					}
 				}
 			} catch (Exception ignored) {
@@ -355,7 +353,7 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 		log.debug("sendVarsToMessageWithClient:" + message.toString());
 	}
 
-	public void closeStream(Client client) {
+	public void closeStream(StreamClient client) {
 		log.debug("closeStream:" + client.getBroadCastID());
 		Double streamId = clientStreamMap.get(client.getBroadCastID());
 		if (streamId != null) {
@@ -369,9 +367,9 @@ public class RTMPRoomClient extends RTMPClient implements INetStreamEventHandler
 		}
 	}
 
-	public void newStream(Client client) {
+	public void newStream(StreamClient client) {
 		log.debug("newStream:" + client.getBroadCastID());
-		if (broadcastIds.contains((int) client.getBroadCastID())) {
+		if (broadcastIds.contains(client.getBroadcastId())) {
 			closeStream(client);
 		}
 		createPlayStream("" + client.getBroadCastID()); //TODO should be UID
