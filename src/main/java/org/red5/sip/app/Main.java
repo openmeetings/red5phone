@@ -15,6 +15,7 @@ public class Main {
 			log.error("Exception", e);
 		}
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			@Override
 			public void run() {
 				log.warn("!!! Shutdown hook !!!");
 				try {

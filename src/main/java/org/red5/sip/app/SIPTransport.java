@@ -186,31 +186,37 @@ public abstract class SIPTransport implements SIPUserAgentListener, SIPRegisterA
 		ra.loopRegister(expire_time, renew_time, keepalive_time);
 	}
 
+	@Override
 	public void onUaCallIncoming(SIPUserAgent ua, NameAddress callee, NameAddress caller) {
 		// To change body of implemented methods use File | Settings | File
 		// Templates.
 	}
 
+	@Override
 	public void onUaCallCancelled(SIPUserAgent ua) {
 		// To change body of implemented methods use File | Settings | File
 		// Templates.
 	}
 
+	@Override
 	public void onUaCallRinging(SIPUserAgent ua) {
 		// To change body of implemented methods use File | Settings | File
 		// Templates.
 	}
 
+	@Override
 	public void onUaCallAccepted(SIPUserAgent ua) {
 		// To change body of implemented methods use File | Settings | File
 		// Templates.
 	}
 
+	@Override
 	public void onUaCallTrasferred(SIPUserAgent ua) {
 		// To change body of implemented methods use File | Settings | File
 		// Templates.
 	}
 
+	@Override
 	public void onUaCallFailed(SIPUserAgent ua) {
 		log.info("Call failed");
 		try {
@@ -221,10 +227,12 @@ public abstract class SIPTransport implements SIPUserAgentListener, SIPRegisterA
 		roomClient.start();
 	}
 
+	@Override
 	public void onUaCallClosing(SIPUserAgent ua) {
 		log.info("Call closing");
 	}
 
+	@Override
 	public void onUaCallClosed(SIPUserAgent ua) {
 		log.info("Call closed");
 		try {
@@ -236,11 +244,13 @@ public abstract class SIPTransport implements SIPUserAgentListener, SIPRegisterA
 		register();
 	}
 
+	@Override
 	public void onUaCallConnected(SIPUserAgent ua) {
 		log.info("Call connected");
 		roomClient.onCallConnected();
 	}
 
+	@Override
 	public void onSipNumber(String number) {
 		log.info("Room number: " + number);
 		this.number = number;
@@ -250,7 +260,7 @@ public abstract class SIPTransport implements SIPUserAgentListener, SIPRegisterA
 	public int getSipUsersCount() {
 		return roomClient.getSipUsersCount();
 	}
-	
+
 	public void requestFIR() {
 		log.debug("requesting FIR...");
 		Message msg = MessageFactory.createRequest(

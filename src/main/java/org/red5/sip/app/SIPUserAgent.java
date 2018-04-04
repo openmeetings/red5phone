@@ -3,9 +3,6 @@ package org.red5.sip.app;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import local.media.AudioClipPlayer;
-import local.ua.MediaLauncher;
-
 import org.red5.codecs.SIPCodec;
 import org.red5.codecs.SIPCodecUtils;
 import org.red5.sip.util.SdpUtils;
@@ -22,6 +19,9 @@ import org.zoolu.sip.header.StatusLine;
 import org.zoolu.sip.message.Message;
 import org.zoolu.sip.provider.SipProvider;
 import org.zoolu.tools.Parser;
+
+import local.media.AudioClipPlayer;
+import local.ua.MediaLauncher;
 
 //import java.util.Iterator;
 
@@ -470,6 +470,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	/**
 	 * Callback function called when arriving a new INVITE method (incoming call)
 	 */
+	@Override
 	public void onCallIncoming(Call call, NameAddress callee, NameAddress caller, String sdp, Message invite) {
 
 		log.debug("onCallIncoming:: Init...");
@@ -525,6 +526,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	/**
 	 * Callback function called when arriving a new Re-INVITE method (re-inviting/call modify)
 	 */
+	@Override
 	public void onCallModifying(Call call, String sdp, Message invite) {
 
 		log.debug("onCallModifying:: Init...");
@@ -545,6 +547,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	/**
 	 * Callback function that may be overloaded (extended). Called when arriving a 180 Ringing
 	 */
+	@Override
 	public void onCallRinging(Call call, Message resp) {
 
 		log.debug("onCallRinging:: Init...");
@@ -563,6 +566,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	}
 
 	/** Callback function called when arriving a 2xx (call accepted) */
+	@Override
 	public void onCallAccepted(Call call, String sdp, Message resp) {
 
 		log.debug("onCallAccepted:: Init...");
@@ -625,6 +629,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	}
 
 	/** Callback function called when arriving an ACK method (call confirmed) */
+	@Override
 	public void onCallConfirmed(Call call, String sdp, Message ack) {
 
 		log.debug("onCallConfirmed:: Init...");
@@ -647,6 +652,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	}
 
 	/** Callback function called when arriving a 2xx (re-invite/modify accepted) */
+	@Override
 	public void onCallReInviteAccepted(Call call, String sdp, Message resp) {
 
 		log.debug("onCallReInviteAccepted:: Init...");
@@ -660,6 +666,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	}
 
 	/** Callback function called when arriving a 4xx (re-invite/modify failure) */
+	@Override
 	public void onCallReInviteRefused(Call call, String reason, Message resp) {
 
 		log.debug("onCallReInviteRefused:: Init...");
@@ -677,6 +684,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	}
 
 	/** Callback function called when arriving a 4xx (call failure) */
+	@Override
 	public void onCallRefused(Call call, String reason, Message resp) {
 
 		log.debug("onCallRefused:: Init...");
@@ -704,6 +712,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	}
 
 	/** Callback function called when arriving a 3xx (call redirection) */
+	@Override
 	public void onCallRedirection(Call call, String reason, Vector<String> contact_list, Message resp) {
 
 		log.debug("onCallRedirection:: Init...");
@@ -715,12 +724,13 @@ public class SIPUserAgent extends CallListenerAdapter {
 
 		log.debug("onCallRedirection:: REDIRECTION (" + reason + ").");
 
-		call.call(((String) contact_list.elementAt(0)));
+		call.call((contact_list.elementAt(0)));
 	}
 
 	/**
 	 * Callback function that may be overloaded (extended). Called when arriving a CANCEL request
 	 */
+	@Override
 	public void onCallCanceling(Call call, Message cancel) {
 
 		log.debug("onCallCanceling:: Init...");
@@ -740,6 +750,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	}
 
 	/** Callback function called when arriving a BYE request */
+	@Override
 	public void onCallClosing(Call call, Message bye) {
 
 		log.debug("onCallClosing:: Init...");
@@ -778,6 +789,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	/**
 	 * Callback function called when arriving a response after a BYE request (call closed)
 	 */
+	@Override
 	public void onCallClosed(Call call, Message resp) {
 
 		log.debug("onCallClosed:: Init...");
@@ -797,6 +809,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	}
 
 	/** Callback function called when the invite expires */
+	@Override
 	public void onCallTimeout(Call call) {
 
 		log.debug("onCallTimeout:: Init...");
@@ -832,6 +845,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	/**
 	 * Callback function called when arriving a new REFER method (transfer request)
 	 */
+	@Override
 	public void onCallTransfer(ExtendedCall call, NameAddress refer_to, NameAddress refered_by, Message refer) {
 
 		log.debug("onCallTransfer:: Init...");
@@ -850,6 +864,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	}
 
 	/** Callback function called when a call transfer is accepted. */
+	@Override
 	public void onCallTransferAccepted(ExtendedCall call, Message resp) {
 
 		log.debug("onCallTransferAccepted:: Init...");
@@ -863,6 +878,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	}
 
 	/** Callback function called when a call transfer is refused. */
+	@Override
 	public void onCallTransferRefused(ExtendedCall call, String reason, Message resp) {
 
 		log.debug("onCallTransferRefused:: Init...");
@@ -876,6 +892,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	}
 
 	/** Callback function called when a call transfer is successfully completed */
+	@Override
 	public void onCallTransferSuccess(ExtendedCall call, Message notify) {
 
 		log.debug("onCallTransferSuccess:: Init...");
@@ -897,6 +914,7 @@ public class SIPUserAgent extends CallListenerAdapter {
 	/**
 	 * Callback function called when a call transfer is NOT sucessfully completed
 	 */
+	@Override
 	public void onCallTransferFailure(ExtendedCall call, String reason, Message notify) {
 
 		log.debug("onCallTransferFailure:: Init...");
